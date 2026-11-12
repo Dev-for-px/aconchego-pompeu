@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { Logo } from "./Logo";
 import { ChevronRight, Camera, Clock, Menu, MessageCircle, ShoppingBag, X } from "lucide-react";
 import { useCarrinho } from "@/lib/carrinho";
 import { NEGOCIO, linkWhatsApp } from "@/lib/site";
@@ -28,9 +30,10 @@ export function MenuMobile({ links }: { links: { href: string; label: string }[]
         <Menu size={26} />
       </button>
 
-      {aberto && (
-        <div className="fixed inset-0 z-[70] flex flex-col bg-vinho-700 text-creme-50" role="dialog" aria-modal="true" aria-label="Menu">
-          <div className="flex h-16 items-center justify-end px-4">
+      {aberto && createPortal(
+        <div className="fixed inset-0 z-[80] flex flex-col bg-vinho-700 text-creme-50" role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="flex h-16 items-center justify-between px-4">
+            <Link href="/" onClick={() => setAberto(false)} aria-label="Início"><Logo variante="branca" altura={44} /></Link>
             <button type="button" onClick={() => setAberto(false)} aria-label="Fechar menu" className="rounded-pill p-2.5 hover:bg-vinho-800"><X size={28} /></button>
           </div>
           <nav aria-label="Menu" className="flex-1 overflow-y-auto px-6">
@@ -51,7 +54,8 @@ export function MenuMobile({ links }: { links: { href: string; label: string }[]
             <a href={linkWhatsApp("Olá! Vim pelo site do Aconchego.")} className="flex items-center justify-center gap-2 rounded-pill bg-aberto py-3.5 text-base font-semibold"><MessageCircle size={22} />Pedir no WhatsApp</a>
             <a href={NEGOCIO.instagram} rel="noopener" className="flex items-center justify-center gap-2 rounded-pill border border-creme-50/40 py-3 font-semibold"><Camera size={20} />@rest.pizzariaaconchego</a>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
