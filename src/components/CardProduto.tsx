@@ -9,7 +9,8 @@ export function paraPedido(p: Produto): ProdutoPedido {
 
 export function CardProduto({ p, mostrarPreco, grupo, sabores = [] }: { p: Produto; mostrarPreco: boolean; grupo: string; sabores?: ProdutoPedido[] }) {
   const min = precoMinimo(p);
-  const preco = mostrarPreco && min != null ? `${p.variacoes.length > 1 ? "a partir de " : ""}${formatarPreco(min)}` : null;
+  const preco = mostrarPreco && min != null ? formatarPreco(min) : null;
+  const aPartir = p.variacoes.length > 1;
   return (
     <article className={`flex gap-4 rounded-md border border-linha bg-creme-50 p-4 ${p.disponivel ? "" : "opacity-60"}`}>
       {p.foto_url ? (
@@ -31,7 +32,7 @@ export function CardProduto({ p, mostrarPreco, grupo, sabores = [] }: { p: Produ
           </ul>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 pt-3">
-          <span className="text-base font-bold text-vinho-500">{preco ?? ""}</span>
+          <span className="flex flex-col leading-tight">{preco && aPartir && <span className="text-xs text-muted">a partir de</span>}<span className="text-base font-bold whitespace-nowrap text-vinho-500">{preco ?? ""}</span></span>
           {p.disponivel ? (
             <BotaoAdicionar produto={paraPedido(p)} grupo={grupo} sabores={p.meio_a_meio ? sabores : []} />
           ) : (

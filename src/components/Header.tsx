@@ -26,7 +26,7 @@ export function Header() {
         </nav>
       </div>
       <nav aria-label="Atalhos" className="border-t border-vinho-800 md:hidden">
-        <ul className="flex gap-5 overflow-x-auto px-4 py-2 text-sm font-semibold">
+        <ul className="sem-barra flex gap-5 overflow-x-auto px-4 py-2 text-sm font-semibold">
           {links.map((l) => (
             <li key={l.href} className="shrink-0"><Link href={l.href}>{l.label}</Link></li>
           ))}

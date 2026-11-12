@@ -19,7 +19,7 @@ export function ListaCardapio({ secoes, mostrarPreco, nivel = 2, linkCategoria =
   const H = nivel === 2 ? "h2" : "h3";
   return (
     <div className="space-y-12">
-      <nav aria-label="Categorias" className="sticky top-0 z-30 -mx-4 overflow-x-auto bg-creme-50/95 px-4 py-2 backdrop-blur md:top-[72px]">
+      <nav aria-label="Categorias" className="sem-barra sticky top-0 z-30 -mx-4 overflow-x-auto bg-creme-50/95 px-4 py-2 backdrop-blur md:top-[72px]">
         <ul className="flex gap-2">
           {comItens.map((s) => (
             <li key={s.id} className="shrink-0"><a href={`#${s.slug}`} className="block rounded-pill border border-linha bg-creme-200 px-4 py-2 text-sm font-semibold text-ink">{s.nome}</a></li>
