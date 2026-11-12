@@ -15,8 +15,10 @@ declare
   v_usuario text := nullif(lower(trim(coalesce(p_usuario, ''))), '');
   v_email text := nullif(lower(trim(coalesce(p_email, ''))), '');
   v_login text;
+  -- Na tela de SQL do Supabase (administrador) não há usuário logado: pode cadastrar sempre.
+  v_admin boolean := auth.uid() is null and session_user <> 'authenticator';
 begin
-  if exists (select 1 from equipe where perfil = 'dono' and ativo) and not tem_perfil('{dono}') then
+  if not v_admin and exists (select 1 from equipe where perfil = 'dono' and ativo) and not tem_perfil('{dono}') then
     raise exception 'Só o dono pode cadastrar pessoas na equipe';
   end if;
   if length(coalesce(p_senha, '')) < 6 then raise exception 'A senha precisa ter pelo menos 6 caracteres'; end if;
