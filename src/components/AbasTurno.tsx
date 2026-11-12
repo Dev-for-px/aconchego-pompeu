@@ -23,7 +23,7 @@ export function AbasTurno({ horarios, almoco, noite }: { horarios: Horarios; alm
     <div>
       <div role="tablist" className="mx-auto flex max-w-md rounded-pill border border-linha bg-creme-200 p-1">
         {botao("almoco", "Almoço", Sun)}
-        {botao("noite", "Bar e pizzaria", Moon)}
+        {botao("noite", "Pizzaria", Moon)}
       </div>
       <div className="mt-6" hidden={aba !== "almoco"}>{almoco}</div>
       <div className="mt-6" hidden={aba !== "noite"}>{noite}</div>

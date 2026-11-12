@@ -60,7 +60,7 @@ export function Inicio() {
           <h2 className="text-xl font-semibold">Agora no site</h2>
           <Chave ligado={!cfg.pedidos_pausados} onChange={(v) => salvar("pedidos_pausados", !v)} rotulo={cfg.pedidos_pausados ? "Pedidos pausados" : "Recebendo pedidos"} descricao="Desligue quando a cozinha estiver lotada ou fechada." />
           {pode("dono", "gerente") && (
-            <Chave ligado={cfg.mostrar_precos} onChange={(v) => salvar("mostrar_precos", v)} rotulo="Mostrar preços no site" descricao="Desligado: o cardápio aparece sem valores e o pedido sai como “a confirmar”." />
+            <Chave ligado={cfg.mostrar_precos} onChange={(v) => salvar("mostrar_precos", v)} rotulo={cfg.mostrar_precos ? "Preços aparecendo no site" : "Todos os preços escondidos"} descricao="Um toque desliga (ou liga) TODOS os preços do site de uma vez. Desligado, o pedido sai como “valor a confirmar”." />
           )}
         </section>
       )}

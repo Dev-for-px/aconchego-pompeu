@@ -26,6 +26,7 @@ export function CardapioAdmin() {
   const [aberta, setAberta] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
   const [editando, setEditando] = useState<Editavel | null>(null);
+  const [mostrarPrecos, setMostrarPrecos] = useState<boolean | null>(null);
   const podeEditar = pode("dono", "gerente");
 
   const carregar = useCallback(async () => {
@@ -33,6 +34,8 @@ export function CardapioAdmin() {
       supabase.from("categorias").select("id,nome,slug,descricao,turno,ordem").eq("ativo", true).order("ordem"),
       supabase.from("produtos").select("*").order("ordem"),
     ]);
+    const { data: cfg } = await supabase.from("configuracoes").select("mostrar_precos").eq("id", 1).single();
+    setMostrarPrecos(cfg?.mostrar_precos ?? null);
     setCats((c.data as Categoria[]) ?? []);
     setProds(((p.data as Produto[]) ?? []).map((x) => ({ ...x, variacoes: x.variacoes ?? [] })));
   }, [supabase]);
@@ -51,6 +54,12 @@ export function CardapioAdmin() {
   return (
     <>
       <Titulo sub={podeEditar ? "Toque no interruptor para tirar um item do site na hora. Toque no lápis para editar." : "Acabou algum item? Desligue aqui que ele some do site na hora."}>Cardápio</Titulo>
+      {podeEditar && mostrarPrecos !== null && (
+        <div className="mb-4">
+          <Chave ligado={mostrarPrecos} rotulo={mostrarPrecos ? "Preços aparecendo no site" : "Todos os preços escondidos"} descricao="Liga ou desliga todos os preços de uma vez."
+            onChange={async (v) => { setMostrarPrecos(v); await supabase.from("configuracoes").update({ mostrar_precos: v }).eq("id", 1); await atualizarSite(["config"]); }} />
+        </div>
+      )}
       <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar produto…" aria-label="Buscar produto" className={`${campoCls} mb-4`} />
       <div className="space-y-3">
         {cats.map((c) => {

@@ -6,24 +6,22 @@ import { BotaoWhatsApp } from "@/components/Botoes";
 import { CardProduto } from "@/components/CardProduto";
 import { InfoCasa } from "@/components/InfoCasa";
 import { JsonLd } from "@/components/JsonLd";
-import { ListaCardapio } from "@/components/ListaCardapio";
+import { CardapioComBebidas } from "@/components/CardapioComBebidas";
 import { ListaFaq } from "@/components/ListaFaq";
 import { StatusAberto } from "@/components/StatusAberto";
-import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getProdutos, getPromocoesAtivas } from "@/lib/dados";
+import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
+import { GaleriaFaixa } from "@/components/GaleriaFaixa";
+import { CardPost } from "@/components/CardPost";
 import { faqJsonLd } from "@/lib/schema";
 import { NEGOCIO, formatarPreco } from "@/lib/site";
 
 export default async function Home() {
-  const [config, noite, dia, almoco, faq, produtos, promocoes, avaliacoes] = await Promise.all([
-    getConfig(), getCardapio("noite"), getCardapio("almoco"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(),
+  const [config, noite, dia, almoco, faq, produtos, promocoes, avaliacoes, fotos, posts] = await Promise.all([
+    getConfig(), getCardapio("noite"), getCardapio("almoco"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(), getGaleria(), getPosts(3),
   ]);
   // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
   const destaques = produtos.filter((p) => p.destaque && p.disponivel && idsNoite.has(p.categoria_id)).slice(0, 4);
-  const diaComItens = dia.filter((c) => c.produtos.length > 0);
-  const ALCOOL = new Set(["cervejas-e-chopp", "drinks", "doses", "whiskys", "vinhos"]);
-  const diaSemAlcool = diaComItens.filter((c) => !ALCOOL.has(c.slug));
-  const diaAlcool = diaComItens.filter((c) => ALCOOL.has(c.slug));
 
   return (
     <>
@@ -39,13 +37,20 @@ export default async function Home() {
         <div className="relative mx-auto max-w-5xl px-4 pb-6 pt-5 md:py-12">
           <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
           <h1 className="mt-3 max-w-xl text-[1.7rem] font-bold leading-tight md:text-5xl">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
-          <p className="mt-2 max-w-xl text-base opacity-90 md:text-lg">Almoço caseiro e churrasco de dia. Bar, pizza e chopp à noite.</p>
+          <p className="mt-2 max-w-xl text-base opacity-90 md:text-lg">Almoço caseiro e churrasco de dia. Pizzaria e choperia à noite.</p>
           <div className="mt-4 grid grid-cols-2 gap-2 md:flex md:gap-3">
             <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-base font-semibold text-vinho-700 hover:bg-creme-200">Ver cardápio</a>
             <BotaoWhatsApp texto="WhatsApp" />
           </div>
         </div>
       </section>
+
+      {/* Fotos logo depois da capa: o cliente come com os olhos */}
+      {fotos.length > 0 && (
+        <section aria-label="Fotos do Aconchego" className="bg-vinho-700 pb-5">
+          <GaleriaFaixa fotos={fotos} />
+        </section>
+      )}
 
       {/* Cardápio por turno */}
       <section id="cardapio" aria-labelledby="t-cardapio" className="mx-auto max-w-5xl scroll-mt-16 px-4 py-6 md:py-12">
@@ -56,22 +61,7 @@ export default async function Home() {
             almoco={
               <div className="space-y-10">
                 <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} />
-                {diaSemAlcool.length > 0 && <ListaCardapio secoes={diaSemAlcool} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />}
-                {diaAlcool.length > 0 && (
-                  <details className="group rounded-md border border-linha bg-creme-200">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
-                      <span>
-                        <span className="block font-serif text-xl font-semibold">Chopp, cervejas e drinks</span>
-                        <span className="text-sm text-muted">{diaAlcool.map((c) => c.nome).join(" · ")} — toque para ver</span>
-                      </span>
-                      <span aria-hidden className="text-2xl text-vinho-500 transition group-open:rotate-45">+</span>
-                    </summary>
-                    <div className="border-t border-linha bg-creme-50 px-4 pb-6 pt-2">
-                      <ListaCardapio secoes={diaAlcool} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" linkCategoria={false} />
-                      <p className="mt-6 text-sm text-muted">Venda de bebidas alcoólicas proibida para menores de 18 anos.</p>
-                    </div>
-                  </details>
-                )}
+                <CardapioComBebidas secoes={dia} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
               </div>
             }
             noite={
@@ -96,7 +86,7 @@ export default async function Home() {
                     </div>
                   </div>
                 )}
-                <ListaCardapio secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />
+                <CardapioComBebidas secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />
               </div>
             }
           />
@@ -105,13 +95,13 @@ export default async function Home() {
 
       {/* Sobre resumido */}
       <section aria-labelledby="t-sobre" className="mx-auto max-w-5xl px-4 py-12">
-        <h2 id="t-sobre" className="text-3xl font-semibold">De dia restaurante, à noite bar e pizzaria</h2>
+        <h2 id="t-sobre" className="text-3xl font-semibold">De dia restaurante, à noite pizzaria e choperia</h2>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <p className="text-lg text-muted">
             No almoço, o {NEGOCIO.nome} é restaurante, churrascaria e choperia: self-service de comida caseira, à la carte, marmitex e chopp gelado, todos os dias das 11h às 15h.
           </p>
           <p className="text-lg text-muted">
-            À noite vira o Bar Aconchego: pizzaria e choperia com pizzas, crepes, porção de picanha na chapa e chopp gelado, de terça a domingo, das 18h à meia-noite. Delivery próprio e pelo Aiqfome.
+            À noite vira pizzaria e choperia, com clima de bar: pizzas, crepes, porção de picanha na chapa e chopp gelado, de terça a domingo, das 18h à meia-noite. Delivery próprio e pelo Aiqfome.
           </p>
         </div>
         <Link href="/sobre" className="mt-4 inline-block font-semibold text-vinho-500 underline">Conheça nossa história</Link>
@@ -131,6 +121,16 @@ export default async function Home() {
               ))}
             </ul>
           </div>
+        </section>
+      )}
+
+      {posts.length > 0 && (
+        <section aria-labelledby="t-novidades" className="mx-auto max-w-5xl px-4 py-12">
+          <div className="mb-6 flex items-baseline justify-between gap-4">
+            <h2 id="t-novidades" className="text-3xl font-semibold">Novidades</h2>
+            <Link href="/novidades" className="font-semibold text-vinho-500 underline">Ver todas</Link>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">{posts.map((p) => <CardPost key={p.id} p={p} />)}</div>
         </section>
       )}
 

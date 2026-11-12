@@ -47,12 +47,12 @@ export function MenuMobile({ links }: { links: { href: string; label: string }[]
                 </li>
               ))}
             </ul>
-            <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço todos os dias, 11h–15h<br />Bar e pizzaria, ter. a dom., 18h–0h</p>
+            <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço todos os dias, 11h–15h<br />Pizzaria e choperia, ter. a dom., 18h–0h</p>
             <p className="mt-8 font-script text-4xl">Feito com carinho</p>
           </nav>
           <div className="space-y-3 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
-            <a href={linkWhatsApp("Olá! Vim pelo site do Aconchego.")} className="flex items-center justify-center gap-2 rounded-pill bg-aberto py-3.5 text-base font-semibold"><MessageCircle size={22} />Pedir no WhatsApp</a>
-            <a href={NEGOCIO.instagram} rel="noopener" className="flex items-center justify-center gap-2 rounded-pill border border-creme-50/40 py-3 font-semibold"><Camera size={20} />@rest.pizzariaaconchego</a>
+            <a href={linkWhatsApp("Olá! Vim pelo site do Aconchego.")} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-pill bg-aberto py-3.5 text-base font-semibold"><MessageCircle size={22} />Pedir no WhatsApp</a>
+            <a href={NEGOCIO.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-pill border border-creme-50/40 py-3 font-semibold"><Camera size={20} />@rest.pizzariaaconchego</a>
           </div>
         </div>,
         document.body,

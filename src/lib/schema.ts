@@ -1,10 +1,11 @@
 // JSON-LD (schema.org) — ajuda Google e IAs a entenderem o restaurante.
 import { NEGOCIO, SITE_URL } from "./site";
-import type { Faq, Produto } from "./dados";
+import type { Faq, Post, Produto } from "./dados";
+import { redesAtivas, type Redes } from "./redes";
 
 const ID = `${SITE_URL}/#restaurante`;
 
-export function restauranteJsonLd() {
+export function restauranteJsonLd(redes: Redes = {}) {
   return {
     "@context": "https://schema.org",
     "@type": ["Restaurant", "BarOrPub"],
@@ -34,7 +35,7 @@ export function restauranteJsonLd() {
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "18:00", closes: "23:59" },
     ],
     amenityFeature: NEGOCIO.comodidades.map((name) => ({ "@type": "LocationFeatureSpecification", name, value: true })),
-    sameAs: [NEGOCIO.instagram, NEGOCIO.linktree],
+    sameAs: [...new Set([NEGOCIO.instagram, NEGOCIO.linktree, ...redesAtivas(redes).map((r) => r.url)])],
   };
 }
 
@@ -82,5 +83,21 @@ export function breadcrumbJsonLd(itens: { nome: string; url: string }[]) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: itens.map((i, n) => ({ "@type": "ListItem", position: n + 1, name: i.nome, item: `${SITE_URL}${i.url}` })),
+  };
+}
+
+export function artigoJsonLd(p: Post) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: p.titulo,
+    description: p.resumo ?? undefined,
+    image: p.capa_url ?? `${SITE_URL}/opengraph-image`,
+    datePublished: p.publicado_em,
+    dateModified: p.atualizado_em,
+    url: `${SITE_URL}/novidades/${p.slug}`,
+    author: { "@id": ID },
+    publisher: { "@id": ID },
+    inLanguage: "pt-BR",
   };
 }

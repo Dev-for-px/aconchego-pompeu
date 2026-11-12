@@ -40,7 +40,11 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
     } catch {}
     if (supabaseConfigured) createClient().from("eventos").insert({ tipo: "enviar_pedido" }).then(() => {});
     c.salvarUltimo();
-    window.location.href = linkWhatsApp(texto, c.config.whatsapp);
+    // Abre o WhatsApp em outra aba: o site continua aberto aqui.
+    const url = linkWhatsApp(texto, c.config.whatsapp);
+    const aba = window.open(url, "_blank");
+    if (aba) aba.opener = null;
+    else window.location.assign(url); // navegador bloqueou a nova aba
   }
 
   if (c.itens.length === 0) {

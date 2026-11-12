@@ -27,6 +27,7 @@ export async function llmsTxt() {
 - [Perguntas frequentes](${SITE_URL}/perguntas-frequentes): horário, delivery, pagamento, reservas
 - [Sobre](${SITE_URL}/sobre): história e fatos sobre o restaurante
 - [Contato](${SITE_URL}/contato): endereço, mapa e telefones
+- [Novidades](${SITE_URL}/novidades): promoções, eventos e avisos
 
 ## Opcional
 - [Versão completa para IAs](${SITE_URL}/llms-full.txt): cardápio e FAQ em texto

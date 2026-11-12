@@ -54,3 +54,12 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Rotas públicas ficam em `src/app/(site)/` (com header/rodapé/carrinho); `/admin` tem layout próprio
 - Painel é client-side (`@supabase/ssr` browser client + RLS); ao salvar chama a server action `atualizarSite(tags)` (`updateTag`)
 - Telas: Início (atalhos, pausar pedidos, mostrar preços), Almoço (colar texto → `parserAlmoco.ts`), Cardápio, Equipe (só dono), Ajustes (taxa, WhatsApp, história, FAQ)
+
+## Conteúdo, redes e aviso de saída
+- Publicações: tabela `posts` → `/novidades` e `/novidades/[slug]` (BlogPosting no schema, sitemap); painel em "Fotos e posts"
+- Galeria: tabela `galeria` → faixa de fotos logo abaixo da capa (`GaleriaFaixa`)
+- Redes sociais: `configuracoes.redes` (lista em `src/lib/redes.ts`); rodapé mostra só as com link; entram no `sameAs`
+- Aviso "Já vai?": `configuracoes.saida` (`src/lib/saida.ts`), intenção de saída (mouse no topo / rolagem rápida pra cima), 1x por visita. Nunca sequestrar o botão Voltar (penalização do Google)
+- Links que saem do site abrem em nova aba (`target="_blank" rel="noopener noreferrer"`); pedido abre o WhatsApp em nova aba
+- Visual: noite = "Pizzaria" (pizzaria e choperia); "bar" só em SEO (schema/llms/textos discretos)
+- Bebidas alcoólicas sempre recolhidas em "Chopp, cervejas e drinks" (`CardapioComBebidas`)

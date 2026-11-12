@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { BarraMobile } from "@/components/BarraMobile";
 import { BarraCarrinho } from "@/components/BarraCarrinho";
 import { JsonLd } from "@/components/JsonLd";
+import { AvisoSaida } from "@/components/AvisoSaida";
 import { CarrinhoProvider } from "@/lib/carrinho";
 import { getConfig } from "@/lib/dados";
 import { restauranteJsonLd } from "@/lib/schema";
@@ -18,12 +19,13 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
   };
   return (
     <CarrinhoProvider config={pedido}>
-      <JsonLd data={restauranteJsonLd()} />
+      <JsonLd data={restauranteJsonLd(config.redes)} />
       <Header />
       <main className="flex-1">{children}</main>
-      <Footer />
+      <Footer redes={config.redes} />
       <BarraCarrinho />
       <BarraMobile />
+      <AvisoSaida config={config.saida} whatsapp={config.whatsapp} />
     </CarrinhoProvider>
   );
 }

@@ -24,7 +24,7 @@ export function InfoCasa({ formasPagamento }: { formasPagamento: string[] }) {
         <div>
           <h3 className="flex items-center gap-2 text-xl font-semibold"><MapPin size={22} className="text-vinho-500" aria-hidden />Endereço</h3>
           <p className="mt-2">{ENDERECO_LINHA} ({NEGOCIO.endereco.referencia})</p>
-          <a href={NEGOCIO.mapsBusca} className="mt-3 inline-block rounded-pill bg-vinho-700 px-5 py-2 font-semibold text-creme-50 hover:bg-vinho-800">Como chegar</a>
+          <a href={NEGOCIO.mapsBusca} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block rounded-pill bg-vinho-700 px-5 py-2 font-semibold text-creme-50 hover:bg-vinho-800">Como chegar</a>
         </div>
       </div>
       <iframe

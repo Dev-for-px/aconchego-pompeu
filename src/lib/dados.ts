@@ -4,6 +4,9 @@ import { createClient as createSupabase } from "@supabase/supabase-js";
 import { cacheLife, cacheTag } from "next/cache";
 import { supabaseConfigured, supabaseKey, supabaseUrl } from "./supabase/env";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "./horario";
+import type { Redes } from "./redes";
+import { SAIDA_PADRAO, type Saida } from "./saida";
+export { SAIDA_PADRAO, type Saida };
 
 export type Categoria = { id: string; nome: string; slug: string; descricao: string | null; turno: "almoco" | "noite" | "ambos"; ordem: number };
 export type Adicional = { id: string; nome: string; preco: number | null; preco_por_variacao?: Record<string, number> | null };
@@ -20,10 +23,12 @@ export type Foto = { id: string; url: string; legenda: string | null };
 export type Promocao = { id: string; titulo: string; descricao: string | null; preco: number | null; foto_url: string | null; valido_de: string | null; valido_ate: string | null };
 export type SecaoAlmoco = { secao: string; itens: { nome: string; preco?: number | null }[] };
 export type Almoco = { data: string; itens: SecaoAlmoco[]; atualizado_em: string } | null;
+export type Post = { id: string; titulo: string; slug: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado_em: string | null; atualizado_em: string };
 export type Config = {
   mostrar_precos: boolean; pedidos_pausados: boolean; whatsapp: string; telefone: string;
   taxa_entrega: number | null; pedido_minimo: number | null; horarios: Horarios;
-  redes: { instagram?: string; linktree?: string; aiqfome?: string; facebook?: string };
+  redes: Redes;
+  saida: Saida;
   formas_pagamento: string[]; historia: string | null;
 };
 
@@ -31,6 +36,7 @@ const CONFIG_PADRAO: Config = {
   mostrar_precos: false, pedidos_pausados: false, whatsapp: "5537999943111", telefone: "553735233111",
   taxa_entrega: 4, pedido_minimo: null, horarios: HORARIOS_PADRAO, redes: {},
   formas_pagamento: ["Dinheiro", "Pix", "Cartão de débito", "Cartão de crédito", "Vale-refeição"], historia: null,
+  saida: SAIDA_PADRAO,
 };
 
 function db() {
@@ -55,7 +61,7 @@ export async function getConfig(): Promise<Config> {
     const { data, error } = await db().from("configuracoes").select("*").eq("id", 1).single();
     if (error) throw error;
     const horarios = data.horarios?.almoco ? data.horarios : HORARIOS_PADRAO;
-    return { ...CONFIG_PADRAO, ...data, horarios };
+    return { ...CONFIG_PADRAO, ...data, horarios, redes: data.redes ?? {}, saida: { ...SAIDA_PADRAO, ...(data.saida ?? {}) } };
   }, CONFIG_PADRAO);
 }
 
@@ -155,4 +161,15 @@ export async function getCardapio(turno?: "almoco" | "noite") {
   return categorias
     .filter((c) => !turno || c.turno === turno || c.turno === "ambos")
     .map((c) => ({ ...c, produtos: produtos.filter((p) => p.categoria_id === c.id) }));
+}
+
+export async function getPosts(limite = 50): Promise<Post[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("posts");
+  return seguro(async () => {
+    const { data, error } = await db().from("posts").select("id,titulo,slug,resumo,conteudo,capa_url,publicado_em,atualizado_em").eq("publicado", true).order("publicado_em", { ascending: false }).limit(limite);
+    if (error) throw error;
+    return data as Post[];
+  }, []);
 }
