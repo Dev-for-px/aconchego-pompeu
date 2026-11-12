@@ -20,7 +20,14 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 
 ## Etapas
 1. [x] Setup do projeto + conexão com Supabase
-2. [ ] Banco: tabelas, RLS e perfis de equipe
+2. [x] Banco: tabelas, RLS e perfis de equipe
 3. [ ] Site público: home, cardápio da noite, almoço do dia, FAQ, SEO técnico
 4. [ ] Carrinho → WhatsApp
 5. [ ] Painel admin: login (telefone/e-mail/usuário), equipe, colar cardápio do almoço
+
+## Banco (Supabase)
+- SQL versionado em `supabase/migrations/` (já aplicado no projeto via SQL Editor)
+- Perfis da equipe: `dono`, `gerente`, `social`, `atendente` — permissões via RLS com `tem_perfil()`
+- Login por telefone/usuário/e-mail: `email_para_login(identificador)` devolve o e-mail do Auth; quem não tem e-mail recebe um e-mail interno (`email_login`)
+- Membros da equipe são criados no servidor com a chave `service_role` (nunca no navegador)
+- Atendente: a RLS libera update em `produtos`; o app deve enviar só o campo `disponivel`
