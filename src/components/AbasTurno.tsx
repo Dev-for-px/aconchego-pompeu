@@ -14,7 +14,7 @@ export function AbasTurno({ horarios, almoco, noite }: { horarios: Horarios; alm
   const botao = (id: "almoco" | "noite", texto: string, Icone: typeof Sun) => (
     <button
       type="button" role="tab" aria-selected={aba === id} onClick={() => setAba(id)}
-      className={`flex flex-1 items-center justify-center gap-2 rounded-pill px-4 py-3 text-base font-semibold transition ${aba === id ? "bg-vinho-700 text-creme-50" : "text-ink"}`}
+      className={`flex flex-1 items-center justify-center gap-2 rounded-pill whitespace-nowrap px-3 py-3 text-base font-semibold transition ${aba === id ? "bg-vinho-700 text-creme-50" : "text-ink"}`}
     >
       <Icone size={20} aria-hidden />{texto}
     </button>
@@ -22,8 +22,8 @@ export function AbasTurno({ horarios, almoco, noite }: { horarios: Horarios; alm
   return (
     <div>
       <div role="tablist" className="mx-auto flex max-w-md rounded-pill border border-linha bg-creme-200 p-1">
-        {botao("almoco", "Almoço de hoje", Sun)}
-        {botao("noite", "Pizzaria à noite", Moon)}
+        {botao("almoco", "Almoço", Sun)}
+        {botao("noite", "Bar e pizzaria", Moon)}
       </div>
       <div className="mt-6" hidden={aba !== "almoco"}>{almoco}</div>
       <div className="mt-6" hidden={aba !== "noite"}>{noite}</div>
