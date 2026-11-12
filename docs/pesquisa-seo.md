@@ -5,6 +5,7 @@ _12/11/2026. Base: briefing da cliente + varredura da SERP. Volumes de busca ain
 ## 1. Dados oficiais (NAP — usar idêntico em tudo)
 - **Nome:** Restaurante e Pizzaria Aconchego
 - **Nome estendido (secundário):** Restaurante, Pizzaria, Choperia e Churrascaria Aconchego
+- **Posicionamento por turno (12/11):** almoço = restaurante, churrascaria e choperia · noite = bar (Bar Aconchego), pizzaria e choperia
 - **Endereço:** Praça Carlos Elói, 542 – Centro, Pompéu – MG, 35640-000 (próximo à Eletro Zema)
 - **Telefone:** (37) 3523-3111 (ligação)
 - **WhatsApp:** (37) 99994-3111 (WhatsApp e ligação)
@@ -30,6 +31,7 @@ _12/11/2026. Base: briefing da cliente + varredura da SERP. Volumes de busca ain
 | choperia / chopp em Pompéu | /cardapio/bebidas + seção chopp |
 | churrascaria / churrasco em Pompéu | /cardapio/porcoes-na-chapa (picanha) |
 | onde jantar em Pompéu | Home (seção jantar) + FAQ |
+| bar em Pompéu (Bar Aconchego) | Home (seção noite) + /cardapio |
 
 ### Secundárias (serviços que eles oferecem)
 - almoço em Pompéu · self-service em Pompéu · comida caseira Pompéu

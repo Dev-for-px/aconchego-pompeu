@@ -7,15 +7,15 @@ const ID = `${SITE_URL}/#restaurante`;
 export function restauranteJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Restaurant",
+    "@type": ["Restaurant", "BarOrPub"],
     "@id": ID,
     name: NEGOCIO.nome,
-    alternateName: [NEGOCIO.nomeEstendido, "Aconchego Pompéu"],
+    alternateName: [NEGOCIO.nomeEstendido, "Aconchego Pompéu", "Bar Aconchego", "Choperia Aconchego"],
     url: SITE_URL,
     telephone: `+${NEGOCIO.telefone}`,
     image: `${SITE_URL}/opengraph-image`,
     foundingDate: String(NEGOCIO.desde),
-    servesCuisine: ["Pizza", "Comida brasileira", "Churrasco", "Comida caseira"],
+    servesCuisine: ["Pizza", "Comida brasileira", "Churrasco", "Comida caseira", "Petiscos", "Crepes"],
     priceRange: "$$",
     acceptsReservations: true,
     hasMenu: `${SITE_URL}/cardapio`,
@@ -46,7 +46,7 @@ export function faqJsonLd(faq: Faq[]) {
   };
 }
 
-export function menuJsonLd(nome: string, url: string, secoes: { nome: string; itens: Pick<Produto, "nome" | "descricao" | "preco">[] }[], mostrarPreco: boolean) {
+export function menuJsonLd(nome: string, url: string, secoes: { nome: string; itens: (Pick<Produto, "nome" | "descricao" | "preco"> & { variacoes?: Produto["variacoes"] })[] }[], mostrarPreco: boolean) {
   return {
     "@context": "https://schema.org",
     "@type": "Menu",
@@ -61,10 +61,20 @@ export function menuJsonLd(nome: string, url: string, secoes: { nome: string; it
         "@type": "MenuItem",
         name: i.nome,
         ...(i.descricao ? { description: i.descricao } : {}),
-        ...(mostrarPreco && i.preco != null ? { offers: { "@type": "Offer", price: i.preco.toFixed(2), priceCurrency: "BRL" } } : {}),
+        ...(mostrarPreco ? ofertas(i.preco, i.variacoes ?? []) : {}),
       })),
     })),
   };
+}
+
+function ofertas(preco: number | null, variacoes: Produto["variacoes"]) {
+  const v = variacoes.filter((x) => x.preco != null) as { nome: string; preco: number }[];
+  if (v.length > 1) {
+    const ps = v.map((x) => x.preco);
+    return { offers: { "@type": "AggregateOffer", lowPrice: Math.min(...ps).toFixed(2), highPrice: Math.max(...ps).toFixed(2), priceCurrency: "BRL", offerCount: v.length } };
+  }
+  const unico = v[0]?.preco ?? preco;
+  return unico != null ? { offers: { "@type": "Offer", price: unico.toFixed(2), priceCurrency: "BRL" } } : {};
 }
 
 export function breadcrumbJsonLd(itens: { nome: string; url: string }[]) {

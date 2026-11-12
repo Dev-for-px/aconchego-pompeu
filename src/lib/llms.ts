@@ -5,7 +5,7 @@ import { ENDERECO_LINHA, NEGOCIO, SITE_URL, formatarPreco, formatarTelefone } fr
 function cabecalho() {
   return `# ${NEGOCIO.nome}
 
-> ${NEGOCIO.nomeEstendido} no centro de Pompéu – MG (Minas Gerais, Brasil), desde ${NEGOCIO.desde}. De dia restaurante e churrascaria (almoço caseiro, self-service, marmitex); à noite bar, pizzaria e choperia (pizzas, porções na chapa, chopp).
+> ${NEGOCIO.nomeEstendido} no centro de Pompéu – MG (Minas Gerais, Brasil), desde ${NEGOCIO.desde}. De dia restaurante, churrascaria e choperia (almoço caseiro, self-service, marmitex, chopp); à noite Bar Aconchego: bar, pizzaria e choperia (pizzas, crepes, porções na chapa, chopp).
 
 - Endereço: ${ENDERECO_LINHA} (${NEGOCIO.endereco.referencia})
 - Telefone: ${formatarTelefone(NEGOCIO.telefone)}
@@ -47,8 +47,10 @@ export async function llmsFullTxt() {
   for (const c of cardapio.filter((c) => c.produtos.length)) {
     txt += `\n### ${c.nome}\n`;
     for (const p of c.produtos) {
-      const preco = config.mostrar_precos ? formatarPreco(p.preco) : null;
-      txt += `- ${p.nome}${p.descricao ? `: ${p.descricao}` : ""}${preco ? ` (${preco})` : ""}\n`;
+      const precos = !config.mostrar_precos ? null
+        : p.variacoes.length ? p.variacoes.map((v) => `${v.nome} ${formatarPreco(v.preco) ?? ""}`.trim()).join(" · ")
+        : formatarPreco(p.preco);
+      txt += `- ${p.nome}${p.descricao ? `: ${p.descricao}` : ""}${precos ? ` (${precos})` : ""}\n`;
     }
   }
   txt += `\n## Perguntas frequentes\n`;

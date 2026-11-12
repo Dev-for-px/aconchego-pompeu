@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | Aconchego Pompéu – MG",
   },
   description:
-    "Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu – MG. Almoço todos os dias e pizzaria à noite. Peça pelo WhatsApp (37) 99994-3111.",
+    "Restaurante, churrascaria e choperia no almoço; bar, pizzaria e choperia à noite. No centro de Pompéu – MG. Peça pelo WhatsApp (37) 99994-3111.",
   applicationName: NEGOCIO.nome,
   alternates: { canonical: "/" },
   openGraph: { type: "website", locale: "pt_BR", siteName: NEGOCIO.nome, url: SITE_URL },

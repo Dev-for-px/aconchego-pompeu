@@ -14,8 +14,8 @@ _Atualizado em 12/11/2026. Ideias do Pedro sendo consolidadas antes da construç
 ## 2. Dois turnos, dois "modos" da casa
 | Turno | Horário | Posicionamento | Cardápio |
 |---|---|---|---|
-| **Dia** | 11h–15h (todos os dias) | Restaurante e Churrascaria | **Cardápio do almoço** — muda todo dia |
-| **Noite** | 18h–00h (exceto segunda) | Bar, Pizzaria e Choperia | **Cardápio da noite** — fixo (pizzas, porções, chopp, bebidas) |
+| **Dia** | 11h–15h (todos os dias) | Restaurante, Churrascaria e Choperia | **Cardápio do almoço** — muda todo dia |
+| **Noite** | 18h–00h (exceto segunda) | Bar (Bar Aconchego), Pizzaria e Choperia | **Cardápio da noite** — fixo (pizzas, porções, chopp, bebidas) |
 
 - O site destaca automaticamente o turno atual (de manhã/almoço mostra o almoço do dia; à tarde/noite mostra a pizzaria), com abas para trocar
 - Cada turno com sua página: `/almoco` (ou `/almoco-hoje`) e `/pizzaria` (cardápio da noite)

@@ -6,10 +6,11 @@ import { supabaseConfigured, supabaseKey, supabaseUrl } from "./supabase/env";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "./horario";
 
 export type Categoria = { id: string; nome: string; slug: string; descricao: string | null; turno: "almoco" | "noite" | "ambos"; ordem: number };
-export type Adicional = { id: string; nome: string; preco: number | null };
+export type Adicional = { id: string; nome: string; preco: number | null; preco_por_variacao?: Record<string, number> | null };
+export type Variacao = { nome: string; preco: number | null };
 export type Produto = {
   id: string; categoria_id: string; nome: string; slug: string; descricao: string | null;
-  preco: number | null; foto_url: string | null; foto_alt: string | null; tags: string[];
+  preco: number | null; variacoes: Variacao[]; foto_url: string | null; foto_alt: string | null; tags: string[];
   disponivel: boolean; destaque: boolean; meio_a_meio: boolean; ordem: number; atualizado_em: string;
   adicionais?: Adicional[];
 };
@@ -76,11 +77,18 @@ export async function getProdutos(): Promise<Produto[]> {
   return seguro(async () => {
     const { data, error } = await db()
       .from("produtos")
-      .select("*, adicionais(id,nome,preco)")
+      .select("*, adicionais(id,nome,preco,preco_por_variacao,ordem)")
       .order("ordem");
     if (error) throw error;
-    return data as Produto[];
+    return (data as Produto[]).map((p) => ({ ...p, variacoes: p.variacoes ?? [], adicionais: [...(p.adicionais ?? [])].sort((a, b) => ((a as { ordem?: number }).ordem ?? 0) - ((b as { ordem?: number }).ordem ?? 0)) }));
   }, []);
+}
+
+/** Menor preço do produto (considerando tamanhos). */
+export function precoMinimo(p: Pick<Produto, "preco" | "variacoes">) {
+  const v = p.variacoes.map((x) => x.preco).filter((x): x is number => x != null);
+  if (v.length) return Math.min(...v);
+  return p.preco;
 }
 
 export async function getFaq(): Promise<Faq[]> {

@@ -34,7 +34,7 @@ export default async function Home() {
           <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
           <h1 className="mt-4 max-w-2xl text-4xl font-bold leading-tight md:text-5xl">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
           <p className="mt-4 max-w-xl text-lg opacity-90">
-            Almoço caseiro e churrasco todos os dias. À noite, pizzaria, porções na chapa e chopp gelado. No centro de Pompéu desde {NEGOCIO.desde}.
+            Almoço caseiro, churrasco e chopp gelado todos os dias. À noite, bar e pizzaria com porções na chapa. No centro de Pompéu desde {NEGOCIO.desde}.
           </p>
           <p className="mt-2 font-script text-3xl">Comida caseira, quentinha</p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -81,13 +81,13 @@ export default async function Home() {
 
       {/* Sobre resumido */}
       <section aria-labelledby="t-sobre" className="mx-auto max-w-5xl px-4 py-12">
-        <h2 id="t-sobre" className="text-3xl font-semibold">De dia restaurante, à noite pizzaria</h2>
+        <h2 id="t-sobre" className="text-3xl font-semibold">De dia restaurante, à noite bar e pizzaria</h2>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <p className="text-lg text-muted">
-            No almoço, o {NEGOCIO.nome} funciona como restaurante e churrascaria: self-service de comida caseira, à la carte e marmitex, todos os dias das 11h às 15h.
+            No almoço, o {NEGOCIO.nome} é restaurante, churrascaria e choperia: self-service de comida caseira, à la carte, marmitex e chopp gelado, todos os dias das 11h às 15h.
           </p>
           <p className="text-lg text-muted">
-            À noite vira bar, pizzaria e choperia: pizzas, porção de picanha na chapa e chopp gelado, de terça a domingo, das 18h à meia-noite. Delivery próprio e pelo Aiqfome.
+            À noite vira o Bar Aconchego: pizzaria e choperia com pizzas, crepes, porção de picanha na chapa e chopp gelado, de terça a domingo, das 18h à meia-noite. Delivery próprio e pelo Aiqfome.
           </p>
         </div>
         <Link href="/sobre" className="mt-4 inline-block font-semibold text-vinho-500 underline">Conheça nossa história</Link>

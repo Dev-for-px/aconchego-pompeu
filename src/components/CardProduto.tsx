@@ -1,14 +1,15 @@
 import Image from "next/image";
-import type { Produto } from "@/lib/dados";
+import { precoMinimo, type Produto } from "@/lib/dados";
 import { formatarPreco } from "@/lib/site";
 import { BotaoAdicionar, type ProdutoPedido } from "./BotaoAdicionar";
 
 export function paraPedido(p: Produto): ProdutoPedido {
-  return { id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco, meio_a_meio: p.meio_a_meio, adicionais: p.adicionais ?? [] };
+  return { id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco, variacoes: p.variacoes ?? [], meio_a_meio: p.meio_a_meio, adicionais: p.adicionais ?? [] };
 }
 
 export function CardProduto({ p, mostrarPreco, grupo, sabores = [] }: { p: Produto; mostrarPreco: boolean; grupo: string; sabores?: ProdutoPedido[] }) {
-  const preco = mostrarPreco ? formatarPreco(p.preco) : null;
+  const min = precoMinimo(p);
+  const preco = mostrarPreco && min != null ? `${p.variacoes.length > 1 ? "a partir de " : ""}${formatarPreco(min)}` : null;
   return (
     <article className={`flex gap-4 rounded-md border border-linha bg-creme-50 p-4 ${p.disponivel ? "" : "opacity-60"}`}>
       {p.foto_url ? (
@@ -30,7 +31,7 @@ export function CardProduto({ p, mostrarPreco, grupo, sabores = [] }: { p: Produ
           </ul>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 pt-3">
-          <span className="text-lg font-bold text-vinho-500">{preco ?? ""}</span>
+          <span className="text-base font-bold text-vinho-500">{preco ?? ""}</span>
           {p.disponivel ? (
             <BotaoAdicionar produto={paraPedido(p)} grupo={grupo} sabores={p.meio_a_meio ? sabores : []} />
           ) : (

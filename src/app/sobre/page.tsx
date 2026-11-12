@@ -22,11 +22,11 @@ export default async function Sobre() {
       <dl className="mt-4 divide-y divide-linha rounded-md border border-linha bg-creme-50">
         {[
           ["Nome", NEGOCIO.nome],
-          ["O que é", "Restaurante, pizzaria, choperia e churrascaria"],
+          ["O que é", "Restaurante, churrascaria e choperia no almoço; bar, pizzaria e choperia à noite (Bar Aconchego)"],
           ["Desde", String(NEGOCIO.desde)],
           ["Endereço", ENDERECO_LINHA],
-          ["Almoço", "Todos os dias, 11h às 15h – self-service, à la carte e marmitex"],
-          ["Noite", "Terça a domingo, 18h à meia-noite – pizzas, porções na chapa e chopp"],
+          ["Almoço", "Todos os dias, 11h às 15h – self-service, churrasco, à la carte, marmitex e chopp"],
+          ["Noite", "Terça a domingo, 18h à meia-noite – bar, pizzas, crepes, porções na chapa e chopp"],
           ["Carros-chefes", "Pizza, porção de picanha na chapa e self-service"],
           ["Serviços", "Delivery próprio e pelo Aiqfome, retirada, reservas e eventos"],
           ["Estrutura", NEGOCIO.comodidades.join(", ")],
