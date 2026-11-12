@@ -1,15 +1,20 @@
 import Image from "next/image";
 import type { Produto } from "@/lib/dados";
-import { formatarPreco, linkWhatsApp } from "@/lib/site";
+import { formatarPreco } from "@/lib/site";
+import { BotaoAdicionar, type ProdutoPedido } from "./BotaoAdicionar";
 
-export function CardProduto({ p, mostrarPreco }: { p: Produto; mostrarPreco: boolean }) {
+export function paraPedido(p: Produto): ProdutoPedido {
+  return { id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco, meio_a_meio: p.meio_a_meio, adicionais: p.adicionais ?? [] };
+}
+
+export function CardProduto({ p, mostrarPreco, grupo, sabores = [] }: { p: Produto; mostrarPreco: boolean; grupo: string; sabores?: ProdutoPedido[] }) {
   const preco = mostrarPreco ? formatarPreco(p.preco) : null;
   return (
     <article className={`flex gap-4 rounded-md border border-linha bg-creme-50 p-4 ${p.disponivel ? "" : "opacity-60"}`}>
       {p.foto_url ? (
-        <Image src={p.foto_url} alt={p.foto_alt || `${p.nome} – Aconchego Pompéu`} width={112} height={112} className="h-28 w-28 shrink-0 rounded-md object-cover" />
+        <Image src={p.foto_url} alt={p.foto_alt || `${p.nome} – Aconchego Pompéu`} width={112} height={112} className="h-24 w-24 md:h-28 md:w-28 shrink-0 rounded-md object-cover" />
       ) : (
-        <div aria-hidden className="flex h-28 w-28 shrink-0 items-center justify-center rounded-md bg-creme-200 p-2 text-center font-serif text-base font-semibold leading-tight text-vinho-700">
+        <div aria-hidden className="flex h-24 w-24 md:h-28 md:w-28 shrink-0 items-center justify-center rounded-md bg-creme-200 p-2 text-center font-serif text-base font-semibold leading-tight text-vinho-700">
           {p.nome}
         </div>
       )}
@@ -27,7 +32,7 @@ export function CardProduto({ p, mostrarPreco }: { p: Produto; mostrarPreco: boo
         <div className="mt-auto flex items-center justify-between gap-2 pt-3">
           <span className="text-lg font-bold text-vinho-500">{preco ?? ""}</span>
           {p.disponivel ? (
-            <a href={linkWhatsApp(`Olá! Quero pedir: ${p.nome}`)} className="rounded-pill bg-vinho-700 px-5 py-2 text-sm font-semibold text-creme-50 hover:bg-vinho-800">Pedir</a>
+            <BotaoAdicionar produto={paraPedido(p)} grupo={grupo} sabores={p.meio_a_meio ? sabores : []} />
           ) : (
             <span className="text-sm font-semibold text-muted">Indisponível hoje</span>
           )}

@@ -5,10 +5,10 @@ import { ENDERECO_LINHA, NEGOCIO, formatarTelefone, linkWhatsApp } from "@/lib/s
 
 export function Footer() {
   return (
-    <footer className="mt-12 bg-vinho-700 pb-24 text-creme-50 md:pb-10">
+    <footer className="mt-12 bg-vinho-700 pb-20 text-creme-50 md:pb-10">
       <div className="mx-auto grid max-w-5xl gap-10 px-4 py-12 md:grid-cols-3">
         <div>
-          <Logo variante="branca" altura={56} />
+          <Logo variante="branca" altura={64} />
           <p className="mt-4 text-sm opacity-90">{NEGOCIO.nomeEstendido} em Pompéu – MG desde {NEGOCIO.desde}.</p>
           <p className="mt-3 font-script text-3xl">Feito com carinho</p>
         </div>

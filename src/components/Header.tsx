@@ -12,10 +12,10 @@ const links = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 bg-vinho-700 text-creme-50">
+    <header className="z-40 bg-vinho-700 text-creme-50 md:sticky md:top-0">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" aria-label={`${NEGOCIO.nome} – página inicial`}>
-          <Logo variante="branca" altura={44} />
+          <Logo variante="branca" altura={48} prioridade />
         </Link>
         <nav aria-label="Principal" className="hidden md:block">
           <ul className="flex gap-6 text-sm font-semibold">

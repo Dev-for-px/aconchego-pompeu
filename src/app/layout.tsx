@@ -4,6 +4,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BarraMobile } from "@/components/BarraMobile";
 import { JsonLd } from "@/components/JsonLd";
+import { BarraCarrinho } from "@/components/BarraCarrinho";
+import { CarrinhoProvider } from "@/lib/carrinho";
+import { getConfig } from "@/lib/dados";
 import { restauranteJsonLd } from "@/lib/schema";
 import { NEGOCIO, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -28,15 +31,26 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#7E080D" };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const config = await getConfig();
+  const pedido = {
+    mostrarPrecos: config.mostrar_precos,
+    pausado: config.pedidos_pausados,
+    whatsapp: config.whatsapp,
+    taxaEntrega: config.taxa_entrega,
+    pedidoMinimo: config.pedido_minimo,
+  };
   return (
     <html lang="pt-BR" className={`${playfair.variable} ${inter.variable} ${greatVibes.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <JsonLd data={restauranteJsonLd()} />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <BarraMobile />
+        <CarrinhoProvider config={pedido}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <BarraCarrinho />
+          <BarraMobile />
+        </CarrinhoProvider>
       </body>
     </html>
   );

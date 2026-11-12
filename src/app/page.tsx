@@ -73,7 +73,7 @@ export default async function Home() {
               </ul>
             )}
             <div className="grid gap-4 md:grid-cols-2">
-              {destaques.map((p) => <CardProduto key={p.id} p={p} mostrarPreco={config.mostrar_precos} />)}
+              {destaques.map((p) => <CardProduto key={p.id} p={p} mostrarPreco={config.mostrar_precos} grupo="Destaques" />)}
             </div>
           </div>
         </section>
