@@ -21,6 +21,9 @@ export default async function Home() {
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
   const destaques = produtos.filter((p) => p.destaque && p.disponivel && idsNoite.has(p.categoria_id)).slice(0, 4);
   const diaComItens = dia.filter((c) => c.produtos.length > 0);
+  const ALCOOL = new Set(["cervejas-e-chopp", "drinks", "doses", "whiskys", "vinhos"]);
+  const diaSemAlcool = diaComItens.filter((c) => !ALCOOL.has(c.slug));
+  const diaAlcool = diaComItens.filter((c) => ALCOOL.has(c.slug));
 
   return (
     <>
@@ -53,7 +56,22 @@ export default async function Home() {
             almoco={
               <div className="space-y-10">
                 <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} />
-                {diaComItens.length > 0 && <ListaCardapio secoes={diaComItens} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />}
+                {diaSemAlcool.length > 0 && <ListaCardapio secoes={diaSemAlcool} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />}
+                {diaAlcool.length > 0 && (
+                  <details className="group rounded-md border border-linha bg-creme-200">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
+                      <span>
+                        <span className="block font-serif text-xl font-semibold">Chopp, cervejas e drinks</span>
+                        <span className="text-sm text-muted">{diaAlcool.map((c) => c.nome).join(" · ")} — toque para ver</span>
+                      </span>
+                      <span aria-hidden className="text-2xl text-vinho-500 transition group-open:rotate-45">+</span>
+                    </summary>
+                    <div className="border-t border-linha bg-creme-50 px-4 pb-6 pt-2">
+                      <ListaCardapio secoes={diaAlcool} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" linkCategoria={false} />
+                      <p className="mt-6 text-sm text-muted">Venda de bebidas alcoólicas proibida para menores de 18 anos.</p>
+                    </div>
+                  </details>
+                )}
               </div>
             }
             noite={
