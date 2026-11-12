@@ -21,9 +21,20 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 ## Etapas
 1. [x] Setup do projeto + conexão com Supabase
 2. [x] Banco: tabelas, RLS e perfis de equipe
-3. [ ] Site público: home, cardápio da noite, almoço do dia, FAQ, SEO técnico
+3. [x] Site público: home, cardápio da noite, almoço do dia, FAQ, SEO técnico
 4. [ ] Carrinho → WhatsApp
 5. [ ] Painel admin: login (telefone/e-mail/usuário), equipe, colar cardápio do almoço
+
+## Design System
+- Fonte da verdade: artifact "Aconchego" (Design System) no claude.ai — tokens copiados em `src/app/globals.css` (`@theme`)
+- Cores só dos tokens: `vinho-700/800/500`, `creme-50/200`, `ink`, `muted`, `linha`, `dourado` (só fundo de selo), `aberto`, `fechado`
+- Fontes: Playfair Display (títulos), Inter (texto/botões), Great Vibes (só frases curtas de destaque)
+- Botões/chips `rounded-pill`, cards `rounded-md`, bordas `border-linha`, sem sombras pesadas; ícones Lucide
+- Logo oficial é intocável: arquivos em `public/marca/` e ligar `LOGO_DISPONIVEL` em `src/components/Logo.tsx`
+
+## Dados no site
+- Leitura pública em `src/lib/dados.ts` com `"use cache"` + `cacheTag` (config, cardapio, almoco, faq, avaliacoes, galeria, promocoes) — o painel deve revalidar essas tags ao salvar
+- Almoço: `getAlmocoHoje()` só devolve o cardápio da data de hoje em Pompéu
 
 ## Banco (Supabase)
 - SQL versionado em `supabase/migrations/` (já aplicado no projeto via SQL Editor)
