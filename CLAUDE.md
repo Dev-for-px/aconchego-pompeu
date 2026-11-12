@@ -23,7 +23,7 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 2. [x] Banco: tabelas, RLS e perfis de equipe
 3. [x] Site público: home, cardápio da noite, almoço do dia, FAQ, SEO técnico
 4. [x] Carrinho → WhatsApp
-5. [ ] Painel admin: login (telefone/e-mail/usuário), equipe, colar cardápio do almoço
+5. [x] Painel admin: login (telefone/e-mail/usuário), equipe, colar cardápio do almoço
 
 ## Design System
 - Fonte da verdade: artifact "Aconchego" (Design System) no claude.ai — tokens copiados em `src/app/globals.css` (`@theme`)
@@ -40,7 +40,8 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - SQL versionado em `supabase/migrations/` (já aplicado no projeto via SQL Editor)
 - Perfis da equipe: `dono`, `gerente`, `social`, `atendente` — permissões via RLS com `tem_perfil()`
 - Login por telefone/usuário/e-mail: `email_para_login(identificador)` devolve o e-mail do Auth; quem não tem e-mail recebe um e-mail interno (`email_login`)
-- Membros da equipe são criados no servidor com a chave `service_role` (nunca no navegador)
+- Membros da equipe: funções `criar_membro`, `redefinir_senha`, `definir_ativo` (security definer, só Dono) — sem chave service_role
+- Primeiro Dono: rodar `select public.criar_membro(...)` no SQL Editor
 - Atendente: a RLS libera update em `produtos`; o app deve enviar só o campo `disponivel`
 
 ## Carrinho → WhatsApp
@@ -48,3 +49,8 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Mensagem montada em `src/lib/mensagem.ts`; envio abre `wa.me` com o número de `configuracoes.whatsapp`
 - Sem preço (`mostrar_precos = false` ou produto sem preço) → "a confirmar"; meio a meio cobra o sabor mais caro
 - Celular primeiro: barra "Ver pedido" fixa acima da barra Ligar/WhatsApp; painel de produto sobe de baixo (`Sheet`)
+
+## Painel (/admin)
+- Rotas públicas ficam em `src/app/(site)/` (com header/rodapé/carrinho); `/admin` tem layout próprio
+- Painel é client-side (`@supabase/ssr` browser client + RLS); ao salvar chama a server action `atualizarSite(tags)` (`updateTag`)
+- Telas: Início (atalhos, pausar pedidos, mostrar preços), Almoço (colar texto → `parserAlmoco.ts`), Cardápio, Equipe (só dono), Ajustes (taxa, WhatsApp, história, FAQ)

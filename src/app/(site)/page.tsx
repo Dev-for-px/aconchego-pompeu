@@ -14,70 +14,76 @@ import { faqJsonLd } from "@/lib/schema";
 import { NEGOCIO, formatarPreco } from "@/lib/site";
 
 export default async function Home() {
-  const [config, noite, almoco, faq, produtos, promocoes, avaliacoes] = await Promise.all([
-    getConfig(), getCardapio("noite"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(),
+  const [config, noite, dia, almoco, faq, produtos, promocoes, avaliacoes] = await Promise.all([
+    getConfig(), getCardapio("noite"), getCardapio("almoco"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(),
   ]);
-  const destaques = produtos.filter((p) => p.destaque && p.disponivel).slice(0, 4);
+  // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
+  const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
+  const destaques = produtos.filter((p) => p.destaque && p.disponivel && idsNoite.has(p.categoria_id)).slice(0, 4);
+  const diaComItens = dia.filter((c) => c.produtos.length > 0);
 
   return (
     <>
       {faq.length > 0 && <JsonLd data={faqJsonLd(faq)} />}
 
-      {/* Hero */}
+      {/* Hero compacto */}
       <section className="relative overflow-hidden bg-vinho-700 text-creme-50">
-        <svg aria-hidden className="absolute -right-6 bottom-0 h-56 w-56 opacity-25" viewBox="0 0 160 200" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round">
+        <svg aria-hidden className="absolute -right-4 -top-2 h-40 w-40 opacity-20" viewBox="0 0 160 200" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round">
           <path d="M40 190 C16 160 64 130 40 100 C16 70 64 40 40 10" />
           <path d="M80 190 C56 160 104 130 80 100 C56 70 104 40 80 10" />
           <path d="M120 190 C96 160 144 130 120 100 C96 70 144 40 120 10" />
         </svg>
-        <div className="relative mx-auto max-w-5xl px-4 py-14 md:py-20">
+        <div className="relative mx-auto max-w-5xl px-4 pb-6 pt-5 md:py-12">
           <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
-          <h1 className="mt-4 max-w-2xl text-4xl font-bold leading-tight md:text-5xl">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
-          <p className="mt-4 max-w-xl text-lg opacity-90">
-            Almoço caseiro, churrasco e chopp gelado todos os dias. À noite, bar e pizzaria com porções na chapa. No centro de Pompéu desde {NEGOCIO.desde}.
-          </p>
-          <p className="mt-2 font-script text-3xl">Comida caseira, quentinha</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/cardapio" className="rounded-pill bg-creme-50 px-6 py-3 text-base font-semibold text-vinho-700 hover:bg-creme-200">Ver cardápio</Link>
-            <BotaoWhatsApp />
+          <h1 className="mt-3 max-w-xl text-[1.7rem] font-bold leading-tight md:text-5xl">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
+          <p className="mt-2 max-w-xl text-base opacity-90 md:text-lg">Almoço caseiro e churrasco de dia. Bar, pizza e chopp à noite.</p>
+          <div className="mt-4 grid grid-cols-2 gap-2 md:flex md:gap-3">
+            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-base font-semibold text-vinho-700 hover:bg-creme-200">Ver cardápio</a>
+            <BotaoWhatsApp texto="WhatsApp" />
           </div>
         </div>
       </section>
 
       {/* Cardápio por turno */}
-      <section aria-labelledby="t-cardapio" className="mx-auto max-w-5xl px-4 py-12">
-        <h2 id="t-cardapio" className="mb-6 text-center text-3xl font-semibold">Cardápio de hoje</h2>
+      <section id="cardapio" aria-labelledby="t-cardapio" className="mx-auto max-w-5xl scroll-mt-16 px-4 py-6 md:py-12">
+        <h2 id="t-cardapio" className="sr-only">Cardápio de hoje</h2>
         <Suspense>
           <AbasTurno
             horarios={config.horarios}
-            almoco={<AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} />}
-            noite={<ListaCardapio secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />}
+            almoco={
+              <div className="space-y-10">
+                <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} />
+                {diaComItens.length > 0 && <ListaCardapio secoes={diaComItens} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />}
+              </div>
+            }
+            noite={
+              <div className="space-y-10">
+                {(promocoes.length > 0 || destaques.length > 0) && (
+                  <div>
+                    <h3 className="mb-4 text-2xl font-semibold">Destaques da casa</h3>
+                    {promocoes.length > 0 && (
+                      <ul className="mb-4 grid gap-4 md:grid-cols-2">
+                        {promocoes.map((p) => (
+                          <li key={p.id} className="rounded-md border border-linha bg-creme-200 p-4">
+                            <span className="rounded-sm bg-dourado px-2 py-0.5 text-xs font-semibold text-ink">Promoção</span>
+                            <p className="mt-2 font-serif text-xl font-semibold">{p.titulo}</p>
+                            {p.descricao && <p className="mt-1 text-muted">{p.descricao}</p>}
+                            {config.mostrar_precos && p.preco != null && <p className="mt-2 text-lg font-bold text-vinho-500">{formatarPreco(p.preco)}</p>}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {destaques.map((p) => <CardProduto key={p.id} p={p} mostrarPreco={config.mostrar_precos} grupo="Destaques" />)}
+                    </div>
+                  </div>
+                )}
+                <ListaCardapio secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />
+              </div>
+            }
           />
         </Suspense>
       </section>
-
-      {(promocoes.length > 0 || destaques.length > 0) && (
-        <section aria-labelledby="t-destaques" className="bg-creme-200">
-          <div className="mx-auto max-w-5xl px-4 py-12">
-            <h2 id="t-destaques" className="mb-6 text-3xl font-semibold">Destaques da casa</h2>
-            {promocoes.length > 0 && (
-              <ul className="mb-6 grid gap-4 md:grid-cols-2">
-                {promocoes.map((p) => (
-                  <li key={p.id} className="rounded-md border border-linha bg-creme-50 p-4">
-                    <span className="rounded-sm bg-dourado px-2 py-0.5 text-xs font-semibold text-ink">Promoção</span>
-                    <h3 className="mt-2 text-xl font-semibold">{p.titulo}</h3>
-                    {p.descricao && <p className="mt-1 text-muted">{p.descricao}</p>}
-                    {config.mostrar_precos && p.preco != null && <p className="mt-2 text-lg font-bold text-vinho-500">{formatarPreco(p.preco)}</p>}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="grid gap-4 md:grid-cols-2">
-              {destaques.map((p) => <CardProduto key={p.id} p={p} mostrarPreco={config.mostrar_precos} grupo="Destaques" />)}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Sobre resumido */}
       <section aria-labelledby="t-sobre" className="mx-auto max-w-5xl px-4 py-12">

@@ -25,8 +25,8 @@ export function AbasTurno({ horarios, almoco, noite }: { horarios: Horarios; alm
         {botao("almoco", "Almoço de hoje", Sun)}
         {botao("noite", "Pizzaria à noite", Moon)}
       </div>
-      <div className="mt-8" hidden={aba !== "almoco"}>{almoco}</div>
-      <div className="mt-8" hidden={aba !== "noite"}>{noite}</div>
+      <div className="mt-6" hidden={aba !== "almoco"}>{almoco}</div>
+      <div className="mt-6" hidden={aba !== "noite"}>{noite}</div>
     </div>
   );
 }
