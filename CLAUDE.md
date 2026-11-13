@@ -72,6 +72,11 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Painel: `/admin/resultados` (números, gráficos por dia e por hora, rankings, "Copiar resumo")
 - Fotos: `galeria.turno` (almoco/noite/ambos) — aparecem dentro das abas da home
 
+## Marmitex
+- Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Tipos de marmitex (`MarmitasAdmin`); preço opcional
+- No site, `MontarMarmita` (dentro de `AlmocoDoDia`, só no horário do almoço): escolhe o tipo, marca itens do cardápio do dia, observação, quantidade; "Montar mais uma marmita"
+- A categoria marmitex não aparece na lista comum do almoço (fica só no montador)
+
 ## Páginas de SEO local
 - `/pizzaria-em-pompeu`, `/almoco-em-pompeu`, `/churrascaria-em-pompeu`, `/choperia-em-pompeu`, `/delivery-em-pompeu` — componente `PaginaLocal` (texto próprio + horário/itens/fotos do banco + FAQ com schema)
 - Fora do menu e da home; links só no rodapé discreto, sitemap e llms.txt (lista em `src/lib/paginasLocais.ts`)

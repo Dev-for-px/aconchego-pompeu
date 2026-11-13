@@ -7,6 +7,7 @@ import { useSessao } from "@/lib/admin/sessao";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "@/lib/horario";
 import { createClient } from "@/lib/supabase/client";
+import { MarmitasAdmin } from "./MarmitasAdmin";
 import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Titulo } from "./ui";
 
 type Registro = { id: string; data: string; texto_original: string; itens: SecaoAlmoco[]; publicado: boolean };
@@ -155,6 +156,8 @@ export function AlmocoAdmin() {
         </Botao>
         {doDia?.publicado && <Botao variante="secundario" className="w-full" disabled={salvando} onClick={() => publicar(false)}>Tirar do site</Botao>}
       </div>
+
+      <MarmitasAdmin />
 
       {recentes.length > 0 && (
         <section className="mt-10">

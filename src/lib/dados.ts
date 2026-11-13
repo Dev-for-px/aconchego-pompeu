@@ -173,3 +173,11 @@ export async function getPosts(limite = 50): Promise<Post[]> {
     return data as Post[];
   }, []);
 }
+
+/** Tipos de marmitex cadastrados no painel (Almoço › Tipos de marmitex). */
+export async function getMarmitas() {
+  const cats = await getCardapio("almoco");
+  return (cats.find((c) => c.slug === "marmitex")?.produtos ?? [])
+    .filter((p) => p.disponivel)
+    .map((p) => ({ id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco }));
+}

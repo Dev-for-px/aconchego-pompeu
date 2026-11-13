@@ -3,6 +3,7 @@ import { formatarPreco } from "@/lib/site";
 import { BotaoWhatsApp } from "./Botoes";
 import { AdicionarAlmoco } from "./AdicionarAlmoco";
 import { AlmocoNoAr } from "./AlmocoNoAr";
+import { MontarMarmita, type TipoMarmita } from "./MontarMarmita";
 import { HORARIOS_PADRAO, hora, textoFaixa, type Horarios } from "@/lib/horario";
 
 function dataBonita(iso: string) {
@@ -10,7 +11,7 @@ function dataBonita(iso: string) {
   return new Date(Date.UTC(a, m - 1, d, 12)).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 }
 
-export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARIOS_PADRAO }: { almoco: Almoco; mostrarPreco: boolean; nivel?: 2 | 3; horarios?: Horarios }) {
+export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARIOS_PADRAO, marmitas = [] }: { almoco: Almoco; mostrarPreco: boolean; nivel?: 2 | 3; horarios?: Horarios; marmitas?: TipoMarmita[] }) {
   const H = nivel === 2 ? "h2" : "h3";
   if (!almoco || almoco.itens.length === 0) {
     return (
@@ -49,6 +50,7 @@ export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARI
           </section>
         ))}
       </div>
+      <MontarMarmita tipos={marmitas} secoes={almoco.itens} grupo={`Marmitex – almoço de ${almoco.data.split("-").reverse().slice(0, 2).join("/")}`} mostrarPreco={mostrarPreco} />
       <p className="mt-6 text-sm text-muted">Toque no + para montar seu pedido, ou chame direto:</p>
       <div className="mt-2"><BotaoWhatsApp texto="Pedir marmitex no WhatsApp" mensagem="Olá! Quero pedir o almoço de hoje." /></div>
     </div>

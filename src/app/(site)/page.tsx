@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { CardapioComBebidas } from "@/components/CardapioComBebidas";
 import { ListaFaq } from "@/components/ListaFaq";
 import { StatusAberto } from "@/components/StatusAberto";
-import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
+import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getMarmitas, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
 import { GaleriaFaixa } from "@/components/GaleriaFaixa";
 import { Busca } from "@/components/Busca";
 import { montarBusca } from "@/lib/busca";
@@ -18,8 +18,8 @@ import { faqJsonLd } from "@/lib/schema";
 import { NEGOCIO, formatarPreco } from "@/lib/site";
 
 export default async function Home() {
-  const [config, noite, dia, almoco, faq, produtos, promocoes, avaliacoes, fotos, posts] = await Promise.all([
-    getConfig(), getCardapio("noite"), getCardapio("almoco"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(), getGaleria(), getPosts(3),
+  const [config, noite, dia, almoco, faq, produtos, promocoes, avaliacoes, fotos, posts, marmitas] = await Promise.all([
+    getConfig(), getCardapio("noite"), getCardapio("almoco"), getAlmocoHoje(), getFaq(), getProdutos(), getPromocoesAtivas(), getAvaliacoes(), getGaleria(), getPosts(3), getMarmitas(),
   ]);
   // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
@@ -54,9 +54,9 @@ export default async function Home() {
             horarios={config.horarios}
             almoco={
               <div className="space-y-10">
-                <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} horarios={config.horarios} />
+                <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} horarios={config.horarios} marmitas={marmitas} />
                 {fotosDia.length > 0 && <div className="-mx-4"><GaleriaFaixa fotos={fotosDia} titulo="Fotos do almoço" /></div>}
-                <CardapioComBebidas secoes={dia} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
+                <CardapioComBebidas secoes={dia.filter((c) => c.slug !== "marmitex")} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
               </div>
             }
             noite={

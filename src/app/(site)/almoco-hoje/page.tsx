@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AlmocoDoDia } from "@/components/AlmocoDoDia";
 import { JsonLd } from "@/components/JsonLd";
-import { getAlmocoHoje, getConfig } from "@/lib/dados";
+import { getAlmocoHoje, getConfig, getMarmitas } from "@/lib/dados";
 import { breadcrumbJsonLd, menuJsonLd } from "@/lib/schema";
 import { textoFaixa } from "@/lib/horario";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AlmocoHoje() {
-  const [almoco, config] = await Promise.all([getAlmocoHoje(), getConfig()]);
+  const [almoco, config, marmitas] = await Promise.all([getAlmocoHoje(), getConfig(), getMarmitas()]);
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <JsonLd data={breadcrumbJsonLd([{ nome: "Início", url: "/" }, { nome: "Almoço de hoje", url: "/almoco-hoje" }])} />
@@ -26,7 +26,7 @@ export default async function AlmocoHoje() {
       <p className="mt-3 max-w-2xl text-lg text-muted">
         {textoFaixa(config.horarios.almoco)}: self-service de comida caseira, churrasco, à la carte e marmitex para entrega ou retirada. O cardápio muda todo dia.
       </p>
-      <div className="mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} horarios={config.horarios} /></div>
+      <div className="mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} horarios={config.horarios} marmitas={marmitas} /></div>
     </div>
   );
 }
