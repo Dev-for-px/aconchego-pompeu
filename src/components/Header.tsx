@@ -15,7 +15,7 @@ export const LINKS = [
 export function Header({ horarios }: { horarios: Horarios }) {
   return (
     <header className="sticky top-0 z-40 bg-vinho-700 text-creme-50">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
+      <div className="relative mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
         <LogoTopo />
         <nav aria-label="Principal" className="hidden md:block">
           <ul className="flex gap-6 text-sm font-semibold">
