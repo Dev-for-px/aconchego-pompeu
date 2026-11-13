@@ -20,7 +20,7 @@
   - Project URL `https://yfjdwxdqhvggsibigqif.supabase.co`; publishable key em Settings → API
   - Senha do banco e chave service_role NUNCA ficam em documentos
 - Stack: Next.js 16 (App Router, cacheComponents) + TypeScript + Tailwind v4 + Supabase
-- Design System "Aconchego" (conta nova, 13/11): https://claude.ai/artifact/VhYdBXQjBFv4Y9XwnNPZYb — tokens iguais aos do código (`src/app/globals.css`); logo oficial em `public/marca/` (intocável)
+- Design System "Aconchego" (único, unificado em 13/11): https://claude.ai/artifact/F7ec2inkwG1kmS4u1gUZTD — tokens iguais aos do código (`src/app/globals.css`); 5 versões da logo oficial (intocável) + grupo Favicon (prato fumegante da logo sobre vinho, igual a `src/app/icon.png`)
 - Apresentação para a cliente (conta nova, 13/11): https://claude.ai/artifact/4hs21ED2JqN1RKCpse8RTW (Slides, 13 slides — atualizar a cada mudança)
 - Links antigos (conta anterior) foram substituídos pelos de cima.
 
