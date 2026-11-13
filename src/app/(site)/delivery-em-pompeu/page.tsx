@@ -3,7 +3,7 @@ import { PaginaLocal } from "@/components/PaginaLocal";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Delivery em Pompéu – MG | Pizza, marmitex e porções do Aconchego",
+  title: { absolute: "Delivery em Pompéu – MG | Pizza, marmitex e porções do Aconchego" },
   description: "Peça delivery em Pompéu – MG: marmitex no almoço, pizza e porções à noite. Pedido pronto pelo WhatsApp em poucos toques, retirada no balcão ou pelo Aiqfome.",
   alternates: { canonical: "/delivery-em-pompeu" },
 };

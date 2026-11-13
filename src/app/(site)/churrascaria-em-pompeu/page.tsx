@@ -3,7 +3,7 @@ import { PaginaLocal } from "@/components/PaginaLocal";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Churrascaria em Pompéu – MG | Churrasco e picanha no Aconchego",
+  title: { absolute: "Churrascaria em Pompéu – MG | Churrasco e picanha no Aconchego" },
   description: "Churrasco no almoço e picanha na chapa à noite, no centro de Pompéu – MG. Restaurante e churrascaria Aconchego: carnes no peso, porções completas e chopp.",
   alternates: { canonical: "/churrascaria-em-pompeu" },
 };

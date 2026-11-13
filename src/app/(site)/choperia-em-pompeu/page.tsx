@@ -3,7 +3,7 @@ import { PaginaLocal } from "@/components/PaginaLocal";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Choperia em Pompéu – MG | Chopp gelado e porções no Aconchego",
+  title: { absolute: "Choperia em Pompéu – MG | Chopp gelado e porções no Aconchego" },
   description: "Choperia no centro de Pompéu – MG: chopp gelado no almoço e à noite, porções na chapa, pizza, TV para os jogos e área externa. Aconchego, desde 2010.",
   alternates: { canonical: "/choperia-em-pompeu" },
 };

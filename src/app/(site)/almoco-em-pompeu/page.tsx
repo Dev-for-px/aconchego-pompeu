@@ -3,7 +3,7 @@ import { PaginaLocal } from "@/components/PaginaLocal";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Almoço em Pompéu – MG | Self-service e churrasco no Restaurante Aconchego",
+  title: { absolute: "Almoço em Pompéu – MG | Self-service e churrasco no Restaurante Aconchego" },
   description: "Almoço todos os dias no centro de Pompéu – MG: self-service de comida caseira, churrasco, prato feito e marmitex para entrega. Veja o cardápio de hoje.",
   alternates: { canonical: "/almoco-em-pompeu" },
 };

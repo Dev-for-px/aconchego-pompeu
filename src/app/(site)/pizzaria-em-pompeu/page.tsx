@@ -3,7 +3,7 @@ import { PaginaLocal } from "@/components/PaginaLocal";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Pizzaria em Pompéu – MG | Pizzaria Aconchego, pizza com entrega",
+  title: { absolute: "Pizzaria em Pompéu – MG | Pizzaria Aconchego, pizza com entrega" },
   description: "Pizzaria no centro de Pompéu – MG: mais de 20 sabores, do brotinho à família de 12 pedaços, meio a meio e borda recheada. Peça pelo WhatsApp ou venha comer com chopp gelado.",
   alternates: { canonical: "/pizzaria-em-pompeu" },
 };
