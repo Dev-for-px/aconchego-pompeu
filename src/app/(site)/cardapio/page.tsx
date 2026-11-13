@@ -4,6 +4,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { CardapioComBebidas } from "@/components/CardapioComBebidas";
 import { getCardapio, getConfig } from "@/lib/dados";
 import { breadcrumbJsonLd, menuJsonLd } from "@/lib/schema";
+import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
   title: "Cardápio – pizzas, porções na chapa, chopp e almoço",
@@ -20,7 +21,7 @@ export default async function Cardapio() {
       <JsonLd data={menuJsonLd("Cardápio da pizzaria e choperia", "/cardapio", noite.map((s) => ({ nome: s.nome, itens: s.produtos })), config.mostrar_precos)} />
       <h1 className="text-4xl font-bold">Cardápio da Pizzaria e Choperia Aconchego</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted">
-        À noite, de terça a domingo, das 18h à meia-noite. Procurando o almoço? Veja o <Link href="/almoco-hoje" className="font-semibold text-vinho-500 underline">almoço de hoje</Link>.
+        À noite: {textoFaixa(config.horarios.jantar).toLowerCase()}. Procurando o almoço? Veja o <Link href="/almoco-hoje" className="font-semibold text-vinho-500 underline">almoço de hoje</Link>.
       </p>
       <div className="mt-8"><CardapioComBebidas secoes={noite} mostrarPreco={config.mostrar_precos} /></div>
     </div>

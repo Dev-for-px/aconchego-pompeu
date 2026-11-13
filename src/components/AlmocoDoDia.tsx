@@ -2,24 +2,33 @@ import type { Almoco } from "@/lib/dados";
 import { formatarPreco } from "@/lib/site";
 import { BotaoWhatsApp } from "./Botoes";
 import { AdicionarAlmoco } from "./AdicionarAlmoco";
+import { AlmocoNoAr } from "./AlmocoNoAr";
+import { HORARIOS_PADRAO, hora, textoFaixa, type Horarios } from "@/lib/horario";
 
 function dataBonita(iso: string) {
   const [a, m, d] = iso.split("-").map(Number);
   return new Date(Date.UTC(a, m - 1, d, 12)).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 }
 
-export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2 }: { almoco: Almoco; mostrarPreco: boolean; nivel?: 2 | 3 }) {
+export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARIOS_PADRAO }: { almoco: Almoco; mostrarPreco: boolean; nivel?: 2 | 3; horarios?: Horarios }) {
   const H = nivel === 2 ? "h2" : "h3";
   if (!almoco || almoco.itens.length === 0) {
     return (
       <div className="rounded-md border border-linha bg-creme-200 p-6 text-center">
         <p className="font-serif text-xl font-semibold text-ink">O cardápio de hoje sai em instantes</p>
-        <p className="mt-2 text-muted">Servimos almoço todos os dias, das 11h às 15h: self-service de comida caseira, churrasco e marmitex.</p>
+        <p className="mt-2 text-muted">Almoço: {textoFaixa(horarios.almoco).toLowerCase()}. Self-service de comida caseira, churrasco e marmitex.</p>
         <div className="mt-4"><BotaoWhatsApp texto="Perguntar o almoço de hoje" mensagem="Olá! Qual o cardápio do almoço de hoje?" /></div>
       </div>
     );
   }
+  const encerrado = (
+    <div className="rounded-md border border-linha bg-creme-200 p-6 text-center">
+      <p className="font-serif text-xl font-semibold text-ink">O almoço de hoje já encerrou</p>
+      <p className="mt-2 text-muted">Servimos almoço até as {hora(horarios.almoco.fim)}. Amanhã tem cardápio novo a partir das {hora(horarios.almoco.inicio)}.</p>
+    </div>
+  );
   return (
+    <AlmocoNoAr horarios={horarios} encerrado={encerrado}>
     <div className="rounded-md border border-linha bg-creme-50 p-6">
       <p className="text-sm font-semibold uppercase tracking-wide text-vinho-500">
         <time dateTime={almoco.data}>{dataBonita(almoco.data)}</time>
@@ -43,5 +52,6 @@ export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2 }: { almoco: Almoc
       <p className="mt-6 text-sm text-muted">Toque no + para montar seu pedido, ou chame direto:</p>
       <div className="mt-2"><BotaoWhatsApp texto="Pedir marmitex no WhatsApp" mensagem="Olá! Quero pedir o almoço de hoje." /></div>
     </div>
+    </AlmocoNoAr>
   );
 }

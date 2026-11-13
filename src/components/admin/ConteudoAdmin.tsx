@@ -12,8 +12,8 @@ import { AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Titulo, traduzirErro }
 type Foto = { id: string; url: string; legenda: string | null; ordem: number; ativo: boolean };
 type Post = { id?: string; titulo: string; slug?: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado: boolean; publicado_em: string | null };
 
-async function enviar(supabase: ReturnType<typeof createClient>, arquivo: File, pasta: string, nome: string) {
-  const blob = await prepararFoto(arquivo, 1600);
+async function enviar(supabase: ReturnType<typeof createClient>, arquivo: File, pasta: string, nome: string, quadrada = false) {
+  const blob = await prepararFoto(arquivo, quadrada ? 1200 : 1600, quadrada);
   const caminho = `${pasta}/${slugificar(nome || "foto")}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.webp`;
   const { error } = await supabase.storage.from("fotos").upload(caminho, blob, { contentType: "image/webp" });
   if (error) throw error;
@@ -58,7 +58,7 @@ function Fotos() {
     let ordem = (fotos.at(-1)?.ordem ?? 0) + 10;
     for (const a of Array.from(arquivos)) {
       try {
-        const url = await enviar(supabase, a, "galeria", "aconchego");
+        const url = await enviar(supabase, a, "galeria", "aconchego", true);
         await supabase.from("galeria").insert({ url, ordem, legenda: null });
         ordem += 10;
       } catch (e) {
@@ -96,7 +96,7 @@ function Fotos() {
         <ImagePlus size={22} />{enviando ? `Enviando ${enviando}…` : "Adicionar fotos"}
         <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => adicionar(e.target.files)} />
       </label>
-      <p className="mt-2 text-center text-sm text-muted">Pode escolher várias de uma vez. Pratos bonitos, o salão, a fachada.</p>
+      <p className="mt-2 text-center text-sm text-muted">Pode escolher várias de uma vez. Todas ficam quadradas, sem cortar nada da foto.</p>
       {erro && <div className="mt-3"><Aviso tipo="erro">{erro}</Aviso></div>}
       <ul className="mt-6 space-y-3">
         {fotos.map((f, i) => (

@@ -7,8 +7,9 @@ import { Logo } from "./Logo";
 import { ChevronRight, Camera, Clock, Menu, MessageCircle, ShoppingBag, X } from "lucide-react";
 import { useCarrinho } from "@/lib/carrinho";
 import { NEGOCIO, linkWhatsApp } from "@/lib/site";
+import { textoFaixa, type Horarios } from "@/lib/horario";
 
-export function MenuMobile({ links }: { links: { href: string; label: string }[] }) {
+export function MenuMobile({ links, horarios }: { links: { href: string; label: string }[]; horarios: Horarios }) {
   const [aberto, setAberto] = useState(false);
   const caminho = usePathname();
   const { totalItens } = useCarrinho();
@@ -47,7 +48,7 @@ export function MenuMobile({ links }: { links: { href: string; label: string }[]
                 </li>
               ))}
             </ul>
-            <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço todos os dias, 11h–15h<br />Pizzaria e choperia, ter. a dom., 18h–0h</p>
+            <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço: {textoFaixa(horarios.almoco).toLowerCase()}<br />Pizzaria: {textoFaixa(horarios.jantar).toLowerCase()}</p>
             <p className="mt-8 font-script text-4xl">Feito com carinho</p>
           </nav>
           <div className="space-y-3 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">

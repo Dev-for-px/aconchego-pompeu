@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 import { MenuMobile } from "./MenuMobile";
 import { NEGOCIO } from "@/lib/site";
+import type { Horarios } from "@/lib/horario";
 
 export const LINKS = [
   { href: "/almoco-hoje", label: "Almoço de hoje" },
@@ -11,7 +12,7 @@ export const LINKS = [
   { href: "/contato", label: "Como chegar" },
 ];
 
-export function Header() {
+export function Header({ horarios }: { horarios: Horarios }) {
   return (
     <header className="sticky top-0 z-40 bg-vinho-700 text-creme-50">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
@@ -25,7 +26,7 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <MenuMobile links={LINKS} />
+        <MenuMobile links={LINKS} horarios={horarios} />
       </div>
     </header>
   );

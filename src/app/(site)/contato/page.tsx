@@ -22,7 +22,7 @@ export default async function Contato() {
         Ligue <a href={`tel:+${NEGOCIO.telefone}`} className="font-semibold text-vinho-500 underline">{formatarTelefone(NEGOCIO.telefone)}</a> ou chame no WhatsApp {formatarTelefone(NEGOCIO.whatsapp)} para pedidos, reservas e eventos.
       </p>
       <div className="mt-4"><BotaoWhatsApp /></div>
-      <div className="mt-10"><InfoCasa formasPagamento={config.formas_pagamento} /></div>
+      <div className="mt-10"><InfoCasa formasPagamento={config.formas_pagamento} horarios={config.horarios} /></div>
     </div>
   );
 }

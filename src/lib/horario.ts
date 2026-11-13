@@ -1,11 +1,50 @@
 // Regras de horário. Dias: 0 = domingo ... 6 = sábado (fuso de Pompéu – MG).
 export type Faixa = { inicio: string; fim: string; dias: number[] };
-export type Horarios = { almoco: Faixa; jantar: Faixa };
+export type Horarios = { almoco: Faixa; jantar: Faixa; almoco_ate?: string };
 
 export const HORARIOS_PADRAO: Horarios = {
   almoco: { inicio: "11:00", fim: "15:00", dias: [0, 1, 2, 3, 4, 5, 6] },
   jantar: { inicio: "18:00", fim: "00:00", dias: [0, 2, 3, 4, 5, 6] },
+  almoco_ate: "15:30",
 };
+
+/** "11:00" → "11h", "15:30" → "15h30", "00:00" → "meia-noite" */
+export function hora(hhmm: string) {
+  if (hhmm === "00:00" || hhmm === "24:00") return "meia-noite";
+  const [h, m] = hhmm.split(":");
+  return `${Number(h)}h${m !== "00" ? m : ""}`;
+}
+
+const NOMES = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+/** [0..6] → "todos os dias" | "terça a domingo" | "segunda, quarta e sexta" */
+export function descreverDias(dias: number[]) {
+  const d = [...new Set(dias)].sort();
+  if (d.length === 7) return "todos os dias";
+  if (d.length === 0) return "fechado";
+  // sequência contínua começando na segunda (1..6,0)
+  const ordem = [1, 2, 3, 4, 5, 6, 0].filter((x) => d.includes(x));
+  const pos = ordem.map((x) => [1, 2, 3, 4, 5, 6, 0].indexOf(x));
+  const continuo = pos.every((p, i) => i === 0 || p === pos[i - 1] + 1);
+  if (continuo && ordem.length >= 3) return `${NOMES[ordem[0]]} a ${NOMES[ordem.at(-1)!]}`;
+  const n = ordem.map((x) => NOMES[x]);
+  return n.length === 1 ? n[0] : `${n.slice(0, -1).join(", ")} e ${n.at(-1)}`;
+}
+
+export function textoFaixa(f: Faixa) {
+  const dias = descreverDias(f.dias);
+  return `${dias.charAt(0).toUpperCase()}${dias.slice(1)}, das ${hora(f.inicio)} ${f.fim === "00:00" ? "à" : "às"} ${hora(f.fim)}`;
+}
+
+/** Dias em que o jantar não abre (ex.: "Segunda à noite: fechado") */
+export function diasSemJantar(h: Horarios) {
+  return [1, 2, 3, 4, 5, 6, 0].filter((d) => !h.jantar.dias.includes(d)).map((d) => NOMES[d]);
+}
+
+/** O cardápio do almoço ainda deve aparecer agora? (some depois de `almoco_ate`) */
+export function almocoNoAr(h: Horarios, data = new Date()) {
+  const { minutos } = agoraEmPompeu(data);
+  return minutos < min(h.almoco_ate || "15:30");
+}
 
 export const DIAS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 

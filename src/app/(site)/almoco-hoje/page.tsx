@@ -3,6 +3,7 @@ import { AlmocoDoDia } from "@/components/AlmocoDoDia";
 import { JsonLd } from "@/components/JsonLd";
 import { getAlmocoHoje, getConfig } from "@/lib/dados";
 import { breadcrumbJsonLd, menuJsonLd } from "@/lib/schema";
+import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
   title: "Almoço de hoje – self-service, churrasco e marmitex",
@@ -23,9 +24,9 @@ export default async function AlmocoHoje() {
       )}
       <h1 className="text-4xl font-bold">Almoço de hoje no Restaurante Aconchego – Pompéu/MG</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted">
-        Todos os dias, das 11h às 15h: self-service de comida caseira, churrasco, à la carte e marmitex para entrega ou retirada. O cardápio muda todo dia.
+        {textoFaixa(config.horarios.almoco)}: self-service de comida caseira, churrasco, à la carte e marmitex para entrega ou retirada. O cardápio muda todo dia.
       </p>
-      <div className="mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} /></div>
+      <div className="mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} horarios={config.horarios} /></div>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 // Gera o llms.txt (resumo para IAs) e o llms-full.txt (resumo + cardápio + FAQ).
 import { getAlmocoHoje, getCardapio, getConfig, getFaq } from "./dados";
+import { HORARIOS_PADRAO, diasSemJantar, textoFaixa, type Horarios } from "./horario";
 import { ENDERECO_LINHA, NEGOCIO, SITE_URL, formatarPreco, formatarTelefone } from "./site";
 
-function cabecalho() {
+function cabecalho(h: Horarios = HORARIOS_PADRAO) {
   return `# ${NEGOCIO.nome}
 
 > ${NEGOCIO.nomeEstendido} no centro de Pompéu – MG (Minas Gerais, Brasil), desde ${NEGOCIO.desde}. De dia restaurante, churrascaria e choperia (almoço caseiro, self-service, marmitex, chopp); à noite Bar Aconchego: bar, pizzaria e choperia (pizzas, crepes, porções na chapa, chopp).
@@ -10,8 +11,8 @@ function cabecalho() {
 - Endereço: ${ENDERECO_LINHA} (${NEGOCIO.endereco.referencia})
 - Telefone: ${formatarTelefone(NEGOCIO.telefone)}
 - WhatsApp (pedidos e reservas): ${formatarTelefone(NEGOCIO.whatsapp)}
-- Almoço: todos os dias, 11h às 15h
-- Pizzaria e choperia: terça a domingo, 18h à meia-noite (segunda à noite fechado)
+- Almoço: ${textoFaixa(h.almoco).toLowerCase()}
+- Pizzaria e choperia: ${textoFaixa(h.jantar).toLowerCase()}${diasSemJantar(h).length ? ` (${diasSemJantar(h).join(", ")} à noite fechado)` : ""}
 - Delivery próprio (taxa a partir de R$ 4,00) e pelo Aiqfome; retirada no local
 - Pagamento: ${NEGOCIO.formasPagamento.join(", ")}
 - Estrutura: ${NEGOCIO.comodidades.join(", ")}
@@ -20,7 +21,8 @@ function cabecalho() {
 }
 
 export async function llmsTxt() {
-  return `${cabecalho()}
+  const config = await getConfig();
+  return `${cabecalho(config.horarios)}
 ## Páginas
 - [Almoço de hoje](${SITE_URL}/almoco-hoje): cardápio do almoço, atualizado todo dia
 - [Cardápio](${SITE_URL}/cardapio): pizzas, porções na chapa, chopp e bebidas
@@ -36,7 +38,7 @@ export async function llmsTxt() {
 
 export async function llmsFullTxt() {
   const [config, cardapio, almoco, faq] = await Promise.all([getConfig(), getCardapio(), getAlmocoHoje(), getFaq()]);
-  let txt = cabecalho();
+  let txt = cabecalho(config.horarios);
   txt += `\n## Almoço de hoje\n`;
   if (almoco) {
     txt += `Data: ${almoco.data}\n`;

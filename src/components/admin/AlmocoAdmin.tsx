@@ -5,7 +5,7 @@ import { atualizarSite } from "@/app/admin/acoes";
 import { lerCardapioAlmoco } from "@/lib/admin/parserAlmoco";
 import { useSessao } from "@/lib/admin/sessao";
 import type { SecaoAlmoco } from "@/lib/dados";
-import { hojeEmPompeu } from "@/lib/horario";
+import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "@/lib/horario";
 import { createClient } from "@/lib/supabase/client";
 import { AreaTexto, Aviso, Botao, Campo, campoCls, Titulo } from "./ui";
 
@@ -22,6 +22,27 @@ export function AlmocoAdmin() {
   const [recentes, setRecentes] = useState<Registro[]>([]);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; txt: string } | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [horarios, setHorarios] = useState<Horarios | null>(null);
+  const [ate, setAte] = useState("15:30");
+  const [ateSalvo, setAteSalvo] = useState(false);
+
+  useEffect(() => {
+    supabase.from("configuracoes").select("horarios").eq("id", 1).single().then(({ data: c }) => {
+      const h = { ...HORARIOS_PADRAO, ...(c?.horarios ?? {}) } as Horarios;
+      setHorarios(h);
+      setAte(h.almoco_ate || "15:30");
+    });
+  }, [supabase]);
+
+  async function salvarAte() {
+    if (!horarios) return;
+    const novo = { ...horarios, almoco_ate: ate };
+    await supabase.from("configuracoes").update({ horarios: novo }).eq("id", 1);
+    await atualizarSite(["config"]);
+    setHorarios(novo);
+    setAteSalvo(true);
+    setTimeout(() => setAteSalvo(false), 2500);
+  }
 
   const carregar = useCallback(async () => {
     const { data: r } = await supabase.from("cardapio_almoco").select("id,data,texto_original,itens,publicado").order("data", { ascending: false }).limit(10);
@@ -83,6 +104,12 @@ export function AlmocoAdmin() {
 
       <div className="space-y-5">
         <Campo rotulo="Para qual dia?" type="date" value={data} onChange={(e) => setData(e.target.value)} />
+        <div className="rounded-md border border-linha bg-creme-200 p-4">
+          <div className="flex items-end gap-3">
+            <div className="flex-1"><Campo rotulo="Sai do site todo dia às" dica="Vale para todos os dias. Depois desse horário o site mostra “o almoço de hoje já encerrou”." type="time" value={ate} onChange={(e) => setAte(e.target.value)} /></div>
+            <Botao variante="secundario" onClick={salvarAte} disabled={!horarios || ate === horarios?.almoco_ate}>{ateSalvo ? "Salvo ✓" : "Salvar"}</Botao>
+          </div>
+        </div>
         <AreaTexto rotulo="Cole aqui o cardápio" rows={9} value={texto} onChange={(e) => lerTexto(e.target.value)} placeholder={"*CARNES*\nFrango assado\nCostela\n\n*ACOMPANHAMENTOS*\nArroz\nFeijão tropeiro"} />
       </div>
 

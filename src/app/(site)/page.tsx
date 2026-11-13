@@ -29,18 +29,18 @@ export default async function Home() {
 
       {/* Hero compacto */}
       <section className="relative overflow-hidden bg-vinho-700 text-creme-50">
-        <svg aria-hidden className="absolute -right-4 -top-2 h-40 w-40 opacity-20" viewBox="0 0 160 200" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round">
+        <svg aria-hidden className="absolute -right-6 -top-4 h-28 w-28 opacity-20 md:h-40 md:w-40" viewBox="0 0 160 200" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round">
           <path d="M40 190 C16 160 64 130 40 100 C16 70 64 40 40 10" />
           <path d="M80 190 C56 160 104 130 80 100 C56 70 104 40 80 10" />
           <path d="M120 190 C96 160 144 130 120 100 C96 70 144 40 120 10" />
         </svg>
-        <div className="relative mx-auto max-w-5xl px-4 pb-6 pt-5 md:py-12">
+        <div className="relative mx-auto max-w-5xl px-4 pb-4 pt-3 md:py-12">
           <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
-          <h1 className="mt-3 max-w-xl text-[1.7rem] font-bold leading-tight md:text-5xl">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
-          <p className="mt-2 max-w-xl text-base opacity-90 md:text-lg">Almoço caseiro e churrasco de dia. Pizzaria e choperia à noite.</p>
-          <div className="mt-4 grid grid-cols-2 gap-2 md:flex md:gap-3">
-            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-base font-semibold text-vinho-700 hover:bg-creme-200">Ver cardápio</a>
-            <BotaoWhatsApp texto="WhatsApp" />
+          <h1 className="mt-2 max-w-xl text-[1.3rem] font-bold leading-snug md:text-5xl md:leading-tight">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
+          <p className="mt-1 max-w-xl text-sm opacity-90 md:mt-2 md:text-lg">Almoço caseiro de dia. Pizzaria e choperia à noite.</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 md:mt-5 md:flex md:gap-3">
+            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-2.5 text-center text-[15px] font-semibold md:py-3 md:text-base text-vinho-700 hover:bg-creme-200">Ver cardápio</a>
+            <BotaoWhatsApp texto="WhatsApp" compacto />
           </div>
         </div>
       </section>
@@ -60,7 +60,7 @@ export default async function Home() {
             horarios={config.horarios}
             almoco={
               <div className="space-y-10">
-                <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} />
+                <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} horarios={config.horarios} />
                 <CardapioComBebidas secoes={dia} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
               </div>
             }
@@ -136,7 +136,7 @@ export default async function Home() {
 
       <section aria-labelledby="t-info" className="mx-auto max-w-5xl px-4 py-12">
         <h2 id="t-info" className="mb-6 text-3xl font-semibold">Horário, pagamento e localização</h2>
-        <InfoCasa formasPagamento={config.formas_pagamento} />
+        <InfoCasa formasPagamento={config.formas_pagamento} horarios={config.horarios} />
       </section>
 
       {faq.length > 0 && (

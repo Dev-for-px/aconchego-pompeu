@@ -19,10 +19,10 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
   };
   return (
     <CarrinhoProvider config={pedido}>
-      <JsonLd data={restauranteJsonLd(config.redes)} />
-      <Header />
+      <JsonLd data={restauranteJsonLd(config.redes, config.horarios)} />
+      <Header horarios={config.horarios} />
       <main className="flex-1">{children}</main>
-      <Footer redes={config.redes} />
+      <Footer redes={config.redes} horarios={config.horarios} />
       <BarraCarrinho />
       <BarraMobile />
       <AvisoSaida config={config.saida} whatsapp={config.whatsapp} />

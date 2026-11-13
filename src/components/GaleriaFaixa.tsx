@@ -12,11 +12,11 @@ export function GaleriaFaixa({ fotos, titulo = "Fotos do Aconchego" }: { fotos: 
   const alt = (f: Foto) => f.legenda || "Foto do Restaurante e Pizzaria Aconchego, Pompéu – MG";
   return (
     <>
-      <ul aria-label={titulo} className="sem-barra flex snap-x gap-3 overflow-x-auto px-4 pb-1">
+      <ul aria-label={titulo} className="sem-barra flex snap-x gap-2 md:gap-3 overflow-x-auto px-4 pb-1">
         {fotos.map((f, i) => (
           <li key={f.id} className="shrink-0 snap-start first:ml-auto last:mr-auto">
             <button type="button" onClick={() => setAberta(i)} className="block overflow-hidden rounded-md">
-              <Image src={f.url} alt={alt(f)} width={320} height={240} sizes="(max-width: 768px) 70vw, 320px" className="h-44 w-60 object-cover md:h-56 md:w-80" />
+              <Image src={f.url} alt={alt(f)} width={320} height={320} sizes="(max-width: 768px) 40vw, 224px" className="aspect-square h-36 w-36 bg-creme-200 object-contain md:h-56 md:w-56" />
             </button>
           </li>
         ))}

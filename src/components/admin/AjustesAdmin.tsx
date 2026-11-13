@@ -6,6 +6,7 @@ import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
 import { SAIDA_PADRAO, type Saida } from "@/lib/saida";
 import { REDES, type Redes } from "@/lib/redes";
+import { DIAS, HORARIOS_PADRAO, type Faixa, type Horarios } from "@/lib/horario";
 import { AreaTexto, Aviso, Botao, Campo, Chave, Titulo, traduzirErro } from "./ui";
 
 type Faq = { id?: string; pergunta: string; resposta: string; ordem: number; ativo: boolean };
@@ -22,6 +23,7 @@ export function AjustesAdmin() {
   const [faq, setFaq] = useState<Faq[]>([]);
   const [redes, setRedes] = useState<Redes>({});
   const [saida, setSaida] = useState<Saida>(SAIDA_PADRAO);
+  const [horarios, setHorarios] = useState<Horarios>(HORARIOS_PADRAO);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; txt: string } | null>(null);
   const [salvando, setSalvando] = useState(false);
 
@@ -30,7 +32,7 @@ export function AjustesAdmin() {
       supabase.from("configuracoes").select("*").eq("id", 1).single(),
       supabase.from("faq").select("id,pergunta,resposta,ordem,ativo").order("ordem"),
     ]);
-    if (c) { setRedes(c.redes ?? {}); setSaida({ ...SAIDA_PADRAO, ...(c.saida ?? {}) }); }
+    if (c) { setRedes(c.redes ?? {}); setSaida({ ...SAIDA_PADRAO, ...(c.saida ?? {}) }); setHorarios({ ...HORARIOS_PADRAO, ...(c.horarios ?? {}) }); }
     if (c) setF({ whatsapp: c.whatsapp, telefone: c.telefone, taxa: real(c.taxa_entrega), minimo: real(c.pedido_minimo), historia: c.historia ?? "", aiqfome: c.redes?.aiqfome ?? "", mostrar_precos: c.mostrar_precos, pedidos_pausados: c.pedidos_pausados });
     setFaq((q as Faq[]) ?? []);
   }, [supabase]);
@@ -52,6 +54,7 @@ export function AjustesAdmin() {
       historia: f.historia.trim() || null,
       redes: Object.fromEntries(Object.entries({ ...redes, aiqfome: f.aiqfome }).map(([k, v]) => [k, (v ?? "").trim()]).filter(([, v]) => v)),
       saida,
+      horarios,
       mostrar_precos: f.mostrar_precos,
       pedidos_pausados: f.pedidos_pausados,
       atualizado_em: new Date().toISOString(),
@@ -92,6 +95,13 @@ export function AjustesAdmin() {
           <Campo rotulo="WhatsApp que recebe os pedidos" inputMode="tel" value={f.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} />
           <Campo rotulo="Telefone fixo" inputMode="tel" value={f.telefone} onChange={(e) => set("telefone", e.target.value)} />
           <Campo rotulo="Link do Aiqfome" value={f.aiqfome} onChange={(e) => set("aiqfome", e.target.value)} placeholder="https://aiqfome.com/…" />
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Horário de funcionamento</h2>
+          <p className="text-sm text-muted">Muda o site todo: “Aberto agora”, rodapé, página de contato e o Google.</p>
+          <EditorFaixa titulo="Almoço" f={horarios.almoco} onChange={(f) => setHorarios((h) => ({ ...h, almoco: f }))} />
+          <EditorFaixa titulo="Pizzaria e choperia (noite)" f={horarios.jantar} onChange={(f) => setHorarios((h) => ({ ...h, jantar: f }))} />
         </section>
 
         <section className="space-y-4">
@@ -145,5 +155,24 @@ export function AjustesAdmin() {
         <Botao className="w-full" disabled={salvando} onClick={salvar}>{salvando ? "Salvando…" : "Salvar ajustes"}</Botao>
       </div>
     </>
+  );
+}
+
+function EditorFaixa({ titulo, f, onChange }: { titulo: string; f: Faixa; onChange: (f: Faixa) => void }) {
+  const alternar = (d: number) => onChange({ ...f, dias: f.dias.includes(d) ? f.dias.filter((x) => x !== d) : [...f.dias, d].sort() });
+  return (
+    <fieldset className="rounded-md border border-linha bg-creme-50 p-4">
+      <legend className="px-1 font-semibold">{titulo}</legend>
+      <div className="grid grid-cols-2 gap-3">
+        <Campo rotulo="Abre às" type="time" value={f.inicio} onChange={(e) => onChange({ ...f, inicio: e.target.value })} />
+        <Campo rotulo="Fecha às" type="time" value={f.fim} onChange={(e) => onChange({ ...f, fim: e.target.value })} />
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+          <button key={d} type="button" aria-pressed={f.dias.includes(d)} onClick={() => alternar(d)}
+            className={`rounded-pill border px-3 py-2 text-sm font-semibold ${f.dias.includes(d) ? "border-vinho-700 bg-vinho-700 text-creme-50" : "border-linha text-muted"}`}>{DIAS[d].slice(0, 3)}</button>
+        ))}
+      </div>
+    </fieldset>
   );
 }

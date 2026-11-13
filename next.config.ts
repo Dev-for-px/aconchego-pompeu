@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
     }];
   },
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2678400, // 31 dias: fotos não mudam de endereço (nome novo a cada envio)
     remotePatterns: [{ protocol: "https", hostname: "yfjdwxdqhvggsibigqif.supabase.co", pathname: "/storage/v1/object/public/**" }],
   },
   cacheComponents: true,

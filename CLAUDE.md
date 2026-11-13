@@ -53,7 +53,9 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 ## Painel (/admin)
 - Rotas públicas ficam em `src/app/(site)/` (com header/rodapé/carrinho); `/admin` tem layout próprio
 - Painel é client-side (`@supabase/ssr` browser client + RLS); ao salvar chama a server action `atualizarSite(tags)` (`updateTag`)
-- Telas: Início (atalhos, pausar pedidos, mostrar preços), Almoço (colar texto → `parserAlmoco.ts`), Cardápio, Equipe (só dono), Ajustes (taxa, WhatsApp, história, FAQ)
+- Telas: Início, Almoço (colar texto → `parserAlmoco.ts`, horário em que sai do ar = `horarios.almoco_ate`), Cardápio, Fotos e posts, Equipe (só dono), Ajustes (horários, taxa, WhatsApp, redes, aviso de saída, história, FAQ)
+- Horários vêm de `configuracoes.horarios` e alimentam todo o site (textoFaixa em `horario.ts`), inclusive o schema
+- Fotos de produto e galeria são convertidas em quadrado sem corte (moldura creme) e WebP no celular antes do envio
 
 ## Conteúdo, redes e aviso de saída
 - Publicações: tabela `posts` → `/novidades` e `/novidades/[slug]` (BlogPosting no schema, sitemap); painel em "Fotos e posts"

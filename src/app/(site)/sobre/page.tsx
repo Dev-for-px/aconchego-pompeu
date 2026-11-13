@@ -4,6 +4,7 @@ import { BotaoWhatsApp } from "@/components/Botoes";
 import { getConfig } from "@/lib/dados";
 import { breadcrumbJsonLd } from "@/lib/schema";
 import { ENDERECO_LINHA, NEGOCIO } from "@/lib/site";
+import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
   title: "Sobre o Aconchego – restaurante e pizzaria desde 2010",
@@ -25,8 +26,8 @@ export default async function Sobre() {
           ["O que é", "Restaurante, churrascaria e choperia no almoço; bar, pizzaria e choperia à noite (Bar Aconchego)"],
           ["Desde", String(NEGOCIO.desde)],
           ["Endereço", ENDERECO_LINHA],
-          ["Almoço", "Todos os dias, 11h às 15h – self-service, churrasco, à la carte, marmitex e chopp"],
-          ["Noite", "Terça a domingo, 18h à meia-noite – bar, pizzas, crepes, porções na chapa e chopp"],
+          ["Almoço", `${textoFaixa(config.horarios.almoco)} – self-service, churrasco, à la carte, marmitex e chopp`],
+          ["Noite", `${textoFaixa(config.horarios.jantar)} – bar, pizzas, crepes, porções na chapa e chopp`],
           ["Carros-chefes", "Pizza, porção de picanha na chapa e self-service"],
           ["Serviços", "Delivery próprio e pelo Aiqfome, retirada, reservas e eventos"],
           ["Estrutura", NEGOCIO.comodidades.join(", ")],

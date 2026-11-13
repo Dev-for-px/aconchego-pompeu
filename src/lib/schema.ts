@@ -2,10 +2,13 @@
 import { NEGOCIO, SITE_URL } from "./site";
 import type { Faq, Post, Produto } from "./dados";
 import { redesAtivas, type Redes } from "./redes";
+import { HORARIOS_PADRAO, type Horarios } from "./horario";
 
 const ID = `${SITE_URL}/#restaurante`;
 
-export function restauranteJsonLd(redes: Redes = {}) {
+const DIAS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+export function restauranteJsonLd(redes: Redes = {}, h: Horarios = HORARIOS_PADRAO) {
   return {
     "@context": "https://schema.org",
     "@type": ["Restaurant", "BarOrPub"],
@@ -30,10 +33,12 @@ export function restauranteJsonLd(redes: Redes = {}) {
       addressCountry: "BR",
     },
     areaServed: { "@type": "City", name: "Pompéu", containedInPlace: { "@type": "State", name: "Minas Gerais" } },
-    openingHoursSpecification: [
-      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "11:00", closes: "15:00" },
-      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "18:00", closes: "23:59" },
-    ],
+    openingHoursSpecification: [h.almoco, h.jantar].map((f) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: f.dias.map((d) => DIAS_EN[d]),
+      opens: f.inicio,
+      closes: f.fim === "00:00" ? "23:59" : f.fim,
+    })),
     amenityFeature: NEGOCIO.comodidades.map((name) => ({ "@type": "LocationFeatureSpecification", name, value: true })),
     sameAs: [...new Set([NEGOCIO.instagram, NEGOCIO.linktree, ...redesAtivas(redes).map((r) => r.url)])],
   };
@@ -47,7 +52,7 @@ export function faqJsonLd(faq: Faq[]) {
   };
 }
 
-export function menuJsonLd(nome: string, url: string, secoes: { nome: string; itens: (Pick<Produto, "nome" | "descricao" | "preco"> & { variacoes?: Produto["variacoes"] })[] }[], mostrarPreco: boolean) {
+export function menuJsonLd(nome: string, url: string, secoes: { nome: string; itens: (Pick<Produto, "nome" | "descricao" | "preco"> & { variacoes?: Produto["variacoes"]; foto_url?: string | null })[] }[], mostrarPreco: boolean) {
   return {
     "@context": "https://schema.org",
     "@type": "Menu",
@@ -62,6 +67,7 @@ export function menuJsonLd(nome: string, url: string, secoes: { nome: string; it
         "@type": "MenuItem",
         name: i.nome,
         ...(i.descricao ? { description: i.descricao } : {}),
+        ...(i.foto_url ? { image: i.foto_url } : {}),
         ...(mostrarPreco ? ofertas(i.preco, i.variacoes ?? []) : {}),
       })),
     })),

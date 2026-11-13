@@ -121,7 +121,7 @@ function EditorProduto({ inicial, categorias, onFechar, onSalvo }: { inicial: Ed
     if (!arquivo) return;
     setErro(null);
     try {
-      const blob = await prepararFoto(arquivo);
+      const blob = await prepararFoto(arquivo, 1000, true);
       const caminho = `produtos/${slugificar(p.nome || "produto")}-${Date.now()}.webp`;
       const { error } = await supabase.storage.from("fotos").upload(caminho, blob, { contentType: "image/webp", upsert: false });
       if (error) throw error;

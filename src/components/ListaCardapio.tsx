@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
+import { AbrirCategoria } from "./AbrirCategoria";
 import type { Categoria, Produto } from "@/lib/dados";
 import { CardProduto, paraPedido } from "./CardProduto";
 import { BotaoWhatsApp } from "./Botoes";
@@ -28,16 +30,24 @@ export function ListaCardapio({ secoes, mostrarPreco, nivel = 2, linkCategoria =
       </nav>
       {comItens.map((s) => (
         <section key={s.id} id={`${prefixo}${s.slug}`} aria-labelledby={`t-${prefixo}${s.slug}`} className="scroll-mt-32">
-          <div className="mb-4 flex items-baseline justify-between gap-4">
-            <H id={`t-${prefixo}${s.slug}`} className="text-2xl font-semibold text-ink">{s.nome}</H>
-            {linkCategoria && <Link href={`/cardapio/${s.slug}`} className="text-sm font-semibold text-vinho-500 underline">Ver página</Link>}
-          </div>
-          {s.descricao && <p className="mb-4 text-muted">{s.descricao}</p>}
-          <div className="grid gap-4 md:grid-cols-2">
-            {s.produtos.map((p) => <CardProduto key={p.id} p={p} mostrarPreco={mostrarPreco} grupo={s.grupo ?? s.nome} sabores={s.produtos.filter((x) => x.meio_a_meio && x.disponivel).map(paraPedido)} />)}
-          </div>
+          <details open className="group/cat">
+            <summary className="mb-4 flex cursor-pointer list-none items-center justify-between gap-4">
+              <H id={`t-${prefixo}${s.slug}`} className="text-2xl font-semibold text-ink">{s.nome}</H>
+              <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-muted">
+                <span className="group-open/cat:hidden">Mostrar</span>
+                <span className="hidden group-open/cat:inline">Encolher</span>
+                <ChevronDown size={20} aria-hidden className="transition group-open/cat:rotate-180" />
+              </span>
+            </summary>
+            {s.descricao && <p className="mb-4 text-muted">{s.descricao}</p>}
+            <div className="grid gap-4 md:grid-cols-2">
+              {s.produtos.map((p) => <CardProduto key={p.id} p={p} nivel={nivel === 2 ? 3 : 4} mostrarPreco={mostrarPreco} grupo={s.grupo ?? s.nome} sabores={s.produtos.filter((x) => x.meio_a_meio && x.disponivel).map(paraPedido)} />)}
+            </div>
+            {linkCategoria && <Link href={`/cardapio/${s.slug}`} className="mt-3 inline-block text-sm font-semibold text-vinho-500 underline">Ver página de {s.nome.toLowerCase()}</Link>}
+          </details>
         </section>
       ))}
+      <AbrirCategoria />
     </div>
   );
 }
