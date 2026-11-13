@@ -37,7 +37,7 @@ export default async function Home() {
       <section className="bg-vinho-700 text-creme-50">
         <div className="mx-auto flex max-w-xl flex-col items-center px-4 pb-5 pt-4 text-center md:pb-10 md:pt-10">
           <h1 className="font-sans text-[15px] font-semibold leading-snug md:text-2xl">Restaurante e Pizzaria Aconchego – Pompéu, MG</h1>
-          <p className="mt-0.5 text-[11px] opacity-75 md:text-sm">Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu</p>
+          <p className="mt-1 text-[11px] leading-snug opacity-75 md:text-sm">Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu – MG. Almoço caseiro com self-service e churrasco todos os dias; à noite, pizzas, porções na chapa e chopp gelado.</p>
           <div className="mt-3 w-full"><Busca itens={busca} mostrarPreco={config.mostrar_precos} clara /></div>
           <div className="mt-2.5 flex w-full items-center gap-2">
             <div className="flex-1 [&>a]:w-full"><BotaoWhatsApp texto="Pedir agora" compacto /></div>
