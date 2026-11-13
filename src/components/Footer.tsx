@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PAGINAS_LOCAIS } from "@/lib/paginasLocais";
 import { Clock, MapPin, Phone } from "lucide-react";
 import { Logo } from "./Logo";
 import { IconeRede } from "./IconeRede";
@@ -44,6 +45,7 @@ export function Footer({ redes, horarios }: { redes: Redes; horarios: Horarios }
         </div>
       </div>
       <p className="border-t border-vinho-800 px-4 py-3 text-center text-[11px] opacity-70">
+        <span className="block pb-1">{PAGINAS_LOCAIS.map((x, i) => <span key={x.url}>{i > 0 && " · "}<Link href={x.url} className="hover:underline">{x.nome}</Link></span>)}</span>
         Desenvolvido por <a href="https://pharconsultoria.com" {...fora} className="underline">PHAR Consultoria</a>
       </p>
     </footer>

@@ -28,6 +28,11 @@ export async function llmsTxt() {
 - [Cardápio](${SITE_URL}/cardapio): pizzas, porções na chapa, chopp e bebidas
 - [Perguntas frequentes](${SITE_URL}/perguntas-frequentes): horário, delivery, pagamento, reservas
 - [Sobre](${SITE_URL}/sobre): história e fatos sobre o restaurante
+- [Pizzaria em Pompéu](${SITE_URL}/pizzaria-em-pompeu): sabores, tamanhos, meio a meio e entrega
+- [Almoço em Pompéu](${SITE_URL}/almoco-em-pompeu): self-service, churrasco e marmitex
+- [Churrascaria em Pompéu](${SITE_URL}/churrascaria-em-pompeu): churrasco no almoço e picanha na chapa
+- [Choperia em Pompéu](${SITE_URL}/choperia-em-pompeu): chopp, porções e jogos na TV
+- [Delivery em Pompéu](${SITE_URL}/delivery-em-pompeu): como pedir, taxa e pagamento
 - [Contato](${SITE_URL}/contato): endereço, mapa e telefones
 - [Novidades](${SITE_URL}/novidades): promoções, eventos e avisos
 

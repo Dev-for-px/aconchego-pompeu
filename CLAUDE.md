@@ -71,3 +71,7 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Coleta: `src/components/Rastreio.tsx` (visitas por página + cliques: WhatsApp, ligar, como chegar, redes, links externos; elementos com `data-evento`/`data-rotulo`) e `registrar()` em `src/lib/rastreio.ts` (carrinho, pedido, busca)
 - Painel: `/admin/resultados` (números, gráficos por dia e por hora, rankings, "Copiar resumo")
 - Fotos: `galeria.turno` (almoco/noite/ambos) — aparecem dentro das abas da home
+
+## Páginas de SEO local
+- `/pizzaria-em-pompeu`, `/almoco-em-pompeu`, `/churrascaria-em-pompeu`, `/choperia-em-pompeu`, `/delivery-em-pompeu` — componente `PaginaLocal` (texto próprio + horário/itens/fotos do banco + FAQ com schema)
+- Fora do menu e da home; links só no rodapé discreto, sitemap e llms.txt (lista em `src/lib/paginasLocais.ts`)
