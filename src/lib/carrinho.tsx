@@ -1,4 +1,5 @@
 "use client";
+import { registrar } from "./rastreio";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type ItemCarrinho = {
@@ -89,6 +90,7 @@ export function CarrinhoProvider({ config, children }: { config: ConfigPedido; c
       return [...atual, { ...novo, chave }];
     });
     setAviso(`${novo.nome} adicionado ao pedido`);
+    registrar("add_carrinho", novo.nome.split(" – ")[0]);
   }, []);
 
   const valor = useMemo<Ctx>(() => {

@@ -9,7 +9,9 @@ import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
 import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Explica, Titulo, traduzirErro } from "./ui";
 
-type Foto = { id: string; url: string; legenda: string | null; ordem: number; ativo: boolean };
+type Turno = "almoco" | "noite" | "ambos";
+type Foto = { id: string; url: string; legenda: string | null; ordem: number; ativo: boolean; turno: Turno };
+const TURNOS: [Turno, string][] = [["ambos", "Almoço e noite"], ["almoco", "Só almoço"], ["noite", "Só noite"]];
 type Post = { id?: string; titulo: string; slug?: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado: boolean; publicado_em: string | null };
 
 async function enviar(supabase: ReturnType<typeof createClient>, arquivo: File, pasta: string, nome: string, quadrada = false) {
@@ -46,9 +48,10 @@ function Fotos() {
   const [fotos, setFotos] = useState<Foto[]>([]);
   const [enviando, setEnviando] = useState(0);
   const [erro, setErro] = useState<string | null>(null);
+  const [turnoNovo, setTurnoNovo] = useState<Turno>("ambos");
 
   const carregar = useCallback(async () => {
-    const { data } = await supabase.from("galeria").select("id,url,legenda,ordem,ativo").order("ordem");
+    const { data } = await supabase.from("galeria").select("id,url,legenda,ordem,ativo,turno").order("ordem");
     setFotos((data as Foto[]) ?? []);
   }, [supabase]);
   useEffect(() => {
@@ -64,7 +67,7 @@ function Fotos() {
     for (const a of Array.from(arquivos)) {
       try {
         const url = await enviar(supabase, a, "galeria", "aconchego", true);
-        await supabase.from("galeria").insert({ url, ordem, legenda: null });
+        await supabase.from("galeria").insert({ url, ordem, legenda: null, turno: turnoNovo });
         ordem += 10;
       } catch (e) {
         setErro(e instanceof Error ? e.message : "Erro ao enviar foto");
@@ -101,13 +104,23 @@ function Fotos() {
         <>Toque em <b>Adicionar fotos</b> e escolha da galeria do celular. Pode escolher <b>várias de uma vez</b>.</>,
         <>Espere aparecer na lista. Cada foto fica quadrada <b>sem cortar nada</b>.</>,
         <><b>Escreva a legenda de cada foto</b> no campo embaixo dela. É ela que o Google lê, porque o Google não enxerga a imagem, só o texto.</>,
-        <>Use as setas para mudar a ordem. A primeira foto também aparece de fundo na capa do site.</>,
+        <>Escolha se a foto aparece no <b>almoço</b>, na <b>noite</b> ou nos dois. Use as setas para mudar a ordem.</>,
       ]} dicas={[
         <>Fórmula da legenda: <b>o que aparece</b> + <b>Aconchego</b> + <b>Pompéu</b>. Ex.: <i>“Pizza calabresa grande do Aconchego, em Pompéu – MG”</i>.</>,
         <>Outros exemplos: <i>“Porção de picanha na chapa com fritas e mandioca – Aconchego Pompéu”</i>, <i>“Salão do Restaurante Aconchego no centro de Pompéu”</i>, <i>“Chopp gelado no Aconchego, choperia em Pompéu”</i>.</>,
         "Evite legenda vaga como “foto 1” ou “IMG_2023”: não ajuda ninguém a achar o restaurante.",
         "Prefira fotos com boa luz, de perto, com o prato bonito. Foto escura afasta o cliente.",
       ]} aberta={fotos.length === 0} />
+      <fieldset className="mb-3">
+        <legend className="font-semibold">Onde as fotos novas vão aparecer?</legend>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {TURNOS.map(([v, t]) => (
+            <button key={v} type="button" aria-pressed={turnoNovo === v} onClick={() => setTurnoNovo(v)}
+              className={`rounded-pill border px-2 py-2.5 text-sm font-semibold ${turnoNovo === v ? "border-vinho-700 bg-vinho-700 text-creme-50" : "border-linha bg-creme-50 text-ink"}`}>{t}</button>
+          ))}
+        </div>
+        <Explica>No site, as fotos do almoço aparecem na aba Almoço (antes das bebidas) e as da noite na aba Pizzaria (depois dos destaques). Dá para trocar depois em cada foto.</Explica>
+      </fieldset>
       <label className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-pill bg-vinho-700 px-5 py-3 font-semibold text-creme-50">
         <ImagePlus size={22} />{enviando ? `Enviando ${enviando}…` : "Adicionar fotos"}
         <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => adicionar(e.target.files)} />
@@ -124,6 +137,9 @@ function Fotos() {
                 placeholder="Ex.: Pizza calabresa do Aconchego, em Pompéu – MG" aria-label="Legenda da foto"
                 className={`${campoCls} mt-0 py-2 ${f.legenda ? "" : "border-dourado bg-dourado/10"}`} />
               <p className="text-xs text-muted">{f.legenda ? "Legenda salva ✓ (salva sozinha ao sair do campo)" : "Escreva a legenda: o que aparece + Aconchego + Pompéu"}</p>
+              <select value={f.turno} onChange={(e) => salvar(f, { turno: e.target.value as Turno })} aria-label="Onde aparece" className={`${campoCls} mt-0 py-2 text-sm`}>
+                {TURNOS.map(([v, t]) => <option key={v} value={v}>Aparece: {t.toLowerCase()}</option>)}
+              </select>
               <div className="flex items-center gap-1">
                 <button type="button" onClick={() => mover(i, -1)} aria-label="Subir" className="rounded-pill p-2 text-muted"><ArrowUp size={20} /></button>
                 <button type="button" onClick={() => mover(i, 1)} aria-label="Descer" className="rounded-pill p-2 text-muted"><ArrowDown size={20} /></button>

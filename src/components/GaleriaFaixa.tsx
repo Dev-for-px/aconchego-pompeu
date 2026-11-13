@@ -16,7 +16,7 @@ export function GaleriaFaixa({ fotos, titulo = "Fotos do Aconchego" }: { fotos: 
         {fotos.map((f, i) => (
           <li key={f.id} className="shrink-0 snap-start first:ml-auto last:mr-auto">
             <button type="button" onClick={() => setAberta(i)} className="block overflow-hidden rounded-md">
-              <Image src={f.url} alt={alt(f)} width={320} height={320} sizes="(max-width: 768px) 40vw, 224px" className="aspect-square h-28 w-28 bg-creme-200 object-contain md:h-48 md:w-48" />
+              <Image src={f.url} alt={alt(f)} width={320} height={320} sizes="(max-width: 768px) 40vw, 224px" className="aspect-square h-36 w-36 bg-creme-200 object-contain md:h-52 md:w-52" />
             </button>
           </li>
         ))}

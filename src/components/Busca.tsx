@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { formatarPreco } from "@/lib/site";
+import { registrar } from "@/lib/rastreio";
 import { BotaoAdicionar, type ProdutoPedido } from "./BotaoAdicionar";
 
 export type ItemBusca = { p: ProdutoPedido; categoria: string; precoMin: number | null; varios: boolean; sabores: ProdutoPedido[] };
@@ -24,6 +25,14 @@ export function Busca({ itens, mostrarPreco, clara = false }: { itens: ItemBusca
     document.addEventListener("keydown", esc);
     return () => { document.body.style.overflow = o; document.removeEventListener("keydown", esc); };
   }, [aberta]);
+
+  // Guarda o que as pessoas procuram (depois de 1,5 s sem digitar)
+  useEffect(() => {
+    const termo = q.trim();
+    if (termo.length < 3) return;
+    const t = setTimeout(() => registrar("busca", termo.toLowerCase()), 1500);
+    return () => clearTimeout(t);
+  }, [q]);
 
   const resultados = useMemo(() => {
     const termos = normal(q).split(/\s+/).filter(Boolean);

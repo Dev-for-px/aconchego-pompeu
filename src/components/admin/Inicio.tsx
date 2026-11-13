@@ -88,7 +88,10 @@ export function Inicio() {
       )}
 
       {pedidos7 !== null && (
-        <p className="mt-8 rounded-md bg-creme-200 p-4 text-ink"><b className="text-2xl">{pedidos7}</b> pedidos enviados pelo site nos últimos 7 dias.</p>
+        <Link href="/admin/resultados" className="mt-8 flex items-center justify-between gap-3 rounded-md bg-creme-200 p-4 text-ink">
+          <span><b className="text-2xl">{pedidos7}</b> pedidos enviados pelo site nos últimos 7 dias.</span>
+          <span className="shrink-0 font-semibold text-vinho-500 underline">Ver resultados</span>
+        </Link>
       )}
     </>
   );

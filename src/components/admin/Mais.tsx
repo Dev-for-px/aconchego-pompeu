@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ChevronRight, ExternalLink, LogOut, Settings, Users } from "lucide-react";
+import { BarChart3, ChevronRight, ExternalLink, LogOut, Settings, Users } from "lucide-react";
 import { useSessao } from "@/lib/admin/sessao";
 import { Titulo } from "./ui";
 
@@ -11,6 +11,13 @@ export function Mais() {
     <>
       <Titulo>Mais opções</Titulo>
       <div className="space-y-3">
+        {pode("dono", "gerente") && (
+          <Link href="/admin/resultados" className={item}>
+            <BarChart3 size={26} className="text-vinho-500" aria-hidden />
+            <span className="flex-1"><b className="block">Resultados do site</b><span className="text-sm text-muted">Visitas, pedidos, cliques no WhatsApp, ligações, rotas e redes sociais</span></span>
+            <ChevronRight className="text-muted" />
+          </Link>
+        )}
         {pode("dono", "gerente") && (
           <Link href="/admin/ajustes" className={item}>
             <Settings size={26} className="text-vinho-500" aria-hidden />

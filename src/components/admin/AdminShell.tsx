@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-import { ExternalLink, Home, Images, LogOut, Menu, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
+import { BarChart3, ExternalLink, Home, Images, LogOut, Menu, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { NOME_PERFIL, SessaoProvider, useSessao, type Perfil } from "@/lib/admin/sessao";
 
@@ -13,13 +13,14 @@ const ABAS_CELULAR: Aba[] = [
   { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
   { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
-  { href: "/admin/mais", label: "Mais", Icone: Menu, perfis: ["dono", "gerente", "social", "atendente"], ativoEm: ["/admin/equipe", "/admin/ajustes"] },
+  { href: "/admin/mais", label: "Mais", Icone: Menu, perfis: ["dono", "gerente", "social", "atendente"], ativoEm: ["/admin/equipe", "/admin/ajustes", "/admin/resultados"] },
 ];
 const ABAS: Aba[] = [
   { href: "/admin", label: "Início", Icone: Home, perfis: ["dono", "gerente", "social", "atendente"] },
   { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
   { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
+  { href: "/admin/resultados", label: "Resultados", Icone: BarChart3, perfis: ["dono", "gerente"] },
   { href: "/admin/equipe", label: "Equipe", Icone: Users, perfis: ["dono"] },
   { href: "/admin/ajustes", label: "Ajustes", Icone: Settings, perfis: ["dono", "gerente"] },
 ];

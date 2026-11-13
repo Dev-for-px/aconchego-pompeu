@@ -13,7 +13,7 @@ export function AbasTurno({ horarios, almoco, noite }: { horarios: Horarios; alm
   const aba = escolha ?? turnoAgora;
   const botao = (id: "almoco" | "noite", texto: string, Icone: typeof Sun) => (
     <button
-      type="button" role="tab" aria-selected={aba === id} onClick={() => setAba(id)}
+      type="button" role="tab" aria-selected={aba === id} onClick={() => setAba(id)} data-evento="aba" data-rotulo={texto}
       className={`flex flex-1 items-center justify-center gap-2 rounded-pill whitespace-nowrap px-3 py-3 text-base font-semibold transition ${aba === id ? "bg-vinho-700 text-creme-50" : "text-ink"}`}
     >
       <Icone size={20} aria-hidden />{texto}

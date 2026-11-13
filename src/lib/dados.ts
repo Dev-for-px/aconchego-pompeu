@@ -19,7 +19,7 @@ export type Produto = {
 };
 export type Faq = { id: string; pergunta: string; resposta: string };
 export type Avaliacao = { id: string; autor: string; nota: number; texto: string | null; data: string | null };
-export type Foto = { id: string; url: string; legenda: string | null };
+export type Foto = { id: string; url: string; legenda: string | null; turno?: "almoco" | "noite" | "ambos" };
 export type Promocao = { id: string; titulo: string; descricao: string | null; preco: number | null; foto_url: string | null; valido_de: string | null; valido_ate: string | null };
 export type SecaoAlmoco = { secao: string; itens: { nome: string; preco?: number | null }[] };
 export type Almoco = { data: string; itens: SecaoAlmoco[]; atualizado_em: string } | null;
@@ -124,7 +124,7 @@ export async function getGaleria(): Promise<Foto[]> {
   cacheLife("hours");
   cacheTag("galeria");
   return seguro(async () => {
-    const { data, error } = await db().from("galeria").select("id,url,legenda").eq("ativo", true).order("ordem");
+    const { data, error } = await db().from("galeria").select("id,url,legenda,turno").eq("ativo", true).order("ordem");
     if (error) throw error;
     return data as Foto[];
   }, []);

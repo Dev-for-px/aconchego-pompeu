@@ -23,7 +23,7 @@ export function MenuMobile({ links, horarios }: { links: { href: string; label: 
 
   return (
     <div className="flex w-full items-center justify-between md:hidden">
-      <Link href="/pedido" aria-label={`Meu pedido${totalItens ? `, ${totalItens} itens` : ""}`} className="relative rounded-pill p-2.5 hover:bg-vinho-800">
+      <Link href="/pedido" data-evento="ver_pedido" data-rotulo="Ícone do topo" aria-label={`Meu pedido${totalItens ? `, ${totalItens} itens` : ""}`} className="relative rounded-pill p-2.5 hover:bg-vinho-800">
         <ShoppingBag size={24} />
         {totalItens > 0 && <span className="absolute right-0.5 top-0.5 flex h-5 min-w-5 items-center justify-center rounded-pill bg-dourado px-1 text-xs font-bold text-ink">{totalItens}</span>}
       </Link>

@@ -19,7 +19,7 @@ export function BarraCarrinho() {
         <>
           <div className="h-20" aria-hidden />
           <div className="fixed inset-x-0 bottom-[60px] z-50 px-3 pb-2 md:bottom-4">
-            <Link href="/pedido" className="mx-auto flex max-w-md items-center justify-between gap-3 rounded-pill bg-vinho-700 px-5 py-3.5 text-creme-50 shadow-md">
+            <Link href="/pedido" data-evento="ver_pedido" data-rotulo="Barra Ver pedido" className="mx-auto flex max-w-md items-center justify-between gap-3 rounded-pill bg-vinho-700 px-5 py-3.5 text-creme-50 shadow-md">
               <span className="flex items-center gap-2 font-semibold">
                 <ShoppingBag size={22} aria-hidden />
                 Ver pedido

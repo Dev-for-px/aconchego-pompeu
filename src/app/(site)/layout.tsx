@@ -4,6 +4,7 @@ import { BarraMobile } from "@/components/BarraMobile";
 import { BarraCarrinho } from "@/components/BarraCarrinho";
 import { JsonLd } from "@/components/JsonLd";
 import { AvisoSaida } from "@/components/AvisoSaida";
+import { Rastreio } from "@/components/Rastreio";
 import { CarrinhoProvider } from "@/lib/carrinho";
 import { getConfig } from "@/lib/dados";
 import { restauranteJsonLd } from "@/lib/schema";
@@ -26,6 +27,7 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
       <BarraCarrinho />
       <BarraMobile />
       <AvisoSaida config={config.saida} whatsapp={config.whatsapp} />
+      <Rastreio />
     </CarrinhoProvider>
   );
 }

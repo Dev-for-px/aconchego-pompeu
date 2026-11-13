@@ -5,8 +5,7 @@ import { History, MessageCircle, Trash2 } from "lucide-react";
 import { precoItem, useCarrinho } from "@/lib/carrinho";
 import { montarMensagem, type DadosCliente } from "@/lib/mensagem";
 import { formatarPreco, linkWhatsApp, NEGOCIO } from "@/lib/site";
-import { createClient } from "@/lib/supabase/client";
-import { supabaseConfigured } from "@/lib/supabase/env";
+import { registrar } from "@/lib/rastreio";
 import { Quantidade } from "./Quantidade";
 
 const CHAVE_CLIENTE = "aconchego:cliente";
@@ -38,7 +37,7 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
     try {
       localStorage.setItem(CHAVE_CLIENTE, JSON.stringify({ ...dados, obs: "" }));
     } catch {}
-    if (supabaseConfigured) createClient().from("eventos").insert({ tipo: "enviar_pedido" }).then(() => {});
+    registrar("enviar_pedido", `${c.totalItens} itens · ${dados.tipo}`);
     c.salvarUltimo();
     // Abre o WhatsApp em outra aba: o site continua aberto aqui.
     const url = linkWhatsApp(texto, c.config.whatsapp);

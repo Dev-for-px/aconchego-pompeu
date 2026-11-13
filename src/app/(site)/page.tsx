@@ -24,6 +24,9 @@ export default async function Home() {
   // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
   const busca = montarBusca([...dia, ...noite]);
+  // Fotos aparecem dentro de cada aba: almoço (antes das bebidas) e noite (depois dos destaques)
+  const fotosDia = fotos.filter((f) => f.turno !== "noite");
+  const fotosNoite = fotos.filter((f) => f.turno !== "almoco");
   const destaques = produtos.filter((p) => p.destaque && p.disponivel && idsNoite.has(p.categoria_id)).slice(0, 4);
 
   return (
@@ -43,13 +46,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Fotos logo depois da capa: o cliente come com os olhos */}
-      {fotos.length > 0 && (
-        <section aria-label="Fotos do Aconchego" className="bg-vinho-700 pb-4">
-          <GaleriaFaixa fotos={fotos} />
-        </section>
-      )}
-
       {/* Cardápio por turno */}
       <section id="cardapio" aria-labelledby="t-cardapio" className="mx-auto max-w-5xl scroll-mt-16 px-4 py-6 md:py-12">
         <h2 id="t-cardapio" className="sr-only">Cardápio de hoje</h2>
@@ -59,6 +55,7 @@ export default async function Home() {
             almoco={
               <div className="space-y-10">
                 <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} horarios={config.horarios} />
+                {fotosDia.length > 0 && <div className="-mx-4"><GaleriaFaixa fotos={fotosDia} titulo="Fotos do almoço" /></div>}
                 <CardapioComBebidas secoes={dia} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
               </div>
             }
@@ -84,6 +81,7 @@ export default async function Home() {
                     </div>
                   </div>
                 )}
+                {fotosNoite.length > 0 && <div className="-mx-4"><GaleriaFaixa fotos={fotosNoite} titulo="Fotos da pizzaria" /></div>}
                 <CardapioComBebidas secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />
               </div>
             }

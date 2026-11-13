@@ -65,3 +65,9 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Links que saem do site abrem em nova aba (`target="_blank" rel="noopener noreferrer"`); pedido abre o WhatsApp em nova aba
 - Visual: noite = "Pizzaria" (pizzaria e choperia); "bar" só em SEO (schema/llms/textos discretos)
 - Bebidas alcoólicas sempre recolhidas em "Chopp, cervejas e drinks" (`CardapioComBebidas`)
+
+## Resultados (métricas)
+- Tabela `eventos` (tipo, rotulo, pagina, sessao anônima) — RLS: qualquer um insere, só dono/gerente lê
+- Coleta: `src/components/Rastreio.tsx` (visitas por página + cliques: WhatsApp, ligar, como chegar, redes, links externos; elementos com `data-evento`/`data-rotulo`) e `registrar()` em `src/lib/rastreio.ts` (carrinho, pedido, busca)
+- Painel: `/admin/resultados` (números, gráficos por dia e por hora, rankings, "Copiar resumo")
+- Fotos: `galeria.turno` (almoco/noite/ambos) — aparecem dentro das abas da home
