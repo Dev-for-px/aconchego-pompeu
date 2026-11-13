@@ -30,25 +30,22 @@ export default async function Home() {
     <>
       {faq.length > 0 && <JsonLd data={faqJsonLd(faq)} />}
 
-      {/* Capa: status, título, busca e os dois botões que vendem */}
+      {/* Capa enxuta: título curto, busca e um botão de pedir. O resto fica para baixo. */}
       <section className="bg-vinho-700 text-creme-50">
-        <div className="mx-auto flex max-w-xl flex-col items-center px-4 pb-6 pt-5 text-center md:pb-10 md:pt-10">
-          <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
-          <h1 className="mt-3 text-xl font-semibold leading-snug md:text-3xl">Restaurante e Pizzaria Aconchego – Pompéu, MG</h1>
-          <p className="mt-1.5 max-w-md text-[11px] leading-relaxed opacity-75 md:text-sm">
-            Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu, Minas Gerais. Almoço caseiro com self-service e churrasco todos os dias; à noite, pizzas, porções na chapa e chopp gelado.
-          </p>
-          <div className="mt-4 w-full"><Busca itens={busca} mostrarPreco={config.mostrar_precos} clara /></div>
-          <div className="mt-3 grid w-full grid-cols-2 gap-2">
-            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-[15px] font-semibold text-vinho-700 hover:bg-creme-200 md:text-base">Ver cardápio</a>
-            <BotaoWhatsApp texto="Pedir agora" compacto />
+        <div className="mx-auto flex max-w-xl flex-col items-center px-4 pb-5 pt-4 text-center md:pb-10 md:pt-10">
+          <h1 className="font-sans text-[15px] font-semibold leading-snug md:text-2xl">Restaurante e Pizzaria Aconchego – Pompéu, MG</h1>
+          <p className="mt-0.5 text-[11px] opacity-75 md:text-sm">Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu</p>
+          <div className="mt-3 w-full"><Busca itens={busca} mostrarPreco={config.mostrar_precos} clara /></div>
+          <div className="mt-2.5 flex w-full items-center gap-2">
+            <div className="flex-1 [&>a]:w-full"><BotaoWhatsApp texto="Pedir agora" compacto /></div>
+            <Suspense><StatusAberto horarios={config.horarios} curto /></Suspense>
           </div>
         </div>
       </section>
 
       {/* Fotos logo depois da capa: o cliente come com os olhos */}
       {fotos.length > 0 && (
-        <section aria-label="Fotos do Aconchego" className="bg-vinho-700 pb-5">
+        <section aria-label="Fotos do Aconchego" className="bg-vinho-700 pb-4">
           <GaleriaFaixa fotos={fotos} />
         </section>
       )}
