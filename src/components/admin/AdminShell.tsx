@@ -2,15 +2,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-import { ExternalLink, Home, Images, LogOut, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
+import { ExternalLink, Home, Images, LogOut, Menu, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { NOME_PERFIL, SessaoProvider, useSessao, type Perfil } from "@/lib/admin/sessao";
 
-const ABAS: { href: string; label: string; Icone: typeof Home; perfis: Perfil[] }[] = [
+type Aba = { href: string; label: string; Icone: typeof Home; perfis: Perfil[]; ativoEm?: string[] };
+// Celular: 5 botões no rodapé ("Mais" guarda Equipe e Ajustes). Computador: todas as abas no topo.
+const ABAS_CELULAR: Aba[] = [
   { href: "/admin", label: "Início", Icone: Home, perfis: ["dono", "gerente", "social", "atendente"] },
   { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
-  { href: "/admin/conteudo", label: "Fotos e posts", Icone: Images, perfis: ["dono", "gerente", "social"] },
+  { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
+  { href: "/admin/mais", label: "Mais", Icone: Menu, perfis: ["dono", "gerente", "social", "atendente"], ativoEm: ["/admin/equipe", "/admin/ajustes"] },
+];
+const ABAS: Aba[] = [
+  { href: "/admin", label: "Início", Icone: Home, perfis: ["dono", "gerente", "social", "atendente"] },
+  { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
+  { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
+  { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/equipe", label: "Equipe", Icone: Users, perfis: ["dono"] },
   { href: "/admin/ajustes", label: "Ajustes", Icone: Settings, perfis: ["dono", "gerente"] },
 ];
@@ -28,7 +37,8 @@ function Conteudo({ children }: { children: ReactNode }) {
   if (carregando || !membro) return <p className="p-10 text-center text-muted">Carregando…</p>;
 
   const abas = ABAS.filter((a) => a.perfis.includes(membro.perfil));
-  const ativa = (href: string) => (href === "/admin" ? caminho === "/admin" : caminho.startsWith(href));
+  const abasCel = ABAS_CELULAR.filter((a) => a.perfis.includes(membro.perfil));
+  const ativa = (href: string, extra: string[] = []) => (href === "/admin" ? caminho === "/admin" : caminho.startsWith(href) || extra.some((e) => caminho.startsWith(e)));
   return (
     <div className="min-h-dvh pb-24 md:pb-8">
       <header className="bg-vinho-700 text-creme-50">
@@ -48,8 +58,8 @@ function Conteudo({ children }: { children: ReactNode }) {
       </header>
       <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>
       <nav aria-label="Painel" className="fixed inset-x-0 bottom-0 z-50 flex border-t border-linha bg-creme-50 pb-[env(safe-area-inset-bottom)] md:hidden">
-        {abas.map(({ href, label, Icone }) => (
-          <Link key={href} href={href} className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-[11px] font-semibold leading-tight ${ativa(href) ? "text-vinho-700" : "text-muted"}`}>
+        {abasCel.map(({ href, label, Icone, ativoEm }) => (
+          <Link key={href} href={href} className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center text-[11px] font-semibold leading-tight ${ativa(href, ativoEm) ? "text-vinho-700" : "text-muted"}`}>
             <Icone size={22} aria-hidden />{label}
           </Link>
         ))}

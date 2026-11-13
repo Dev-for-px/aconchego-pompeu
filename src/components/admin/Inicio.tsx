@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ClipboardPaste, ToggleRight, Users } from "lucide-react";
+import { Camera, ClipboardPaste, Newspaper, ToggleRight, Users } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { useSessao } from "@/lib/admin/sessao";
 import { hojeEmPompeu } from "@/lib/horario";
 import { createClient } from "@/lib/supabase/client";
-import { Chave, Titulo } from "./ui";
+import { Ajuda, Chave, Titulo } from "./ui";
 
 export function Inicio() {
   const { membro, pode } = useSessao();
@@ -34,6 +34,16 @@ export function Inicio() {
   return (
     <>
       <Titulo sub="O que você quer fazer agora?">Olá, {membro?.nome.split(" ")[0]}!</Titulo>
+      <Ajuda titulo="Primeira vez aqui? Veja como funciona" passos={[
+        <>Este é o <b>painel do site</b>. Tudo que você muda aqui aparece no site <b>na hora</b>, sem precisar chamar ninguém.</>,
+        <>Embaixo da tela ficam os botões: <b>Início</b>, <b>Almoço</b> (cardápio do dia), <b>Cardápio</b> (pizzas, porções, bebidas), <b>Fotos e novidades</b> e <b>Mais</b> (ajustes e equipe).</>,
+        <>Todo dia de manhã: entre em <b>Almoço</b>, cole o cardápio que chegou no WhatsApp e toque em <b>Publicar</b>.</>,
+        <>Acabou algum item? Vá em <b>Cardápio</b> e desligue o interruptor dele. Voltou a ter? É só ligar de novo.</>,
+        <>Cozinha cheia ou fechada fora de hora? Desligue <b>Recebendo pedidos</b> aqui embaixo.</>,
+      ]} dicas={[
+        "Não tem como estragar o site mexendo aqui: o que você muda dá para desfazer.",
+        "Ao terminar, pode só fechar o navegador. Você continua conectado neste celular.",
+      ]} />
       <div className="space-y-3">
         {pode("dono", "gerente", "social") && (
           <Link href="/admin/almoco" className={`${atalho} ${almocoHoje === false ? "border-dourado bg-dourado/20" : ""}`}>
@@ -45,6 +55,18 @@ export function Inicio() {
           <Link href="/admin/cardapio" className={atalho}>
             <ToggleRight size={28} className="text-vinho-500" aria-hidden />
             <span>Ligar e desligar produtos<span className="block text-sm font-normal text-muted">Acabou algum item? Desligue aqui.</span></span>
+          </Link>
+        )}
+        {pode("dono", "gerente", "social") && (
+          <Link href="/admin/conteudo#fotos" className={atalho}>
+            <Camera size={28} className="text-vinho-500" aria-hidden />
+            <span>Subir fotos<span className="block text-sm font-normal text-muted">Pratos, salão e fachada: o cliente come com os olhos</span></span>
+          </Link>
+        )}
+        {pode("dono", "gerente", "social") && (
+          <Link href="/admin/conteudo#novidades" className={atalho}>
+            <Newspaper size={28} className="text-vinho-500" aria-hidden />
+            <span>Escrever uma novidade<span className="block text-sm font-normal text-muted">Promoção, evento, prato novo. Ajuda a aparecer no Google</span></span>
           </Link>
         )}
         {pode("dono") && (

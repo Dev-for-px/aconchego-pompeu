@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
 import { CardapioComBebidas } from "@/components/CardapioComBebidas";
+import { Busca } from "@/components/Busca";
+import { montarBusca } from "@/lib/busca";
 import { getCardapio, getConfig } from "@/lib/dados";
 import { breadcrumbJsonLd, menuJsonLd } from "@/lib/schema";
 import { textoFaixa } from "@/lib/horario";
@@ -23,6 +25,7 @@ export default async function Cardapio() {
       <p className="mt-3 max-w-2xl text-lg text-muted">
         À noite: {textoFaixa(config.horarios.jantar).toLowerCase()}. Procurando o almoço? Veja o <Link href="/almoco-hoje" className="font-semibold text-vinho-500 underline">almoço de hoje</Link>.
       </p>
+      <div className="mt-6"><Busca itens={montarBusca(secoes)} mostrarPreco={config.mostrar_precos} /></div>
       <div className="mt-8"><CardapioComBebidas secoes={noite} mostrarPreco={config.mostrar_precos} /></div>
     </div>
   );

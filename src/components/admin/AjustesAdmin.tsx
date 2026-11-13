@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { SAIDA_PADRAO, type Saida } from "@/lib/saida";
 import { REDES, type Redes } from "@/lib/redes";
 import { DIAS, HORARIOS_PADRAO, type Faixa, type Horarios } from "@/lib/horario";
-import { AreaTexto, Aviso, Botao, Campo, Chave, Titulo, traduzirErro } from "./ui";
+import { Ajuda, AreaTexto, Aviso, Botao, Campo, Chave, Titulo, traduzirErro } from "./ui";
 
 type Faq = { id?: string; pergunta: string; resposta: string; ordem: number; ativo: boolean };
 const real = (n: number | null) => (n == null ? "" : n.toFixed(2).replace(".", ","));
@@ -85,6 +85,14 @@ export function AjustesAdmin() {
   return (
     <>
       <Titulo sub="Informações que aparecem no site e no pedido.">Ajustes</Titulo>
+      <Ajuda passos={[
+        <>Mude o que precisar nas seções abaixo: pedidos, horários, redes sociais, aviso “Já vai?”, história e perguntas.</>,
+        <>No final, toque em <b>Salvar ajustes</b>. Só salva depois desse botão.</>,
+      ]} dicas={[
+        <><b>Horários</b>: mudam o “Aberto agora” e o que aparece no Google. Feriado? Ajuste aqui e volte depois.</>,
+        <><b>Perguntas frequentes</b>: escreva como o cliente pergunta e responda completo, com nome do restaurante, Pompéu e o detalhe pedido. É assim que o ChatGPT e o Google indicam o Aconchego.</>,
+        <><b>Redes sociais</b>: cole o link inteiro (abra o perfil, toque em compartilhar e copie). Só aparece no site a rede que tiver link.</>,
+      ]} />
       <div className="space-y-8">
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">Pedidos e entrega</h2>

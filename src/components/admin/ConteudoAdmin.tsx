@@ -7,7 +7,7 @@ import { Sheet } from "@/components/Sheet";
 import { prepararFoto, slugificar } from "@/lib/admin/fotos";
 import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
-import { AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Titulo, traduzirErro } from "./ui";
+import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Explica, Titulo, traduzirErro } from "./ui";
 
 type Foto = { id: string; url: string; legenda: string | null; ordem: number; ativo: boolean };
 type Post = { id?: string; titulo: string; slug?: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado: boolean; publicado_em: string | null };
@@ -22,11 +22,16 @@ async function enviar(supabase: ReturnType<typeof createClient>, arquivo: File, 
 
 export function ConteudoAdmin() {
   const [aba, setAba] = useState<"fotos" | "posts">("fotos");
+  useEffect(() => {
+    // Atalhos do Início abrem direto a aba certa (#fotos ou #novidades)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.location.hash === "#novidades") setAba("posts");
+  }, []);
   return (
     <>
-      <Titulo sub="Fotos aparecem logo abaixo da capa do site. Publicações viram páginas de Novidades (ótimo para o Google).">Fotos e publicações</Titulo>
+      <Titulo sub="Fotos aparecem logo abaixo da capa do site. Novidades viram páginas próprias no site (em “Novidades”), ótimas para aparecer no Google.">Fotos e novidades</Titulo>
       <div role="tablist" className="mb-6 flex rounded-pill border border-linha bg-creme-200 p-1">
-        {([["fotos", "Fotos"], ["posts", "Publicações"]] as const).map(([v, t]) => (
+        {([["fotos", "Fotos"], ["posts", "Novidades"]] as const).map(([v, t]) => (
           <button key={v} type="button" role="tab" aria-selected={aba === v} onClick={() => setAba(v)}
             className={`flex-1 rounded-pill py-2.5 font-semibold ${aba === v ? "bg-vinho-700 text-creme-50" : "text-ink"}`}>{t}</button>
         ))}
@@ -92,11 +97,23 @@ function Fotos() {
 
   return (
     <>
+      <Ajuda titulo="Como subir fotos (e fazer o Google achar)" passos={[
+        <>Toque em <b>Adicionar fotos</b> e escolha da galeria do celular. Pode escolher <b>várias de uma vez</b>.</>,
+        <>Espere aparecer na lista. Cada foto fica quadrada <b>sem cortar nada</b>.</>,
+        <><b>Escreva a legenda de cada foto</b> no campo embaixo dela. É ela que o Google lê, porque o Google não enxerga a imagem, só o texto.</>,
+        <>Use as setas para mudar a ordem. A primeira foto também aparece de fundo na capa do site.</>,
+      ]} dicas={[
+        <>Fórmula da legenda: <b>o que aparece</b> + <b>Aconchego</b> + <b>Pompéu</b>. Ex.: <i>“Pizza calabresa grande do Aconchego, em Pompéu – MG”</i>.</>,
+        <>Outros exemplos: <i>“Porção de picanha na chapa com fritas e mandioca – Aconchego Pompéu”</i>, <i>“Salão do Restaurante Aconchego no centro de Pompéu”</i>, <i>“Chopp gelado no Aconchego, choperia em Pompéu”</i>.</>,
+        "Evite legenda vaga como “foto 1” ou “IMG_2023”: não ajuda ninguém a achar o restaurante.",
+        "Prefira fotos com boa luz, de perto, com o prato bonito. Foto escura afasta o cliente.",
+      ]} aberta={fotos.length === 0} />
       <label className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-pill bg-vinho-700 px-5 py-3 font-semibold text-creme-50">
         <ImagePlus size={22} />{enviando ? `Enviando ${enviando}…` : "Adicionar fotos"}
         <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => adicionar(e.target.files)} />
       </label>
       <p className="mt-2 text-center text-sm text-muted">Pode escolher várias de uma vez. Todas ficam quadradas, sem cortar nada da foto.</p>
+      {fotos.some((f) => !f.legenda) && <p className="mt-3 rounded-md bg-dourado/20 p-3 text-sm text-ink">⚠️ {fotos.filter((f) => !f.legenda).length} foto(s) sem legenda. Escreva o que aparece na foto + “Aconchego, Pompéu” para o Google entender.</p>}
       {erro && <div className="mt-3"><Aviso tipo="erro">{erro}</Aviso></div>}
       <ul className="mt-6 space-y-3">
         {fotos.map((f, i) => (
@@ -104,7 +121,9 @@ function Fotos() {
             <Image src={f.url} alt="" width={96} height={96} className="h-24 w-24 shrink-0 rounded-md object-cover" />
             <div className="min-w-0 flex-1 space-y-2">
               <input defaultValue={f.legenda ?? ""} onBlur={(e) => e.target.value !== (f.legenda ?? "") && salvar(f, { legenda: e.target.value || null })}
-                placeholder="Legenda (ex.: Pizza Aconchego)" aria-label="Legenda" className={`${campoCls} mt-0 py-2`} />
+                placeholder="Ex.: Pizza calabresa do Aconchego, em Pompéu – MG" aria-label="Legenda da foto"
+                className={`${campoCls} mt-0 py-2 ${f.legenda ? "" : "border-dourado bg-dourado/10"}`} />
+              <p className="text-xs text-muted">{f.legenda ? "Legenda salva ✓ (salva sozinha ao sair do campo)" : "Escreva a legenda: o que aparece + Aconchego + Pompéu"}</p>
               <div className="flex items-center gap-1">
                 <button type="button" onClick={() => mover(i, -1)} aria-label="Subir" className="rounded-pill p-2 text-muted"><ArrowUp size={20} /></button>
                 <button type="button" onClick={() => mover(i, 1)} aria-label="Descer" className="rounded-pill p-2 text-muted"><ArrowDown size={20} /></button>
@@ -135,8 +154,20 @@ function Publicacoes() {
 
   return (
     <>
-      <Botao className="w-full" onClick={() => setEditando({ titulo: "", resumo: "", conteudo: "", capa_url: null, publicado: false, publicado_em: null })}><Plus size={20} />Nova publicação</Botao>
-      <p className="mt-2 text-center text-sm text-muted">Ideias: promoção da semana, prato novo, evento, horário de feriado, história de um prato.</p>
+      <Ajuda titulo="Como escrever uma novidade" passos={[
+        <>Toque em <b>Nova novidade</b>.</>,
+        <>Escreva um <b>título</b> que diga o assunto e a cidade. Ex.: <i>“Rodízio de pizza toda sexta no Aconchego, em Pompéu”</i>.</>,
+        <>Escreva um <b>resumo</b> de uma ou duas frases. Ele aparece no Google e no card do site.</>,
+        <>Escreva o <b>texto</b> com calma: o que é, quando, quanto custa, como pedir. Pule uma linha entre os parágrafos.</>,
+        <>Coloque uma <b>foto de capa</b>, ligue <b>Publicado no site</b> e toque em <b>Salvar</b>.</>,
+      ]} dicas={[
+        "Onde aparece: na página “Novidades” do site (menu e rodapé) e nas 3 mais recentes da página inicial.",
+        "Quanto mais novidades, melhor para o Google e para as IAs (ChatGPT, Gemini) indicarem o Aconchego. Uma por semana já ajuda muito.",
+        "Ideias: promoção da semana, prato novo, jogo na TV, horário de feriado, evento, história da casa, bastidores da cozinha.",
+        "Ainda não terminou? Deixe desligado “Publicado no site”: fica como rascunho, só aqui no painel.",
+      ]} aberta={posts.length === 0} />
+      <Botao className="w-full" onClick={() => setEditando({ titulo: "", resumo: "", conteudo: "", capa_url: null, publicado: false, publicado_em: null })}><Plus size={20} />Nova novidade</Botao>
+      {posts.length === 0 && <p className="mt-4 rounded-md bg-creme-200 p-4 text-center text-muted">Nenhuma novidade ainda. Que tal começar com a promoção desta semana?</p>}
       <ul className="mt-6 space-y-3">
         {posts.map((p) => (
           <li key={p.id} className="flex items-center gap-3 rounded-md border border-linha bg-creme-50 p-3">
@@ -197,10 +228,13 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
   }
 
   return (
-    <Sheet aberto titulo={p.id ? "Editar publicação" : "Nova publicação"} onFechar={onFechar}
+    <Sheet aberto titulo={p.id ? "Editar novidade" : "Nova novidade"} onFechar={onFechar}
       rodape={<div className="flex gap-3">{p.id && <Botao variante="perigo" onClick={excluir} aria-label="Apagar"><Trash2 size={20} /></Botao>}<Botao className="flex-1" disabled={salvando} onClick={salvar}>{salvando ? "Salvando…" : "Salvar"}</Botao></div>}>
       <div className="space-y-5">
-        <Campo rotulo="Título" value={p.titulo} onChange={(e) => set("titulo", e.target.value)} placeholder="Ex.: Rodízio de pizza na sexta-feira" />
+        <div>
+          <Campo rotulo="Título" value={p.titulo} onChange={(e) => set("titulo", e.target.value)} placeholder="Ex.: Rodízio de pizza toda sexta no Aconchego, em Pompéu" />
+          <Explica>Diga o assunto e, se couber, “Aconchego” e “Pompéu”. É o que aparece em azul no Google.</Explica>
+        </div>
         <AreaTexto rotulo="Resumo" dica="Uma ou duas frases. Aparece no card e no Google." rows={2} value={p.resumo ?? ""} onChange={(e) => set("resumo", e.target.value)} />
         <AreaTexto rotulo="Texto" dica="Deixe uma linha em branco entre parágrafos. Use ## no começo da linha para subtítulo e - para lista." rows={10} value={p.conteudo} onChange={(e) => set("conteudo", e.target.value)} />
         <div>
@@ -213,7 +247,7 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
             </div>
           </div>
         </div>
-        <Chave ligado={p.publicado} onChange={(v) => set("publicado", v)} rotulo={p.publicado ? "Publicado no site" : "Rascunho (só no painel)"} />
+        <Chave ligado={p.publicado} onChange={(v) => set("publicado", v)} rotulo={p.publicado ? "Publicado no site" : "Rascunho (só no painel)"} descricao="Ligado: aparece em Novidades no site. Desligado: fica guardado só aqui." />
         {erro && <Aviso tipo="erro">{erro}</Aviso>}
       </div>
     </Sheet>

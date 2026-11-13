@@ -11,6 +11,10 @@ import { ListaFaq } from "@/components/ListaFaq";
 import { StatusAberto } from "@/components/StatusAberto";
 import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
 import { GaleriaFaixa } from "@/components/GaleriaFaixa";
+import Image from "next/image";
+import { Busca } from "@/components/Busca";
+import { Logo } from "@/components/Logo";
+import { montarBusca } from "@/lib/busca";
 import { CardPost } from "@/components/CardPost";
 import { faqJsonLd } from "@/lib/schema";
 import { NEGOCIO, formatarPreco } from "@/lib/site";
@@ -21,27 +25,27 @@ export default async function Home() {
   ]);
   // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
+  const busca = montarBusca([...dia, ...noite]);
   const destaques = produtos.filter((p) => p.destaque && p.disponivel && idsNoite.has(p.categoria_id)).slice(0, 4);
 
   return (
     <>
       {faq.length > 0 && <JsonLd data={faqJsonLd(faq)} />}
 
-      {/* Hero compacto */}
+      {/* Capa: logo em destaque, status, busca e os dois botões que vendem */}
       <section className="relative overflow-hidden bg-vinho-700 text-creme-50">
-        <svg aria-hidden className="absolute -right-6 -top-4 h-28 w-28 opacity-20 md:h-40 md:w-40" viewBox="0 0 160 200" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round">
-          <path d="M40 190 C16 160 64 130 40 100 C16 70 64 40 40 10" />
-          <path d="M80 190 C56 160 104 130 80 100 C56 70 104 40 80 10" />
-          <path d="M120 190 C96 160 144 130 120 100 C96 70 144 40 120 10" />
-        </svg>
-        <div className="relative mx-auto max-w-5xl px-4 pb-4 pt-3 md:py-12">
-          <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
-          <h1 className="mt-2 max-w-xl text-[1.3rem] font-bold leading-snug md:text-5xl md:leading-tight">Restaurante e Pizzaria Aconchego em Pompéu – MG</h1>
-          <p className="mt-1 max-w-xl text-sm opacity-90 md:mt-2 md:text-lg">Almoço caseiro de dia. Pizzaria e choperia à noite.</p>
-          <div className="mt-3 grid grid-cols-2 gap-2 md:mt-5 md:flex md:gap-3">
-            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-2.5 text-center text-[15px] font-semibold md:py-3 md:text-base text-vinho-700 hover:bg-creme-200">Ver cardápio</a>
-            <BotaoWhatsApp texto="WhatsApp" compacto />
+        {fotos[0] && (
+          <Image src={fotos[0].url} alt="" fill priority sizes="100vw" className="object-cover opacity-20" />
+        )}
+        <div className="relative mx-auto flex max-w-xl flex-col items-center px-4 pb-6 pt-6 text-center md:pb-12 md:pt-10">
+          <Logo variante="branca" altura={110} prioridade />
+          <div className="mt-3"><Suspense><StatusAberto horarios={config.horarios} /></Suspense></div>
+          <div className="mt-4 w-full"><Busca itens={busca} mostrarPreco={config.mostrar_precos} clara /></div>
+          <div className="mt-3 grid w-full grid-cols-2 gap-2">
+            <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-[15px] font-semibold text-vinho-700 hover:bg-creme-200 md:text-base">Ver cardápio</a>
+            <BotaoWhatsApp texto="Pedir agora" compacto />
           </div>
+          <h1 className="mt-4 text-xs font-medium uppercase tracking-[0.15em] opacity-80 md:text-sm">Restaurante e pizzaria no centro de Pompéu – MG</h1>
         </div>
       </section>
 

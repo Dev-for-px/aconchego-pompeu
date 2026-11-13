@@ -73,3 +73,29 @@ export function traduzirErro(msg: string) {
   if (/rate limit|too many/i.test(msg)) return "Muitas tentativas. Espere um minuto e tente de novo.";
   return msg;
 }
+
+/** Caixa "Como usar esta tela" — explica a função para quem não tem costume com computador. */
+export function Ajuda({ titulo = "Como usar esta tela", passos, dicas, aberta = false }: { titulo?: string; passos: ReactNode[]; dicas?: ReactNode[]; aberta?: boolean }) {
+  return (
+    <details open={aberta} className="group mb-6 rounded-md border border-dourado bg-dourado/15">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 font-semibold text-ink">
+        <span>💡 {titulo}</span>
+        <span aria-hidden className="text-xl text-vinho-500 transition group-open:rotate-45">+</span>
+      </summary>
+      <div className="space-y-3 px-4 pb-4 text-ink">
+        <ol className="list-decimal space-y-1.5 pl-5">{passos.map((p, i) => <li key={i}>{p}</li>)}</ol>
+        {dicas && dicas.length > 0 && (
+          <div className="rounded-md bg-creme-50 p-3 text-sm">
+            <p className="font-semibold">Dicas</p>
+            <ul className="mt-1 list-disc space-y-1 pl-5 text-muted">{dicas.map((d, i) => <li key={i}>{d}</li>)}</ul>
+          </div>
+        )}
+      </div>
+    </details>
+  );
+}
+
+/** Pequena explicação embaixo de um campo ou botão. */
+export function Explica({ children }: { children: ReactNode }) {
+  return <p className="mt-1 text-sm text-muted">{children}</p>;
+}

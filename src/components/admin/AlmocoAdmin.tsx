@@ -7,7 +7,7 @@ import { useSessao } from "@/lib/admin/sessao";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "@/lib/horario";
 import { createClient } from "@/lib/supabase/client";
-import { AreaTexto, Aviso, Botao, Campo, campoCls, Titulo } from "./ui";
+import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Titulo } from "./ui";
 
 type Registro = { id: string; data: string; texto_original: string; itens: SecaoAlmoco[]; publicado: boolean };
 
@@ -101,6 +101,17 @@ export function AlmocoAdmin() {
   return (
     <>
       <Titulo sub="Cole o texto que chegou no WhatsApp. O site monta o cardápio sozinho e ele só vale para a data escolhida.">Cardápio do almoço</Titulo>
+      <Ajuda passos={[
+        <>No WhatsApp, <b>segure o dedo</b> em cima da mensagem do cardápio e toque em <b>Copiar</b>.</>,
+        <>Volte aqui, toque no campo <b>“Cole aqui o cardápio”</b>, segure o dedo e toque em <b>Colar</b>.</>,
+        <>Embaixo aparece <b>como vai ficar no site</b>. Se algo saiu errado, toque no item e corrija, ou apague na lixeira.</>,
+        <>Toque no botão verde <b>Publicar cardápio de hoje</b>. Pronto, já está no site!</>,
+      ]} dicas={[
+        <>Para separar em grupos (Carnes, Acompanhamentos…), escreva o nome do grupo em <b>*asteriscos*</b> ou com dois pontos no fim: “Carnes:”.</>,
+        <>Quer deixar o de amanhã pronto? Troque a <b>data</b> antes de publicar.</>,
+        <>O cardápio sai do site sozinho no horário de <b>“Sai do site todo dia às”</b>.</>,
+        <>Cardápio parecido com o de outro dia? Use <b>Reaproveitar</b> lá embaixo e só ajuste.</>,
+      ]} />
 
       <div className="space-y-5">
         <Campo rotulo="Para qual dia?" type="date" value={data} onChange={(e) => setData(e.target.value)} />

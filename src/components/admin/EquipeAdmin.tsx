@@ -5,7 +5,7 @@ import { NOME_PERFIL, useSessao, type Membro, type Perfil } from "@/lib/admin/se
 import { createClient } from "@/lib/supabase/client";
 import { formatarTelefone } from "@/lib/site";
 import { Sheet } from "@/components/Sheet";
-import { Aviso, Botao, Campo, campoCls, Chave, Titulo, traduzirErro } from "./ui";
+import { Ajuda, Aviso, Botao, Campo, campoCls, Chave, Titulo, traduzirErro } from "./ui";
 
 const DESCRICAO: Record<Perfil, string> = {
   dono: "Faz tudo, inclusive cadastrar a equipe",
@@ -47,6 +47,15 @@ export function EquipeAdmin() {
   return (
     <>
       <Titulo sub="Cada pessoa entra com o telefone (ou usuário/e-mail) e uma senha.">Equipe</Titulo>
+      <Ajuda passos={[
+        <>Toque em <b>Cadastrar pessoa</b>, preencha nome, telefone e uma senha, e escolha <b>o que ela pode fazer</b>.</>,
+        <>Passe para a pessoa: o endereço <b>{typeof window !== "undefined" ? window.location.host : ""}/admin</b>, o telefone e a senha.</>,
+        <>Esqueceu a senha? Toque em <b>Senha</b> ao lado do nome e crie uma nova.</>,
+        <>Alguém saiu da equipe? Desligue <b>Acesso liberado</b>. A pessoa não entra mais, e o que ela fez continua no histórico.</>,
+      ]} dicas={[
+        "Dono(a): faz tudo. Gerente: cardápio, preços, almoço e ajustes. Social media: almoço, fotos e novidades. Atendente: só liga e desliga itens e pausa pedidos.",
+        "Dê para cada pessoa só o acesso que ela precisa.",
+      ]} />
       <Botao className="w-full" onClick={() => setNovo(true)}><UserPlus size={20} />Cadastrar pessoa</Botao>
       {msg && <div className="mt-4"><Aviso tipo={msg.tipo}>{msg.txt}</Aviso></div>}
       <ul className="mt-6 space-y-3">

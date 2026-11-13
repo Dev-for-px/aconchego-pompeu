@@ -8,7 +8,7 @@ import { prepararFoto, slugificar } from "@/lib/admin/fotos";
 import { useSessao } from "@/lib/admin/sessao";
 import type { Categoria, Produto, Variacao } from "@/lib/dados";
 import { createClient } from "@/lib/supabase/client";
-import { AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Titulo, traduzirErro } from "./ui";
+import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Explica, Titulo, traduzirErro } from "./ui";
 
 type Editavel = Pick<Produto, "nome" | "descricao" | "preco" | "variacoes" | "foto_url" | "destaque" | "meio_a_meio" | "disponivel" | "tags"> & { id?: string; categoria_id: string };
 
@@ -54,6 +54,20 @@ export function CardapioAdmin() {
   return (
     <>
       <Titulo sub={podeEditar ? "Toque no interruptor para tirar um item do site na hora. Toque no lápis para editar." : "Acabou algum item? Desligue aqui que ele some do site na hora."}>Cardápio</Titulo>
+      <Ajuda passos={podeEditar ? [
+        <>Toque no nome de um grupo (ex.: <b>Pizzas</b>) para ver os itens.</>,
+        <>O <b>interruptor verde</b> mostra o item no site. Desligado (cinza), o item aparece como <b>“Indisponível hoje”</b>.</>,
+        <>Toque no <b>lápis</b> para mudar nome, descrição, preço, tamanhos ou foto. Depois toque em <b>Salvar</b>.</>,
+        <>Para criar um item novo, abra o grupo e toque em <b>+ Novo item</b> no final da lista.</>,
+      ] : [
+        <>Toque no nome de um grupo (ex.: <b>Pizzas</b>) para ver os itens.</>,
+        <>Acabou algum item? <b>Desligue o interruptor</b>. Ele aparece no site como “Indisponível hoje”.</>,
+        <>Voltou a ter? Ligue de novo.</>,
+      ]} dicas={podeEditar ? [
+        "Só por hoje? Use o interruptor. Apagar (lixeira) tira o item para sempre.",
+        "Use a busca no topo para achar um item rápido.",
+        "Descrição boa vende mais: diga os ingredientes e se serve 2 pessoas.",
+      ] : undefined} />
       {podeEditar && mostrarPrecos !== null && (
         <div className="mb-4">
           <Chave ligado={mostrarPrecos} rotulo={mostrarPrecos ? "Preços aparecendo no site" : "Todos os preços escondidos"} descricao="Liga ou desliga todos os preços de uma vez."
@@ -171,11 +185,15 @@ function EditorProduto({ inicial, categorias, onFechar, onSalvo }: { inicial: Ed
     <Sheet aberto titulo={p.id ? "Editar item" : "Novo item"} onFechar={onFechar}
       rodape={<div className="flex gap-3">{p.id && <Botao variante="perigo" onClick={excluir} aria-label="Apagar item"><Trash2 size={20} /></Botao>}<Botao className="flex-1" disabled={salvando} onClick={salvar}>{salvando ? "Salvando…" : "Salvar"}</Botao></div>}>
       <div className="space-y-5">
-        <Campo rotulo="Nome" value={p.nome} onChange={(e) => set("nome", e.target.value)} />
+        <div>
+          <Campo rotulo="Nome" value={p.nome} onChange={(e) => set("nome", e.target.value)} />
+          <Explica>Como o cliente procura. Ex.: “Pizza Calabresa”, “Porção de Picanha”.</Explica>
+        </div>
         <AreaTexto rotulo="Descrição" dica="Ingredientes ou detalhes. Opcional." rows={3} value={p.descricao ?? ""} onChange={(e) => set("descricao", e.target.value)} />
 
         <div>
           <span className="font-semibold">Foto <span className="font-normal text-muted">(opcional)</span></span>
+          <Explica>Tire de cima ou de lado, com boa luz. A foto fica quadrada sem cortar nada, e o Google lê o nome do prato nela automaticamente.</Explica>
           <div className="mt-2 flex items-center gap-3">
             {p.foto_url ? <Image src={p.foto_url} alt="" width={96} height={96} className="h-24 w-24 rounded-md object-cover" /> : <div className="flex h-24 w-24 items-center justify-center rounded-md bg-creme-200 text-muted"><ImagePlus size={28} /></div>}
             <div className="flex flex-col gap-2">
