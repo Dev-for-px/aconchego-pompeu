@@ -20,9 +20,9 @@
   - Project URL `https://yfjdwxdqhvggsibigqif.supabase.co`; publishable key em Settings → API
   - Senha do banco e chave service_role NUNCA ficam em documentos
 - Stack: Next.js 16 (App Router, cacheComponents) + TypeScript + Tailwind v4 + Supabase
-- Design: artifact "Aconchego" (Design System) no claude.ai — tokens já copiados no código (`src/app/globals.css`); logo oficial em `marca/` (intocável)
-- Apresentação para a cliente: https://claude.ai/artifact/K1Xu54eGFEJUsR3hHWbmFR (Slides, 13 slides — atualizar a cada mudança)
-- Atenção: os artifacts (Design System e Apresentação) ficam na conta antiga do claude.ai. Na conta nova, recriar a partir deste pacote se precisar.
+- Design System "Aconchego" (conta nova, 13/11): https://claude.ai/artifact/VhYdBXQjBFv4Y9XwnNPZYb — tokens iguais aos do código (`src/app/globals.css`); logo oficial em `public/marca/` (intocável)
+- Apresentação para a cliente (conta nova, 13/11): https://claude.ai/artifact/4hs21ED2JqN1RKCpse8RTW (Slides, 13 slides — atualizar a cada mudança)
+- Links antigos (conta anterior) foram substituídos pelos de cima.
 
 ## Acessos ao painel (/admin)
 - Pedro (usuário `pedroribeiro`), José Rufino (`joserufino`) e Helena (`helenaaconchego`) — todos perfil Dono
