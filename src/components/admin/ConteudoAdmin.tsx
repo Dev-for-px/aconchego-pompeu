@@ -7,7 +7,7 @@ import { Sheet } from "@/components/Sheet";
 import { prepararFoto, slugificar } from "@/lib/admin/fotos";
 import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
-import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Explica, Titulo, traduzirErro } from "./ui";
+import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Explica, Titulo, traduzirErro } from "./ui";
 
 type Foto = { id: string; url: string; legenda: string | null; ordem: number; ativo: boolean };
 type Post = { id?: string; titulo: string; slug?: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado: boolean; publicado_em: string | null };
@@ -159,12 +159,12 @@ function Publicacoes() {
         <>Escreva um <b>título</b> que diga o assunto e a cidade. Ex.: <i>“Rodízio de pizza toda sexta no Aconchego, em Pompéu”</i>.</>,
         <>Escreva um <b>resumo</b> de uma ou duas frases. Ele aparece no Google e no card do site.</>,
         <>Escreva o <b>texto</b> com calma: o que é, quando, quanto custa, como pedir. Pule uma linha entre os parágrafos.</>,
-        <>Coloque uma <b>foto de capa</b>, ligue <b>Publicado no site</b> e toque em <b>Salvar</b>.</>,
+        <>Coloque uma <b>foto de capa</b> e toque em <b>Publicar no site</b>. Ainda não terminou? Toque em <b>Salvar rascunho</b> e continue depois.</>,
       ]} dicas={[
         "Onde aparece: na página “Novidades” do site (menu e rodapé) e nas 3 mais recentes da página inicial.",
         "Quanto mais novidades, melhor para o Google e para as IAs (ChatGPT, Gemini) indicarem o Aconchego. Uma por semana já ajuda muito.",
         "Ideias: promoção da semana, prato novo, jogo na TV, horário de feriado, evento, história da casa, bastidores da cozinha.",
-        "Ainda não terminou? Deixe desligado “Publicado no site”: fica como rascunho, só aqui no painel.",
+        "Embaixo de cada campo tem um contador de caracteres: verde é o tamanho ideal para o Google.",
       ]} aberta={posts.length === 0} />
       <Botao className="w-full" onClick={() => setEditando({ titulo: "", resumo: "", conteudo: "", capa_url: null, publicado: false, publicado_em: null })}><Plus size={20} />Nova novidade</Botao>
       {posts.length === 0 && <p className="mt-4 rounded-md bg-creme-200 p-4 text-center text-muted">Nenhuma novidade ainda. Que tal começar com a promoção desta semana?</p>}
@@ -198,8 +198,9 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
     try { set("capa_url", await enviar(supabase, arquivo, "posts", p.titulo)); } catch (e) { setErro(e instanceof Error ? e.message : "Erro na foto"); }
   }
 
-  async function salvar() {
+  async function salvar(publicar: boolean) {
     if (!p.titulo.trim()) return setErro("Escreva um título.");
+    if (publicar && p.conteudo.trim().length < 80) return setErro("Escreva um pouco mais no texto antes de publicar (pelo menos 2 ou 3 frases).");
     setSalvando(true);
     setErro(null);
     const dados = {
@@ -207,8 +208,8 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
       resumo: p.resumo?.trim() || null,
       conteudo: p.conteudo,
       capa_url: p.capa_url,
-      publicado: p.publicado,
-      publicado_em: p.publicado ? p.publicado_em ?? new Date().toISOString() : p.publicado_em,
+      publicado: publicar,
+      publicado_em: publicar ? p.publicado_em ?? new Date().toISOString() : p.publicado_em,
       atualizado_em: new Date().toISOString(),
     };
     const { error } = p.id
@@ -229,14 +230,30 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
 
   return (
     <Sheet aberto titulo={p.id ? "Editar novidade" : "Nova novidade"} onFechar={onFechar}
-      rodape={<div className="flex gap-3">{p.id && <Botao variante="perigo" onClick={excluir} aria-label="Apagar"><Trash2 size={20} /></Botao>}<Botao className="flex-1" disabled={salvando} onClick={salvar}>{salvando ? "Salvando…" : "Salvar"}</Botao></div>}>
+      rodape={
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            {p.id && <Botao variante="perigo" onClick={excluir} aria-label="Apagar novidade"><Trash2 size={20} /></Botao>}
+            <Botao variante="secundario" className="flex-1" disabled={salvando} onClick={() => salvar(false)}>{p.publicado ? "Tirar do site" : "Salvar rascunho"}</Botao>
+            <Botao variante="verde" className="flex-1" disabled={salvando} onClick={() => salvar(true)}>{salvando ? "Salvando…" : p.publicado ? "Atualizar no site" : "Publicar no site"}</Botao>
+          </div>
+          <p className="text-center text-xs text-muted">{p.publicado ? "Esta novidade está no site." : "Rascunho fica só aqui no painel. Publicar coloca no site na hora."}</p>
+        </div>
+      }>
       <div className="space-y-5">
         <div>
           <Campo rotulo="Título" value={p.titulo} onChange={(e) => set("titulo", e.target.value)} placeholder="Ex.: Rodízio de pizza toda sexta no Aconchego, em Pompéu" />
+          <Contador atual={p.titulo.length} ideal={[30, 60]} dica="O Google mostra até uns 60 caracteres." />
           <Explica>Diga o assunto e, se couber, “Aconchego” e “Pompéu”. É o que aparece em azul no Google.</Explica>
         </div>
-        <AreaTexto rotulo="Resumo" dica="Uma ou duas frases. Aparece no card e no Google." rows={2} value={p.resumo ?? ""} onChange={(e) => set("resumo", e.target.value)} />
-        <AreaTexto rotulo="Texto" dica="Deixe uma linha em branco entre parágrafos. Use ## no começo da linha para subtítulo e - para lista." rows={10} value={p.conteudo} onChange={(e) => set("conteudo", e.target.value)} />
+        <div>
+          <AreaTexto rotulo="Resumo" dica="Uma ou duas frases. Aparece no card e no Google." rows={2} value={p.resumo ?? ""} onChange={(e) => set("resumo", e.target.value)} />
+          <Contador atual={(p.resumo ?? "").length} ideal={[70, 155]} dica="O Google mostra até uns 155 caracteres." />
+        </div>
+        <div>
+          <AreaTexto rotulo="Texto" dica="Deixe uma linha em branco entre parágrafos. Use ## no começo da linha para subtítulo e - para lista." rows={10} value={p.conteudo} onChange={(e) => set("conteudo", e.target.value)} />
+          <Contador atual={p.conteudo.length} ideal={[600, 4000]} dica="Textos a partir de 600 caracteres (uns 3 parágrafos) aparecem melhor no Google." palavras={p.conteudo.trim() ? p.conteudo.trim().split(/\s+/).length : 0} />
+        </div>
         <div>
           <span className="font-semibold">Foto de capa <span className="font-normal text-muted">(opcional)</span></span>
           <div className="mt-2 flex items-center gap-3">
@@ -247,9 +264,19 @@ function EditorPost({ inicial, onFechar, onSalvo }: { inicial: Post; onFechar: (
             </div>
           </div>
         </div>
-        <Chave ligado={p.publicado} onChange={(v) => set("publicado", v)} rotulo={p.publicado ? "Publicado no site" : "Rascunho (só no painel)"} descricao="Ligado: aparece em Novidades no site. Desligado: fica guardado só aqui." />
         {erro && <Aviso tipo="erro">{erro}</Aviso>}
       </div>
     </Sheet>
+  );
+}
+
+/** Contador de caracteres com faixa ideal (verde dentro, amarelo fora). */
+function Contador({ atual, ideal, dica, palavras }: { atual: number; ideal: [number, number]; dica: string; palavras?: number }) {
+  const ok = atual >= ideal[0] && atual <= ideal[1];
+  const cor = atual === 0 ? "text-muted" : ok ? "text-aberto" : "text-vinho-500";
+  return (
+    <p className={`mt-1 text-xs font-semibold ${cor}`}>
+      {atual} caracteres{palavras != null ? ` · ${palavras} palavras` : ""} · ideal {ideal[0]}–{ideal[1]}. <span className="font-normal text-muted">{dica}</span>
+    </p>
   );
 }

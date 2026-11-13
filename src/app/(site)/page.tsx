@@ -11,9 +11,7 @@ import { ListaFaq } from "@/components/ListaFaq";
 import { StatusAberto } from "@/components/StatusAberto";
 import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
 import { GaleriaFaixa } from "@/components/GaleriaFaixa";
-import Image from "next/image";
 import { Busca } from "@/components/Busca";
-import { Logo } from "@/components/Logo";
 import { montarBusca } from "@/lib/busca";
 import { CardPost } from "@/components/CardPost";
 import { faqJsonLd } from "@/lib/schema";
@@ -32,20 +30,16 @@ export default async function Home() {
     <>
       {faq.length > 0 && <JsonLd data={faqJsonLd(faq)} />}
 
-      {/* Capa: logo em destaque, status, busca e os dois botões que vendem */}
-      <section className="relative overflow-hidden bg-vinho-700 text-creme-50">
-        {fotos[0] && (
-          <Image src={fotos[0].url} alt="" fill priority sizes="100vw" className="object-cover opacity-[0.12] blur-[2px]" />
-        )}
-        <div className="relative mx-auto flex max-w-xl flex-col items-center px-4 pb-6 pt-6 text-center md:pb-12 md:pt-10">
-          <Logo variante="branca" altura={110} prioridade />
-          <div className="mt-3"><Suspense><StatusAberto horarios={config.horarios} /></Suspense></div>
+      {/* Capa: status, título, busca e os dois botões que vendem */}
+      <section className="bg-vinho-700 text-creme-50">
+        <div className="mx-auto flex max-w-xl flex-col items-center px-4 pb-6 pt-5 text-center md:pb-10 md:pt-10">
+          <Suspense><StatusAberto horarios={config.horarios} /></Suspense>
+          <h1 className="mt-3 text-xl font-semibold leading-snug md:text-3xl">Restaurante e pizzaria no centro de Pompéu – MG</h1>
           <div className="mt-4 w-full"><Busca itens={busca} mostrarPreco={config.mostrar_precos} clara /></div>
           <div className="mt-3 grid w-full grid-cols-2 gap-2">
             <a href="#cardapio" className="rounded-pill bg-creme-50 px-4 py-3 text-center text-[15px] font-semibold text-vinho-700 hover:bg-creme-200 md:text-base">Ver cardápio</a>
             <BotaoWhatsApp texto="Pedir agora" compacto />
           </div>
-          <h1 className="mt-4 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] opacity-80 md:text-sm">Restaurante e pizzaria no centro de Pompéu – MG</h1>
         </div>
       </section>
 
