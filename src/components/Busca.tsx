@@ -43,7 +43,7 @@ export function Busca({ itens, mostrarPreco, clara = false }: { itens: ItemBusca
       </button>
 
       {aberta && (
-        <div role="dialog" aria-modal="true" aria-label="Buscar no cardápio" className="fixed inset-0 z-[75] flex flex-col bg-creme-50">
+        <div role="dialog" aria-modal="true" aria-label="Buscar no cardápio" className="fixed inset-0 z-[75] flex flex-col bg-creme-50 text-left">
           <div className="flex items-center gap-2 border-b border-linha px-3 py-3">
             <Search size={22} className="ml-1 shrink-0 text-vinho-500" aria-hidden />
             <input ref={campo} value={q} onChange={(e) => setQ(e.target.value)} type="search" enterKeyHint="search" placeholder="O que você quer comer?"
