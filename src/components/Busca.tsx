@@ -39,7 +39,7 @@ export function Busca({ itens, mostrarPreco, clara = false }: { itens: ItemBusca
       <button type="button" onClick={() => setAberta(true)}
         className={`flex w-full items-center gap-3 rounded-pill px-5 py-3.5 text-left text-base ${clara ? "bg-creme-50 text-muted" : "border border-linha bg-creme-50 text-muted"}`}>
         <Search size={20} className="text-vinho-500" aria-hidden />
-        <span>Buscar no cardápio: pizza, picanha, chopp…</span>
+        <span className="truncate">Buscar pizza, picanha, chopp…</span>
       </button>
 
       {aberta && (
