@@ -21,7 +21,8 @@ export type Faq = { id: string; pergunta: string; resposta: string };
 export type Avaliacao = { id: string; autor: string; nota: number; texto: string | null; data: string | null };
 export type Foto = { id: string; url: string; legenda: string | null; turno?: "almoco" | "noite" | "ambos" };
 export type Promocao = { id: string; titulo: string; descricao: string | null; preco: number | null; foto_url: string | null; valido_de: string | null; valido_ate: string | null };
-export type SecaoAlmoco = { secao: string; itens: { nome: string; preco?: number | null }[] };
+export type ItemAlmoco = { nome: string; preco?: number | null; churrasco?: boolean };
+export type SecaoAlmoco = { secao: string; itens: ItemAlmoco[] };
 export type Almoco = { data: string; itens: SecaoAlmoco[]; atualizado_em: string } | null;
 export type Post = { id: string; titulo: string; slug: string; resumo: string | null; conteudo: string; capa_url: string | null; publicado_em: string | null; atualizado_em: string };
 export type Config = {
@@ -174,10 +175,16 @@ export async function getPosts(limite = 50): Promise<Post[]> {
   }, []);
 }
 
+export const VARIACAO_CHURRASCO = "Com churrasco";
+
 /** Tipos de marmitex cadastrados no painel (Almoço › Tipos de marmitex). */
 export async function getMarmitas() {
   const cats = await getCardapio("almoco");
   return (cats.find((c) => c.slug === "marmitex")?.produtos ?? [])
     .filter((p) => p.disponivel)
-    .map((p) => ({ id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco }));
+    .map((p) => ({
+      id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco,
+      // Preço quando o cliente marca churrasco: guardado em variacoes como "Com churrasco".
+      precoChurrasco: p.variacoes?.find((v) => v.nome === VARIACAO_CHURRASCO)?.preco ?? null,
+    }));
 }

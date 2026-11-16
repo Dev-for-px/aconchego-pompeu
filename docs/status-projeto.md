@@ -33,7 +33,7 @@
 - Abas Almoço / Pizzaria (abre conforme o horário); fotos dentro das abas (noite após destaques, almoço antes das bebidas)
 - Cardápio da noite importado (72 itens + bebidas, tamanhos, meio a meio, bordas/adicionais); categorias recolhíveis; alcoólicas recolhidas em "Chopp, cervejas e drinks"
 - Almoço do dia: cola o texto do WhatsApp no painel → publica; sai do ar no horário configurado (padrão 15h30)
-- Monte sua marmita (só no almoço): tipos de marmitex com preço opcional no painel (Almoço › Tipos de marmitex), cliente escolhe o tipo, marca itens do dia, pode montar várias
+- Almoço pelo site = marmitex (16/11): botão "Quero um marmitex" → marca os itens do dia → se marcar churrasco vira "marmitex com churrasco" com preço próprio. Painel Almoço simplificado em 2 passos (1. Cardápio de hoje, 2. Preços do marmitex: normal e com churrasco); o resto fica em "Mais opções"
 - Carrinho → WhatsApp (mensagem pronta, entrega/retirada, taxa, "a confirmar" sem preço, chave para esconder todos os preços)
 - Painel: Início, Almoço, Cardápio, Fotos e novidades (galeria por turno + posts com rascunho/publicar), Equipe, Ajustes (horários, taxa, WhatsApp, redes, aviso "Já vai?", história, FAQ), Resultados
 - Resultados: cliques em WhatsApp/ligar/como chegar/redes, carrinho, pedidos, buscas, páginas; gráficos por dia/hora; "Copiar resumo"
@@ -42,7 +42,7 @@
 - Rodapé com redes configuráveis e "Desenvolvido por PHAR Consultoria"; links externos em nova aba
 
 ## Pendências
-- [ ] Rodar no SQL Editor do Supabase `supabase/migrations/0009_tipos_marmitex.sql` (ou cadastrar os tipos de marmitex pelo painel)
+- [ ] Cadastrar no painel (Almoço › Preços do marmitex) o nome e os dois preços reais; hoje existe só um tipo de teste ("222333", R$ 30). A migration 0009 foi removida (não é mais necessária)
 - [ ] Desativar "Allow new users to sign up" no Supabase (Authentication → Sign In / Providers)
 - [ ] Preencher preços que faltam (~61 itens) e fotos/legendas
 - [ ] Conferir com a cliente: preços PDF × Aiqfome, pizzas doces, borda no brotinho, chopp (tamanhos/preços), taxa R$ 4 × R$ 3

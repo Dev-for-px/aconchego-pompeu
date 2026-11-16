@@ -72,10 +72,11 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Painel: `/admin/resultados` (números, gráficos por dia e por hora, rankings, "Copiar resumo")
 - Fotos: `galeria.turno` (almoco/noite/ambos) — aparecem dentro das abas da home
 
-## Marmitex
-- Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Tipos de marmitex (`MarmitasAdmin`); preço opcional
-- No site, `MontarMarmita` (dentro de `AlmocoDoDia`, só no horário do almoço): escolhe o tipo, marca itens do cardápio do dia, observação, quantidade; "Montar mais uma marmita"
-- A categoria marmitex não aparece na lista comum do almoço (fica só no montador)
+## Marmitex (almoço)
+- Pelo site o almoço é sempre **marmitex** (quem come na casa se serve lá): o cardápio do dia é só leitura e o pedido começa no botão "Quero um marmitex" (`MontarMarmita`, dentro de `AlmocoDoDia`, só no horário do almoço)
+- Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Preços do marmitex (`MarmitasAdmin`): preço normal em `preco` e preço com churrasco em `variacoes` (`{ nome: "Com churrasco", preco }`, constante `VARIACAO_CHURRASCO`); ambos opcionais
+- Item do cardápio do dia tem `churrasco: boolean` (o parser marca sozinho pelo nome/grupo; a equipe corrige no foguinho do painel). Cliente marcou um item de churrasco → o item vira "<tipo> com churrasco" e usa o preço com churrasco
+- Um tipo só: o site pula a escolha do tipo. A categoria marmitex não aparece na lista comum do almoço
 
 ## Páginas de SEO local
 - `/pizzaria-em-pompeu`, `/almoco-em-pompeu`, `/churrascaria-em-pompeu`, `/choperia-em-pompeu`, `/delivery-em-pompeu` — componente `PaginaLocal` (texto próprio + horário/itens/fotos do banco + FAQ com schema)
