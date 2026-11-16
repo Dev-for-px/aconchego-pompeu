@@ -47,7 +47,7 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
     const menor = tipos.map((t) => t.preco).filter((p): p is number => p != null).sort((a, b) => a - b)[0];
     return (
       <button type="button" onClick={() => setAberto(true)} data-evento="marmitex" data-rotulo="Quero um marmitex"
-        className="mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-pill bg-vinho-700 px-6 py-4 text-lg font-semibold text-creme-50 hover:bg-vinho-800">
+        className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-pill bg-vinho-700 px-6 py-4 text-lg font-semibold text-creme-50 hover:bg-vinho-800">
         Quero um marmitex{mostrarPreco && menor != null && <span className="font-normal opacity-90">· a partir de {formatarPreco(menor)}</span>}
       </button>
     );
@@ -55,7 +55,7 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
 
   const passoItens = tipos.length > 1 ? 2 : 1;
   return (
-    <div className="mt-3 rounded-md border border-linha bg-creme-200 p-4 md:p-6">
+    <div className="mt-4 rounded-md border border-linha bg-creme-50 p-4 md:p-6">
       <h3 className="font-serif text-xl font-semibold text-ink">Monte seu marmitex</h3>
       {pronto ? (
         <div className="mt-3 space-y-3">

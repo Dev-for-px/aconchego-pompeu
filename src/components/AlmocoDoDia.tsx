@@ -1,4 +1,6 @@
 import type { Almoco } from "@/lib/dados";
+import { Flame } from "lucide-react";
+import { pareceChurrasco } from "@/lib/marmitex";
 import { BotaoWhatsApp } from "./Botoes";
 import { AlmocoNoAr } from "./AlmocoNoAr";
 import { MontarMarmita, type TipoMarmita } from "./MontarMarmita";
@@ -31,24 +33,33 @@ export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARI
   const dia = almoco.data.split("-").reverse().slice(0, 2).join("/");
   return (
     <AlmocoNoAr horarios={horarios} encerrado={encerrado}>
-    <div className="rounded-md border border-linha bg-creme-50 p-4 md:p-6">
-      <p className="text-sm font-semibold uppercase tracking-wide text-vinho-500">
-        <time dateTime={almoco.data}>{dataBonita(almoco.data)}</time>
-      </p>
-      <div className="mt-3 grid gap-5 md:grid-cols-2">
+    <div className="rounded-md border border-linha bg-creme-200 p-4 md:p-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+        <H className="text-xl font-semibold text-ink">Hoje tem</H>
+        <p className="text-xs font-semibold uppercase tracking-wide text-vinho-500"><time dateTime={almoco.data}>{dataBonita(almoco.data)}</time></p>
+      </div>
+      <div className="mt-2 space-y-3">
         {almoco.itens.map((s) => (
           <section key={s.secao}>
-            <H className="border-b border-linha pb-1 text-xl font-semibold text-ink">{s.secao}</H>
-            <ul className="mt-2 space-y-1.5 text-ink">
-              {s.itens.map((i) => <li key={i.nome}>{i.nome}</li>)}
+            {(almoco.itens.length > 1 || s.secao !== "Cardápio do dia") && <p className="text-xs font-semibold uppercase tracking-wide text-muted">{s.secao}</p>}
+            <ul className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-[15px] text-ink md:grid-cols-3">
+              {s.itens.map((i) => {
+                const churrasco = i.churrasco ?? pareceChurrasco(i.nome, s.secao);
+                return (
+                  <li key={i.nome} className={`flex items-center gap-1.5 ${churrasco ? "font-semibold" : ""}`}>
+                    {churrasco ? <Flame size={15} aria-hidden className="shrink-0 text-vinho-500" /> : <span aria-hidden className="mx-1 h-1.5 w-1.5 shrink-0 rounded-pill bg-vinho-500" />}
+                    {i.nome}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))}
       </div>
-      <p className="mt-4 text-sm text-muted">Para comer aqui é só chegar: self-service das {hora(horarios.almoco.inicio)} às {hora(horarios.almoco.fim)}. Para entrega ou retirada, peça seu marmitex:</p>
       {marmitas.length > 0
         ? <MontarMarmita tipos={marmitas} secoes={almoco.itens} grupo={`Marmitex – almoço de ${dia}`} mostrarPreco={mostrarPreco} />
         : <div className="mt-3"><BotaoWhatsApp texto="Pedir marmitex no WhatsApp" mensagem="Olá! Quero pedir um marmitex do almoço de hoje." /></div>}
+      <p className="mt-3 text-center text-sm text-muted">Entrega ou retirada. Prefere comer aqui? Self-service das {hora(horarios.almoco.inicio)} às {hora(horarios.almoco.fim)}, é só chegar.</p>
     </div>
     </AlmocoNoAr>
   );

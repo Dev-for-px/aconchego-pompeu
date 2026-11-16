@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { AlmocoDoDia } from "@/components/AlmocoDoDia";
 import { JsonLd } from "@/components/JsonLd";
-import { getAlmocoHoje, getConfig, getMarmitas } from "@/lib/dados";
+import { GaleriaFaixa } from "@/components/GaleriaFaixa";
+import { getAlmocoHoje, getConfig, getGaleria, getMarmitas } from "@/lib/dados";
 import { breadcrumbJsonLd, menuJsonLd } from "@/lib/schema";
 import { textoFaixa } from "@/lib/horario";
 
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AlmocoHoje() {
-  const [almoco, config, marmitas] = await Promise.all([getAlmocoHoje(), getConfig(), getMarmitas()]);
+  const [almoco, config, marmitas, fotos] = await Promise.all([getAlmocoHoje(), getConfig(), getMarmitas(), getGaleria()]);
+  const fotosAlmoco = fotos.filter((f) => f.turno !== "noite");
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="mx-auto max-w-5xl px-4 py-6 md:py-10">
       <JsonLd data={breadcrumbJsonLd([{ nome: "Início", url: "/" }, { nome: "Almoço de hoje", url: "/almoco-hoje" }])} />
       {almoco && (
         <JsonLd data={{
@@ -22,11 +24,13 @@ export default async function AlmocoHoje() {
           dateModified: almoco.atualizado_em,
         }} />
       )}
-      <h1 className="text-4xl font-bold">Almoço de hoje no Restaurante Aconchego – Pompéu/MG</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted">
-        {textoFaixa(config.horarios.almoco)}: self-service de comida caseira, churrasco, à la carte e marmitex para entrega ou retirada. O cardápio muda todo dia.
+      <p className="font-script text-3xl leading-none text-vinho-500 md:text-4xl">Comida caseira, feita com carinho</p>
+      <h1 className="mt-1 text-2xl font-bold leading-tight md:text-4xl">Almoço de hoje no Restaurante Aconchego – Pompéu/MG</h1>
+      <p className="mt-2 max-w-2xl text-[15px] text-muted md:text-lg">
+        {textoFaixa(config.horarios.almoco)}. Marmitex para entrega ou retirada, e self-service com churrasco aqui na casa. O cardápio muda todo dia.
       </p>
-      <div className="mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} horarios={config.horarios} marmitas={marmitas} /></div>
+      <div className="mt-4 md:mt-8"><AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} horarios={config.horarios} marmitas={marmitas} /></div>
+      {fotosAlmoco.length > 0 && <div className="-mx-4 mt-6"><GaleriaFaixa fotos={fotosAlmoco} titulo="Fotos do almoço" /></div>}
     </div>
   );
 }
