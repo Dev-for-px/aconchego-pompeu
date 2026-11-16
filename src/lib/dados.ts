@@ -6,6 +6,7 @@ import { supabaseConfigured, supabaseKey, supabaseUrl } from "./supabase/env";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "./horario";
 import type { Redes } from "./redes";
 import { SAIDA_PADRAO, type Saida } from "./saida";
+import { VARIACAO_CHURRASCO } from "./marmitex";
 export { SAIDA_PADRAO, type Saida };
 
 export type Categoria = { id: string; nome: string; slug: string; descricao: string | null; turno: "almoco" | "noite" | "ambos"; ordem: number };
@@ -174,8 +175,6 @@ export async function getPosts(limite = 50): Promise<Post[]> {
     return data as Post[];
   }, []);
 }
-
-export const VARIACAO_CHURRASCO = "Com churrasco";
 
 /** Tipos de marmitex cadastrados no painel (Almoço › Tipos de marmitex). */
 export async function getMarmitas() {

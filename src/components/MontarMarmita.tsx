@@ -3,7 +3,7 @@
 // marca o que vai na marmita e adiciona. Marcou churrasco → vira "com churrasco" e usa o preço com churrasco.
 import { useState } from "react";
 import { Check, Flame, Plus, Minus } from "lucide-react";
-import { pareceChurrasco } from "@/lib/admin/parserAlmoco";
+import { pareceChurrasco } from "@/lib/marmitex";
 import { useCarrinho } from "@/lib/carrinho";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { formatarPreco } from "@/lib/site";

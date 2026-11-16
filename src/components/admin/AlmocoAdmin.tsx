@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Flame, Plus, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
-import { lerCardapioAlmoco, pareceChurrasco } from "@/lib/admin/parserAlmoco";
+import { lerCardapioAlmoco } from "@/lib/admin/parserAlmoco";
+import { pareceChurrasco } from "@/lib/marmitex";
 import { useSessao } from "@/lib/admin/sessao";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "@/lib/horario";

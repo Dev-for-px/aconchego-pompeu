@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Flame, Plus, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { slugificar } from "@/lib/admin/fotos";
-import { VARIACAO_CHURRASCO, type Variacao } from "@/lib/dados";
+import type { Variacao } from "@/lib/dados";
+import { VARIACAO_CHURRASCO } from "@/lib/marmitex";
 import { createClient } from "@/lib/supabase/client";
 import { Aviso, Botao, campoCls, Explica, traduzirErro } from "./ui";
 
