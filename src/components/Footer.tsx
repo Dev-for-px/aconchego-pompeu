@@ -41,7 +41,7 @@ export function Footer({ redes, horarios }: { redes: Redes; horarios: Horarios }
             <Link className="underline" href="/novidades">Novidades</Link>
             <Link className="underline" href="/contato">Como chegar</Link>
           </p>
-          <p className="pt-3 font-script text-2xl leading-tight">{NEGOCIO.slogan}</p>
+          <p className="pt-3 font-script text-xl leading-tight">{NEGOCIO.slogan}</p>
         </div>
       </div>
       <p className="border-t border-vinho-800 px-4 py-3 text-center text-[11px] opacity-70">
