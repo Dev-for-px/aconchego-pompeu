@@ -42,6 +42,7 @@
 - Rodapé com redes configuráveis e "Desenvolvido por PHAR Consultoria"; links externos em nova aba
 
 ## Pendências
+- [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
 - [ ] Cadastrar no painel (Almoço › Preços do marmitex) o nome e os dois preços reais; hoje existe só um tipo de teste ("222333", R$ 30). A migration 0009 foi removida (não é mais necessária)
 - [ ] Desativar "Allow new users to sign up" no Supabase (Authentication → Sign In / Providers)
 - [ ] Preencher preços que faltam (~61 itens) e fotos/legendas
