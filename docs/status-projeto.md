@@ -41,6 +41,8 @@
 - 5 páginas de SEO local fora do menu: /pizzaria-em-pompeu, /almoco-em-pompeu, /churrascaria-em-pompeu, /choperia-em-pompeu, /delivery-em-pompeu (links só no rodapé discreto, sitemap e llms.txt)
 - Rodapé com redes configuráveis e "Desenvolvido por PHAR Consultoria"; links externos em nova aba
 
+- Galeria (17/11): 18 fotos do Instagram da casa (pasta PHAR - IA/02-CLIENTES/aconchego-restaurante-pizzaria/fotos) — 11 do almoço, 6 da noite, chopp nos dois. Ficam em `public/galeria/` (WebP quadrado com moldura creme) e são cadastradas na tabela `galeria`; editar/apagar pelo painel normalmente
+
 ## Pendências
 - [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
 - [ ] Cadastrar no painel (Almoço › Preços do marmitex) o nome e os dois preços reais; hoje existe só um tipo de teste ("222333", R$ 30). A migration 0009 foi removida (não é mais necessária)
