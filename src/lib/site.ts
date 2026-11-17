@@ -5,7 +5,8 @@ export const NEGOCIO = {
   nome: "Restaurante e Pizzaria Aconchego",
   nomeCurto: "Aconchego",
   nomeEstendido: "Restaurante, Pizzaria, Choperia e Churrascaria Aconchego",
-  desde: 2010,
+  desde: 1989,
+  slogan: "O sabor que acolhe a família de Pompéu desde 1989",
   endereco: {
     rua: "Praça Carlos Elói, 542",
     bairro: "Centro",

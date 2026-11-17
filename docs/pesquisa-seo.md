@@ -12,7 +12,8 @@ _12/11/2026. Base: briefing da cliente + varredura da SERP. Volumes de busca ain
 - **Delivery por app:** Aiqfome
 - **Instagram:** @rest.pizzariaaconchego
 - **Horário:** almoço 11h–15h todos os dias · jantar 18h–00h (exceto segunda)
-- **Desde:** 2010 (no mesmo ponto há 23 anos — confirmar texto com José Carlos)
+- **Desde:** 1989 (decisão do Pedro em 16/11/2026; o briefing trazia CNPJ aberto em 21/10/2010 e "mesmo ponto há 23 anos" — confirmar a história com José Carlos)
+- **Slogan:** "O sabor que acolhe a família de Pompéu desde 1989"
 
 > Grafia: decidir "Choperia" (correto) e usar "chopperia" só como variação no texto/FAQ. Mesmo para "Carlos Elói" × "Carlos Eloi": escolher uma forma e igualar no Google Meu Negócio.
 
@@ -66,7 +67,7 @@ _12/11/2026. Base: briefing da cliente + varredura da SERP. Volumes de busca ain
 ## 5. Estrutura de páginas sugerida
 - `/` Home — H1: "Restaurante e Pizzaria Aconchego em Pompéu – MG"
 - `/cardapio` + uma página por categoria (pizzas, porções na chapa, pratos, self-service, bebidas/chopp, sobremesas)
-- `/sobre` — história desde 2010, fatos citáveis
+- `/sobre` — história desde 1989, fatos citáveis
 - `/delivery` — WhatsApp, Aiqfome, taxa, retirada
 - `/eventos-e-reservas`
 - `/contato` — mapa, horários, NAP

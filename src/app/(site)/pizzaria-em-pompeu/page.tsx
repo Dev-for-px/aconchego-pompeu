@@ -14,7 +14,7 @@ export default function Page() {
       url="/pizzaria-em-pompeu" nome="Pizzaria em Pompéu" turno="noite"
       h1="Pizzaria em Pompéu – MG: Pizzaria Aconchego"
       intro={[
-        "Procurando pizzaria em Pompéu? A Pizzaria Aconchego fica na Praça Carlos Elói, no centro da cidade, e serve pizza desde 2010 — para comer no salão, retirar no balcão ou receber em casa.",
+        "Procurando pizzaria em Pompéu? A Pizzaria Aconchego fica na Praça Carlos Elói, no centro da cidade, e recebe as famílias da cidade desde 1989 — para comer no salão, retirar no balcão ou receber em casa.",
         "São mais de 20 sabores entre tradicionais, especiais e doces, em seis tamanhos: brotinho, pequena (4 pedaços), média (6), grande (8), gigante (10) e família (12 pedaços).",
       ]}
       blocos={[

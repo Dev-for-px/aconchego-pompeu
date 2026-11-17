@@ -7,8 +7,8 @@ import { ENDERECO_LINHA, NEGOCIO } from "@/lib/site";
 import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
-  title: "Sobre o Aconchego – restaurante e pizzaria desde 2010",
-  description: "Conheça o Restaurante e Pizzaria Aconchego, no centro de Pompéu – MG desde 2010: almoço caseiro, churrasco, pizzaria e choperia.",
+  title: "Sobre o Aconchego – restaurante e pizzaria desde 1989",
+  description: "Conheça o Restaurante e Pizzaria Aconchego, no centro de Pompéu – MG desde 1989: almoço caseiro, churrasco, pizzaria e choperia.",
   alternates: { canonical: "/sobre" },
 };
 

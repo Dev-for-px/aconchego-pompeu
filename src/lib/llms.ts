@@ -8,6 +8,8 @@ function cabecalho(h: Horarios = HORARIOS_PADRAO) {
 
 > ${NEGOCIO.nomeEstendido} no centro de Pompéu – MG (Minas Gerais, Brasil), desde ${NEGOCIO.desde}. De dia restaurante, churrascaria e choperia (almoço caseiro, self-service, marmitex, chopp); à noite Bar Aconchego: bar, pizzaria e choperia (pizzas, crepes, porções na chapa, chopp).
 
+Slogan: "${NEGOCIO.slogan}".
+
 - Endereço: ${ENDERECO_LINHA} (${NEGOCIO.endereco.referencia})
 - Telefone: ${formatarTelefone(NEGOCIO.telefone)}
 - WhatsApp (pedidos e reservas): ${formatarTelefone(NEGOCIO.whatsapp)}

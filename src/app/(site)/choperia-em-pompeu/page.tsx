@@ -4,7 +4,7 @@ import { textoFaixa } from "@/lib/horario";
 
 export const metadata: Metadata = {
   title: { absolute: "Choperia em Pompéu – MG | Chopp gelado e porções no Aconchego" },
-  description: "Choperia no centro de Pompéu – MG: chopp gelado no almoço e à noite, porções na chapa, pizza, TV para os jogos e área externa. Aconchego, desde 2010.",
+  description: "Choperia no centro de Pompéu – MG: chopp gelado no almoço e à noite, porções na chapa, pizza, TV para os jogos e área externa. Aconchego, desde 1989.",
   alternates: { canonical: "/choperia-em-pompeu" },
 };
 

@@ -49,7 +49,7 @@ export function MenuMobile({ links, horarios }: { links: { href: string; label: 
               ))}
             </ul>
             <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço: {textoFaixa(horarios.almoco).toLowerCase()}<br />Pizzaria: {textoFaixa(horarios.jantar).toLowerCase()}</p>
-            <p className="mt-8 font-script text-4xl">Feito com carinho</p>
+            <p className="mt-8 font-script text-3xl leading-tight">{NEGOCIO.slogan}</p>
           </nav>
           <div className="space-y-3 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
             <a href={linkWhatsApp("Olá! Vim pelo site do Aconchego.")} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-pill bg-aberto py-3.5 text-base font-semibold"><MessageCircle size={22} />Pedir no WhatsApp</a>

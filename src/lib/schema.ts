@@ -18,6 +18,7 @@ export function restauranteJsonLd(redes: Redes = {}, h: Horarios = HORARIOS_PADR
     url: SITE_URL,
     telephone: `+${NEGOCIO.telefone}`,
     image: `${SITE_URL}/opengraph-image`,
+    slogan: NEGOCIO.slogan,
     foundingDate: String(NEGOCIO.desde),
     servesCuisine: ["Pizza", "Comida brasileira", "Churrasco", "Comida caseira", "Petiscos", "Crepes"],
     priceRange: "$$",

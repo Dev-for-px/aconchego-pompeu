@@ -16,7 +16,7 @@ export function Footer({ redes, horarios }: { redes: Redes; horarios: Horarios }
       <div className="mx-auto grid max-w-5xl gap-10 px-4 py-12 md:grid-cols-3">
         <div>
           <Logo variante="branca" altura={64} />
-          <p className="mt-4 text-sm opacity-90">Restaurante, pizzaria, choperia e churrascaria em Pompéu – MG desde {NEGOCIO.desde}.</p>
+          <p className="mt-4 text-sm opacity-90">Restaurante, pizzaria, choperia e churrascaria no centro de Pompéu – MG.</p>
           {ativas.length > 0 && (
             <ul className="mt-5 flex flex-wrap gap-2" aria-label="Redes sociais">
               {ativas.map((r) => (
@@ -41,7 +41,7 @@ export function Footer({ redes, horarios }: { redes: Redes; horarios: Horarios }
             <Link className="underline" href="/novidades">Novidades</Link>
             <Link className="underline" href="/contato">Como chegar</Link>
           </p>
-          <p className="pt-3 font-script text-3xl">Feito com carinho</p>
+          <p className="pt-3 font-script text-2xl leading-tight">{NEGOCIO.slogan}</p>
         </div>
       </div>
       <p className="border-t border-vinho-800 px-4 py-3 text-center text-[11px] opacity-70">
