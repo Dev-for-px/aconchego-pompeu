@@ -99,7 +99,7 @@ export function artigoJsonLd(p: Post) {
     "@type": "BlogPosting",
     headline: p.titulo,
     description: p.resumo ?? undefined,
-    image: p.capa_url ?? `${SITE_URL}/opengraph-image`,
+    image: p.capa_url ? (p.capa_url.startsWith("/") ? `${SITE_URL}${p.capa_url}` : p.capa_url) : `${SITE_URL}/opengraph-image`,
     datePublished: p.publicado_em,
     dateModified: p.atualizado_em,
     url: `${SITE_URL}/novidades/${p.slug}`,

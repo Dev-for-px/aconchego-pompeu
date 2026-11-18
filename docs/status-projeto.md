@@ -60,11 +60,15 @@
   - PWA: instalar no celular (Android e iPhone), tela sem internet
   - Migration 0010 aplicada no Supabase
 
+- Versão 1.3.0 (18/11): aviso dos itens com estrela editável em Almoço › Preços do marmitex; novidade "Em breve: soda italiana" publicada (/novidades/soda-italiana-em-pompeu, foto em `public/novidades/`). Migration 0011 aplicada
+
 ## Pendências
 - [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
 - [ ] Conferir no painel (Almoço › Preços do marmitex) os preços reais: hoje Grande R$ 28 / especial R$ 32 e Pequena R$ 24 / especial R$ 28
 - [ ] Testar logado no painel: Equipe (remover/editar), Clientes, busca (Ctrl+K) e FAQ travado com o login da Helena
-- [ ] Decidir com a Helena se liga a conta de cliente (Painel › Clientes)
+- [ ] Conta de cliente está LIGADA desde 18/11 (ligada pelo Pedro no painel) — confirmar com a Helena
+- [ ] Soda italiana: quando lançar, publicar sabores e preços e cadastrar no Cardápio (Bebidas)
+- [ ] Apagar a novidade de teste "teste-yi8b", se não for mais usada
 - [ ] Acompanhar no Search Console se o aviso no botão Voltar não gera alerta; se gerar, desligar só esse gatilho
 - [ ] Desativar "Allow new users to sign up" no Supabase (Authentication → Sign In / Providers)
 - [ ] Preencher preços que faltam (~61 itens) e fotos/legendas

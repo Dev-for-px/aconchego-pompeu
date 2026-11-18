@@ -2,7 +2,7 @@
 // - páginas: sempre busca na internet (cardápio e preços sempre atualizados); sem internet, mostra a última versão ou /offline
 // - arquivos fixos (/_next/static, ícones, fotos da galeria): guarda no aparelho para abrir mais rápido
 // Nada do painel (/admin) nem do banco (Supabase) é guardado.
-const VERSAO = "aconchego-v1.2.0";
+const VERSAO = "aconchego-v1.3.0";
 const OFFLINE = "/offline";
 
 self.addEventListener("install", (e) => {

@@ -18,6 +18,7 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
     taxaEntrega: config.taxa_entrega,
     pedidoMinimo: config.pedido_minimo,
     clientesCadastro: config.clientes_cadastro,
+    avisoEspecial: config.aviso_especial,
   };
   return (
     <CarrinhoProvider config={pedido}>

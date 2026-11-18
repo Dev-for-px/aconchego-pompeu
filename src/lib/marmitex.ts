@@ -29,3 +29,13 @@ export function ehEspecial(item: { nome: string; churrasco?: boolean }, secao = 
 export function juntarNomes(nomes: string[]) {
   return nomes.length <= 1 ? (nomes[0] ?? "") : `${nomes.slice(0, -1).join(", ")} e ${nomes[nomes.length - 1]}`;
 }
+
+/** Aviso mostrado no "Monte seu marmitex" quando o dia tem item com estrela. Editável no painel. {preco} = preço especial. */
+export const AVISO_ESPECIAL_PADRAO = "Itens com estrela são especiais! Escolhendo um deles, seu marmitex fica com um valor diferente do convencional ({preco}).";
+
+/** Troca {preco} pelo valor; sem preço, tira o trecho entre parênteses (ou só a marca). */
+export function textoAvisoEspecial(modelo: string | null | undefined, preco: string | null) {
+  const t = (modelo ?? "").trim() || AVISO_ESPECIAL_PADRAO;
+  if (preco) return t.replaceAll("{preco}", preco);
+  return t.replace(/\s*\(\s*\{preco\}\s*\)/g, "").replaceAll("{preco}", "").replace(/\s+([.!?,])/g, "$1").trim();
+}

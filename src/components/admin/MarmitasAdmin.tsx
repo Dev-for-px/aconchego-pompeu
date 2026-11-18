@@ -6,9 +6,9 @@ import { Plus, Star, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { slugificar } from "@/lib/admin/fotos";
 import type { Variacao } from "@/lib/dados";
-import { VARIACAO_ESPECIAL, precoEspecialDe } from "@/lib/marmitex";
+import { AVISO_ESPECIAL_PADRAO, VARIACAO_ESPECIAL, precoEspecialDe, textoAvisoEspecial } from "@/lib/marmitex";
 import { createClient } from "@/lib/supabase/client";
-import { Aviso, Botao, campoCls, Explica, traduzirErro } from "./ui";
+import { AreaTexto, Aviso, Botao, campoCls, Explica, traduzirErro } from "./ui";
 
 type Linha = { id?: string; nome: string; preco: string; precoChurrasco: string; disponivel: boolean };
 
@@ -25,8 +25,11 @@ export function MarmitasAdmin() {
   const [removidos, setRemovidos] = useState<string[]>([]);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; txt: string } | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [aviso, setAviso] = useState("");
 
   const carregar = useCallback(async () => {
+    const { data: cfg } = await supabase.from("configuracoes").select("aviso_especial").eq("id", 1).single();
+    setAviso(cfg?.aviso_especial || AVISO_ESPECIAL_PADRAO);
     const { data: cat } = await supabase.from("categorias").select("id").eq("slug", "marmitex").maybeSingle();
     if (!cat) return;
     setCatId(cat.id);
@@ -68,7 +71,11 @@ export function MarmitasAdmin() {
           : await supabase.from("produtos").insert({ ...dados, categoria_id: catId, slug: `${slugificar(l.nome)}-${Date.now().toString(36).slice(-4)}` });
         if (error) throw error;
       }
-      await atualizarSite(["cardapio"]);
+      // Aviso dos itens com estrela (igual ao padrão = guarda vazio, para seguir o padrão do site)
+      const texto = aviso.trim() === AVISO_ESPECIAL_PADRAO ? null : aviso.trim() || null;
+      const { error: erroAviso } = await supabase.from("configuracoes").update({ aviso_especial: texto }).eq("id", 1);
+      if (erroAviso) throw erroAviso;
+      await atualizarSite(["cardapio", "config"]);
       setMsg({ tipo: "ok", txt: "Preços salvos. Já estão no site." });
       carregar();
     } catch (e) {
@@ -116,8 +123,14 @@ export function MarmitasAdmin() {
         ))}
         <button type="button" onClick={() => setLinhas((l) => [...l, { nome: "", preco: "", precoChurrasco: "", disponivel: true }])}
           className="inline-flex min-h-10 items-center gap-1 font-semibold text-vinho-500"><Plus size={18} />Adicionar outro tamanho (ex.: Mini marmitex)</button>
+        <div className="space-y-2 rounded-md border border-linha bg-creme-50 p-3">
+          <AreaTexto rotulo="Aviso dos itens com estrela" rows={3} maxLength={300} value={aviso} onChange={(e) => setAviso(e.target.value)}
+            dica="Aparece para o cliente quando o almoço do dia tem item com estrela. Escreva {preco} onde deve aparecer o preço especial." />
+          <p className="text-sm text-muted"><b>Como o cliente vê:</b> {textoAvisoEspecial(aviso, numero(linhas[0]?.precoChurrasco ?? "") != null ? `R$ ${linhas[0].precoChurrasco}` : null)}</p>
+          <button type="button" onClick={() => setAviso(AVISO_ESPECIAL_PADRAO)} className="text-sm text-muted underline">Voltar ao texto padrão</button>
+        </div>
         {msg && <Aviso tipo={msg.tipo}>{msg.txt}</Aviso>}
-        <Botao className="w-full" disabled={salvando || !catId} onClick={salvar}>{salvando ? "Salvando…" : "Salvar preços"}</Botao>
+        <Botao className="w-full" disabled={salvando || !catId} onClick={salvar}>{salvando ? "Salvando…" : "Salvar preços e aviso"}</Botao>
       </div>
     </>
   );

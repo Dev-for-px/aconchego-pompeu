@@ -34,6 +34,7 @@ export type Config = {
   saida: Saida;
   menu: ItemMenu[];
   clientes_cadastro: boolean;
+  aviso_especial: string | null;
   formas_pagamento: string[]; historia: string | null;
 };
 
@@ -44,6 +45,7 @@ const CONFIG_PADRAO: Config = {
   saida: SAIDA_PADRAO,
   menu: MENU_PADRAO,
   clientes_cadastro: false,
+  aviso_especial: null,
 };
 
 function db() {

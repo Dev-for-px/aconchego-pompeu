@@ -3,7 +3,7 @@
 // marca o que vai na marmita e adiciona. Marcou item com estrela (churrasco, salmão…) → usa o preço especial.
 import { useState } from "react";
 import { Check, Star, Plus, Minus } from "lucide-react";
-import { ehEspecial, juntarNomes } from "@/lib/marmitex";
+import { ehEspecial, juntarNomes, textoAvisoEspecial } from "@/lib/marmitex";
 import { useCarrinho } from "@/lib/carrinho";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { formatarPreco } from "@/lib/site";
@@ -108,9 +108,9 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
                   </fieldset>
                 ))}
                 {especiais.size > 0 && !comEspecial && (
-                  <p className="mt-3 flex items-start gap-1.5 text-sm text-muted">
-                    <Star size={15} aria-hidden className="mt-0.5 shrink-0 fill-dourado text-vinho-500" />
-                    <span>Itens com estrela são especiais: o marmitex fica um pouco mais caro{rotulo(tipo.precoEspecial) ? ` (${rotulo(tipo.precoEspecial)})` : ""}.</span>
+                  <p className="mt-3 flex items-start gap-2 rounded-md border border-dourado bg-dourado/15 px-3 py-2 text-sm text-ink">
+                    <Star size={16} aria-hidden className="mt-0.5 shrink-0 fill-dourado text-vinho-500" />
+                    <span>{textoAvisoEspecial(config.avisoEspecial, rotulo(tipo.precoEspecial))}</span>
                   </p>
                 )}
                 {comEspecial && (

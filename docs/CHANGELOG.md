@@ -10,6 +10,11 @@ Toda mudança enviada para o ar entra aqui no topo, em linguagem simples.
 
 ---
 
+## 1.3.0 — 18/11/2026
+- Almoço: novo aviso dos itens com estrela no "Monte seu marmitex" ("Itens com estrela são especiais! Escolhendo um deles, seu marmitex fica com um valor diferente do convencional (R$ 32,00)"), mais visível
+- O aviso é **editável no painel** em Almoço › Preços do marmitex (com prévia de como o cliente vê; {preco} vira o preço especial)
+- Novidades: publicação "Em breve: soda italiana no Aconchego, em Pompéu – MG" com foto, escrita para Google e IAs (perguntas e respostas, endereço, horários)
+
 ## 1.2.0 — 18/11/2026
 **Equipe e segurança**
 - Consultoria PHAR (Pedro e José Rufino) protegida: ninguém da equipe consegue remover, bloquear, mudar o perfil ou trocar a senha deles

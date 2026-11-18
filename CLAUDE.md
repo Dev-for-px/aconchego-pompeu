@@ -92,6 +92,7 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Pelo site o almoço é sempre **marmitex** (quem come na casa se serve lá): o cardápio do dia é só leitura e o pedido começa no botão "Quero um marmitex" (`MontarMarmita`, dentro de `AlmocoDoDia`, só no horário do almoço)
 - Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Preços do marmitex (`MarmitasAdmin`): preço normal em `preco` e preço especial em `variacoes` (`{ nome: "Especial", preco }`, `VARIACAO_ESPECIAL`; o nome antigo "Com churrasco" ainda é lido por `precoEspecialDe`); ambos opcionais
 - Item do cardápio do dia com **estrela** = especial (churrasco, salmão…). No banco fica no campo `churrasco: boolean` (compatível); o parser põe estrela sozinho em churrasco e a equipe liga/desliga a estrela no painel. Cliente marcou item com estrela → vira "<tipo> com <itens>" e usa o preço especial, com aviso "passa de X para Y"
+- Aviso dos itens com estrela no montador: `configuracoes.aviso_especial` (vazio = `AVISO_ESPECIAL_PADRAO`; `{preco}` = preço especial), editado em Almoço › Preços do marmitex
 - Um tipo só: o site pula a escolha do tipo. A categoria marmitex não aparece na lista comum do almoço
 
 ## Páginas de SEO local

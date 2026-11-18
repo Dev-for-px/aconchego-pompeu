@@ -20,6 +20,7 @@ export type ConfigPedido = {
   taxaEntrega: number | null;
   pedidoMinimo: number | null;
   clientesCadastro: boolean;   // clientes podem criar conta (ligado no painel)
+  avisoEspecial: string | null; // texto dos itens com estrela no marmitex (painel)
 };
 
 type Ctx = {
