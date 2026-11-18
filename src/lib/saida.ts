@@ -7,3 +7,11 @@ export const SAIDA_PADRAO: Saida = {
   botao: "whatsapp",
   textoBotao: "Pedir no WhatsApp",
 };
+
+/** Marca de "já mostrou nesta visita" (sessionStorage). */
+export const CHAVE_AVISO_SAIDA = "aconchego:aviso-saida";
+
+/** Quem já mandou o pedido não precisa ver o aviso. */
+export function dispensarAvisoSaida() {
+  try { sessionStorage.setItem(CHAVE_AVISO_SAIDA, "1"); } catch {}
+}

@@ -1,30 +1,18 @@
-import Link from "next/link";
 import { LogoTopo } from "./LogoTopo";
 import { MenuMobile } from "./MenuMobile";
+import { MenuTopo } from "./MenuTopo";
 import type { Horarios } from "@/lib/horario";
+import { MENU_PADRAO, type ItemMenu } from "@/lib/menu";
 
-export const LINKS = [
-  { href: "/almoco-hoje", label: "Almoço de hoje" },
-  { href: "/cardapio", label: "Cardápio da noite" },
-  { href: "/sobre", label: "Sobre nós" },
-  { href: "/perguntas-frequentes", label: "Dúvidas" },
-  { href: "/novidades", label: "Novidades" },
-  { href: "/contato", label: "Como chegar" },
-];
-
-export function Header({ horarios }: { horarios: Horarios }) {
+// Menu vem do painel (Ajustes › Menu do site); só os itens ligados aparecem.
+export function Header({ horarios, menu = MENU_PADRAO }: { horarios: Horarios; menu?: ItemMenu[] }) {
+  const links = menu.filter((m) => m.ativo);
   return (
     <header className="sticky top-0 z-40 bg-vinho-700 text-creme-50">
       <div className="relative mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
         <LogoTopo />
-        <nav aria-label="Principal" className="hidden md:block">
-          <ul className="flex gap-6 text-sm font-semibold">
-            {LINKS.map((l) => (
-              <li key={l.href}><Link href={l.href} className="opacity-90 hover:underline hover:opacity-100">{l.label}</Link></li>
-            ))}
-          </ul>
-        </nav>
-        <MenuMobile links={LINKS} horarios={horarios} />
+        <MenuTopo links={links} />
+        <MenuMobile links={links} horarios={horarios} />
       </div>
     </header>
   );

@@ -1,6 +1,6 @@
 // Lê o texto do cardápio do almoço como chega no WhatsApp e separa em seções e itens.
 import type { SecaoAlmoco } from "../dados";
-import { pareceChurrasco } from "../marmitex";
+import { pareceEspecial } from "../marmitex";
 
 const EMOJI = /[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}\u{20E3}]/gu;
 const IGNORAR = /^(bom dia|boa tarde|boa noite|ol[aá]|card[aá]pio( do dia| de hoje)?|almo[cç]o( do dia| de hoje)?|hoje|segunda|ter[cç]a|quarta|quinta|sexta|s[aá]bado|domingo)\b[^a-z]*$/i;
@@ -50,7 +50,7 @@ export function lerCardapioAlmoco(texto: string): SecaoAlmoco[] {
       secoes.push(atual);
     }
     const { nome, preco } = precoDe(linha);
-    if (nome) atual.itens.push({ nome: capitalizar(nome), preco, churrasco: pareceChurrasco(nome, atual.secao) });
+    if (nome) atual.itens.push({ nome: capitalizar(nome), preco, churrasco: pareceEspecial(nome, atual.secao) });
   }
   return secoes.filter((s) => s.itens.length > 0);
 }

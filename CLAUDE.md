@@ -46,7 +46,8 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 
 ## Carrinho → WhatsApp
 - Estado em `src/lib/carrinho.tsx` (contexto + localStorage: carrinho, último pedido, dados do cliente)
-- Mensagem montada em `src/lib/mensagem.ts`; envio abre `wa.me` com o número de `configuracoes.whatsapp`
+- Mensagem montada em `src/lib/mensagem.ts`; o botão "Enviar pedido" é um `<a target="_blank">` de verdade para `wa.me` (número de `configuracoes.whatsapp`): o WhatsApp abre em nova aba e o site fica aberto. Nunca usar `location.assign`/`window.open` para isso
+- Taxa de entrega (`taxa_entrega`) vale para toda entrega, almoço (marmitex) e noite: entra no Total do checkout e da mensagem
 - Sem preço (`mostrar_precos = false` ou produto sem preço) → "a confirmar"; meio a meio cobra o sabor mais caro
 - Celular primeiro: barra "Ver pedido" fixa acima da barra Ligar/WhatsApp; painel de produto sobe de baixo (`Sheet`)
 
@@ -61,10 +62,12 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Publicações: tabela `posts` → `/novidades` e `/novidades/[slug]` (BlogPosting no schema, sitemap); painel em "Fotos e posts"
 - Galeria: tabela `galeria` → faixa de fotos logo abaixo da capa (`GaleriaFaixa`)
 - Redes sociais: `configuracoes.redes` (lista em `src/lib/redes.ts`); rodapé mostra só as com link; entram no `sameAs`
-- Aviso "Já vai?": `configuracoes.saida` (`src/lib/saida.ts`), intenção de saída (mouse no topo / rolagem rápida pra cima), 1x por visita. Nunca sequestrar o botão Voltar (penalização do Google)
+- Aviso "Já vai?": `configuracoes.saida` (`src/lib/saida.ts`, `AvisoSaida`), 1x por visita: botão Voltar (1 entrada extra no histórico após o 1º gesto; o 1º Voltar mostra o aviso, o 2º sai), mouse saindo pelo topo, rolagem rápida pra cima. Nunca prender a pessoa (só uma entrada, uma vez). Não aparece em /pedido nem depois de enviar o pedido (`dispensarAvisoSaida`)
 - Links que saem do site abrem em nova aba (`target="_blank" rel="noopener noreferrer"`); pedido abre o WhatsApp em nova aba
 - Visual: noite = "Pizzaria" (pizzaria e choperia); "bar" só em SEO (schema/llms/textos discretos)
 - Bebidas alcoólicas sempre recolhidas em "Chopp, cervejas e drinks" (`CardapioComBebidas`)
+- Bebidas (`ehBebida`: slug `bebidas` + alcoólicas) têm aba própria na home (Almoço | Pizzaria | Bebidas) e página `/bebidas`; não se repetem nas abas Almoço/Pizzaria
+- Menu do topo/celular: `configuracoes.menu` (`src/lib/menu.ts`, padrão Início, Almoço, Pizzaria, Bebidas…), editado em Ajustes › Menu do site (`MenuAdmin`); vazio = padrão
 
 ## Resultados (métricas)
 - Tabela `eventos` (tipo, rotulo, pagina, sessao anônima) — RLS: qualquer um insere, só dono/gerente lê
@@ -74,8 +77,8 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 
 ## Marmitex (almoço)
 - Pelo site o almoço é sempre **marmitex** (quem come na casa se serve lá): o cardápio do dia é só leitura e o pedido começa no botão "Quero um marmitex" (`MontarMarmita`, dentro de `AlmocoDoDia`, só no horário do almoço)
-- Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Preços do marmitex (`MarmitasAdmin`): preço normal em `preco` e preço com churrasco em `variacoes` (`{ nome: "Com churrasco", preco }`, constante `VARIACAO_CHURRASCO` em `src/lib/marmitex.ts`); ambos opcionais
-- Item do cardápio do dia tem `churrasco: boolean` (o parser marca sozinho pelo nome/grupo; a equipe corrige no foguinho do painel). Cliente marcou um item de churrasco → o item vira "<tipo> com churrasco" e usa o preço com churrasco
+- Tipos de marmitex = produtos da categoria `marmitex`, editados no painel em Almoço › Preços do marmitex (`MarmitasAdmin`): preço normal em `preco` e preço especial em `variacoes` (`{ nome: "Especial", preco }`, `VARIACAO_ESPECIAL`; o nome antigo "Com churrasco" ainda é lido por `precoEspecialDe`); ambos opcionais
+- Item do cardápio do dia com **estrela** = especial (churrasco, salmão…). No banco fica no campo `churrasco: boolean` (compatível); o parser põe estrela sozinho em churrasco e a equipe liga/desliga a estrela no painel. Cliente marcou item com estrela → vira "<tipo> com <itens>" e usa o preço especial, com aviso "passa de X para Y"
 - Um tipo só: o site pula a escolha do tipo. A categoria marmitex não aparece na lista comum do almoço
 
 ## Páginas de SEO local

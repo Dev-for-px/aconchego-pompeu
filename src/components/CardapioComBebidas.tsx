@@ -3,6 +3,8 @@ import { ListaCardapio } from "./ListaCardapio";
 
 type Secao = Categoria & { produtos: Produto[] };
 export const ALCOOL = new Set(["cervejas-e-chopp", "drinks", "doses", "whiskys", "vinhos"]);
+/** Categorias de bebida (sem álcool + alcoólicas): ficam na aba/página Bebidas. */
+export const ehBebida = (slug: string) => slug === "bebidas" || ALCOOL.has(slug);
 
 /** Cardápio com as bebidas alcoólicas recolhidas num bloco "toque para ver". */
 export function CardapioComBebidas({ secoes, mostrarPreco, nivel = 2, prefixo = "", linkCategoria = true }: { secoes: Secao[]; mostrarPreco: boolean; nivel?: 2 | 3; prefixo?: string; linkCategoria?: boolean }) {

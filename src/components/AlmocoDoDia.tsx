@@ -1,6 +1,6 @@
 import type { Almoco } from "@/lib/dados";
-import { Flame } from "lucide-react";
-import { pareceChurrasco } from "@/lib/marmitex";
+import { Star } from "lucide-react";
+import { ehEspecial } from "@/lib/marmitex";
 import { BotaoWhatsApp } from "./Botoes";
 import { AlmocoNoAr } from "./AlmocoNoAr";
 import { MontarMarmita, type TipoMarmita } from "./MontarMarmita";
@@ -44,10 +44,10 @@ export function AlmocoDoDia({ almoco, mostrarPreco, nivel = 2, horarios = HORARI
             {(almoco.itens.length > 1 || s.secao !== "Cardápio do dia") && <p className="text-xs font-semibold uppercase tracking-wide text-muted">{s.secao}</p>}
             <ul className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-[15px] text-ink md:grid-cols-3">
               {s.itens.map((i) => {
-                const churrasco = i.churrasco ?? pareceChurrasco(i.nome, s.secao);
+                const especial = ehEspecial(i, s.secao);
                 return (
-                  <li key={i.nome} className={`flex items-center gap-1.5 ${churrasco ? "font-semibold" : ""}`}>
-                    {churrasco ? <Flame size={15} aria-hidden className="shrink-0 text-vinho-500" /> : <span aria-hidden className="mx-1 h-1.5 w-1.5 shrink-0 rounded-pill bg-vinho-500" />}
+                  <li key={i.nome} className={`flex items-center gap-1.5 ${especial ? "font-semibold" : ""}`}>
+                    {especial ? <Star size={15} aria-label="Especial" className="shrink-0 fill-dourado text-vinho-500" /> : <span aria-hidden className="mx-1 h-1.5 w-1.5 shrink-0 rounded-pill bg-vinho-500" />}
                     {i.nome}
                   </li>
                 );

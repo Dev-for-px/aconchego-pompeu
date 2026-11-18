@@ -7,7 +7,7 @@ import { supabaseConfigured } from "./supabase/env";
 
 export type TipoEvento =
   | "visita" | "whatsapp" | "ligar" | "como_chegar" | "rede" | "link_externo"
-  | "add_carrinho" | "ver_pedido" | "enviar_pedido" | "busca" | "aba" | "clique";
+  | "add_carrinho" | "ver_pedido" | "enviar_pedido" | "busca" | "aba" | "clique" | "aviso_saida";
 
 function sessao() {
   try {

@@ -1,17 +1,17 @@
 "use client";
 // "Quero um marmitex": o cliente toca no botão, escolhe o tamanho (se houver mais de um),
-// marca o que vai na marmita e adiciona. Marcou churrasco → vira "com churrasco" e usa o preço com churrasco.
+// marca o que vai na marmita e adiciona. Marcou item com estrela (churrasco, salmão…) → usa o preço especial.
 import { useState } from "react";
-import { Check, Flame, Plus, Minus } from "lucide-react";
-import { pareceChurrasco } from "@/lib/marmitex";
+import { Check, Star, Plus, Minus } from "lucide-react";
+import { ehEspecial, juntarNomes } from "@/lib/marmitex";
 import { useCarrinho } from "@/lib/carrinho";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { formatarPreco } from "@/lib/site";
 
-export type TipoMarmita = { id: string; nome: string; descricao: string | null; preco: number | null; precoChurrasco: number | null };
+export type TipoMarmita = { id: string; nome: string; descricao: string | null; preco: number | null; precoEspecial: number | null };
 
 export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: TipoMarmita[]; secoes: SecaoAlmoco[]; grupo: string; mostrarPreco: boolean }) {
-  const { adicionar } = useCarrinho();
+  const { adicionar, config } = useCarrinho();
   const [aberto, setAberto] = useState(false);
   const [tipo, setTipo] = useState<TipoMarmita | null>(tipos.length === 1 ? tipos[0] : null);
   const [marcados, setMarcados] = useState<string[]>([]);
@@ -22,18 +22,20 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
 
   if (tipos.length === 0) return null;
 
-  // Itens de churrasco do dia (marcados no painel; cardápios antigos: pelo nome).
-  const deChurrasco = new Set(secoes.flatMap((s) => s.itens.filter((i) => i.churrasco ?? pareceChurrasco(i.nome, s.secao)).map((i) => i.nome)));
-  const comChurrasco = marcados.some((n) => deChurrasco.has(n));
-  const precoDe = (t: TipoMarmita, churrasco: boolean) => (churrasco ? t.precoChurrasco : t.preco);
+  // Itens com estrela do dia (marcados no painel; cardápios antigos: churrasco pelo nome).
+  const especiais = new Set(secoes.flatMap((s) => s.itens.filter((i) => ehEspecial(i, s.secao)).map((i) => i.nome)));
+  const escolhidosEspeciais = marcados.filter((n) => especiais.has(n));
+  const comEspecial = escolhidosEspeciais.length > 0;
+  // Sem preço especial cadastrado, fica o preço normal (não deixa o pedido sem valor).
+  const precoDe = (t: TipoMarmita, especial: boolean) => (especial ? (t.precoEspecial ?? t.preco) : t.preco);
   const rotulo = (v: number | null) => (mostrarPreco && v != null ? formatarPreco(v) : null);
   const alternar = (n: string) => setMarcados((m) => (m.includes(n) ? m.filter((x) => x !== n) : [...m, n]));
-  const precoAtual = tipo ? precoDe(tipo, comChurrasco) : null;
+  const precoAtual = tipo ? precoDe(tipo, comEspecial) : null;
 
   function adicionarMarmita() {
     if (!tipo) return;
     const partes = [marcados.length ? `Com: ${marcados.join(", ")}` : "", obs.trim()].filter(Boolean);
-    adicionar({ produtoId: tipo.id, nome: comChurrasco ? `${tipo.nome} com churrasco` : tipo.nome, grupo, qtd, precoUnit: precoAtual, adicionais: [], obs: partes.join(". ") });
+    adicionar({ produtoId: tipo.id, nome: comEspecial ? `${tipo.nome} com ${juntarNomes(escolhidosEspeciais)}` : tipo.nome, grupo, qtd, precoUnit: precoAtual, adicionais: [], obs: partes.join(". ") });
     setFeitas((f) => f + qtd);
     setPronto(true);
   }
@@ -60,7 +62,7 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
       {pronto ? (
         <div className="mt-3 space-y-3">
           <p className="flex items-center gap-2 font-semibold text-aberto"><Check size={20} aria-hidden />Marmitex adicionado ao pedido{feitas > 1 ? ` (${feitas} no total)` : ""}.</p>
-          <p className="text-sm text-muted">Para finalizar, toque em “Ver pedido” lá embaixo.</p>
+          <p className="text-sm text-muted">Para finalizar, toque em “Ver pedido” lá embaixo.{mostrarPreco && config.taxaEntrega != null ? ` Para entrega, soma a taxa de ${formatarPreco(config.taxaEntrega)}.` : ""}</p>
           <button type="button" onClick={outra} className="inline-flex min-h-12 items-center gap-2 rounded-pill border border-vinho-700 px-5 py-3 font-semibold text-vinho-700">
             <Plus size={18} aria-hidden />Montar mais um marmitex
           </button>
@@ -97,17 +99,29 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
                         return (
                           <button key={i.nome} type="button" onClick={() => alternar(i.nome)} aria-pressed={on}
                             className={`inline-flex min-h-11 items-center gap-1.5 rounded-pill border px-4 py-2 text-base ${on ? "border-aberto bg-aberto text-creme-50" : "border-linha bg-creme-50 text-ink"}`}>
-                            {on ? <Check size={16} aria-hidden /> : deChurrasco.has(i.nome) && <Flame size={16} aria-hidden className="text-vinho-500" />}{i.nome}
+                            {on ? <Check size={16} aria-hidden /> : especiais.has(i.nome) && <Star size={16} aria-hidden className="fill-dourado text-vinho-500" />}{i.nome}
+                            {especiais.has(i.nome) && <span className="sr-only"> (especial)</span>}
                           </button>
                         );
                       })}
                     </div>
                   </fieldset>
                 ))}
-                {comChurrasco && (
+                {especiais.size > 0 && !comEspecial && (
+                  <p className="mt-3 flex items-start gap-1.5 text-sm text-muted">
+                    <Star size={15} aria-hidden className="mt-0.5 shrink-0 fill-dourado text-vinho-500" />
+                    <span>Itens com estrela são especiais: o marmitex fica um pouco mais caro{rotulo(tipo.precoEspecial) ? ` (${rotulo(tipo.precoEspecial)})` : ""}.</span>
+                  </p>
+                )}
+                {comEspecial && (
                   <p role="status" className="mt-3 flex items-start gap-2 rounded-md bg-dourado px-3 py-2 text-sm font-semibold text-ink">
-                    <Flame size={18} aria-hidden className="mt-0.5 shrink-0" />
-                    <span>Com churrasco, vira {tipo.nome} com churrasco{rotulo(tipo.precoChurrasco) ? `: ${rotulo(tipo.precoChurrasco)}` : mostrarPreco ? " (valor a confirmar)" : ""}.</span>
+                    <Star size={18} aria-hidden className="mt-0.5 shrink-0 fill-creme-50" />
+                    <span>
+                      Seu marmitex com {juntarNomes(escolhidosEspeciais)} é especial
+                      {rotulo(tipo.precoEspecial)
+                        ? `: passa de ${rotulo(tipo.preco) ?? "—"} para ${rotulo(tipo.precoEspecial)}.`
+                        : mostrarPreco && tipo.precoEspecial == null ? " (diferença confirmada no WhatsApp)." : "."}
+                    </span>
                   </p>
                 )}
               </div>
@@ -124,6 +138,7 @@ export function MontarMarmita({ tipos, secoes, grupo, mostrarPreco }: { tipos: T
               <button type="button" onClick={adicionarMarmita} className="min-h-12 w-full rounded-pill bg-vinho-700 px-6 py-3 text-base font-semibold text-creme-50 hover:bg-vinho-800">
                 Adicionar ao pedido{mostrarPreco && precoAtual != null ? ` · ${formatarPreco(precoAtual * qtd)}` : ""}
               </button>
+              {mostrarPreco && config.taxaEntrega != null && <p className="text-center text-sm text-muted">Entrega: + {formatarPreco(config.taxaEntrega)} de taxa. Retirada no balcão sem taxa.</p>}
             </>
           )}
         </div>

@@ -21,7 +21,7 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <CarrinhoProvider config={pedido}>
       <JsonLd data={restauranteJsonLd(config.redes, config.horarios)} />
-      <Header horarios={config.horarios} />
+      <Header horarios={config.horarios} menu={config.menu} />
       <main className="flex-1">{children}</main>
       <Footer redes={config.redes} horarios={config.horarios} />
       <BarraCarrinho />

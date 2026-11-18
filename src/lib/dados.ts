@@ -6,7 +6,8 @@ import { supabaseConfigured, supabaseKey, supabaseUrl } from "./supabase/env";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "./horario";
 import type { Redes } from "./redes";
 import { SAIDA_PADRAO, type Saida } from "./saida";
-import { VARIACAO_CHURRASCO } from "./marmitex";
+import { precoEspecialDe } from "./marmitex";
+import { MENU_PADRAO, lerMenu, type ItemMenu } from "./menu";
 export { SAIDA_PADRAO, type Saida };
 
 export type Categoria = { id: string; nome: string; slug: string; descricao: string | null; turno: "almoco" | "noite" | "ambos"; ordem: number };
@@ -31,6 +32,7 @@ export type Config = {
   taxa_entrega: number | null; pedido_minimo: number | null; horarios: Horarios;
   redes: Redes;
   saida: Saida;
+  menu: ItemMenu[];
   formas_pagamento: string[]; historia: string | null;
 };
 
@@ -39,6 +41,7 @@ const CONFIG_PADRAO: Config = {
   taxa_entrega: 4, pedido_minimo: null, horarios: HORARIOS_PADRAO, redes: {},
   formas_pagamento: ["Dinheiro", "Pix", "Cartão de débito", "Cartão de crédito", "Vale-refeição"], historia: null,
   saida: SAIDA_PADRAO,
+  menu: MENU_PADRAO,
 };
 
 function db() {
@@ -63,7 +66,7 @@ export async function getConfig(): Promise<Config> {
     const { data, error } = await db().from("configuracoes").select("*").eq("id", 1).single();
     if (error) throw error;
     const horarios = data.horarios?.almoco ? data.horarios : HORARIOS_PADRAO;
-    return { ...CONFIG_PADRAO, ...data, horarios, redes: data.redes ?? {}, saida: { ...SAIDA_PADRAO, ...(data.saida ?? {}) } };
+    return { ...CONFIG_PADRAO, ...data, horarios, redes: data.redes ?? {}, saida: { ...SAIDA_PADRAO, ...(data.saida ?? {}) }, menu: lerMenu(data.menu) };
   }, CONFIG_PADRAO);
 }
 
@@ -183,7 +186,7 @@ export async function getMarmitas() {
     .filter((p) => p.disponivel)
     .map((p) => ({
       id: p.id, nome: p.nome, descricao: p.descricao, preco: p.preco,
-      // Preço quando o cliente marca churrasco: guardado em variacoes como "Com churrasco".
-      precoChurrasco: p.variacoes?.find((v) => v.nome === VARIACAO_CHURRASCO)?.preco ?? null,
+      // Preço quando o cliente marca um item com estrela (especial): guardado em variacoes.
+      precoEspecial: precoEspecialDe(p.variacoes),
     }));
 }

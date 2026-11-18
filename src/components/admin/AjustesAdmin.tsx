@@ -5,6 +5,8 @@ import { atualizarSite } from "@/app/admin/acoes";
 import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
 import { SAIDA_PADRAO, type Saida } from "@/lib/saida";
+import { lerMenu, MENU_PADRAO, type ItemMenu } from "@/lib/menu";
+import { MenuAdmin } from "./MenuAdmin";
 import { REDES, type Redes } from "@/lib/redes";
 import { DIAS, HORARIOS_PADRAO, type Faixa, type Horarios } from "@/lib/horario";
 import { Ajuda, AreaTexto, Aviso, Botao, Campo, Chave, Titulo, traduzirErro } from "./ui";
@@ -24,6 +26,7 @@ export function AjustesAdmin() {
   const [redes, setRedes] = useState<Redes>({});
   const [saida, setSaida] = useState<Saida>(SAIDA_PADRAO);
   const [horarios, setHorarios] = useState<Horarios>(HORARIOS_PADRAO);
+  const [menu, setMenu] = useState<ItemMenu[]>(MENU_PADRAO);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; txt: string } | null>(null);
   const [salvando, setSalvando] = useState(false);
 
@@ -32,7 +35,7 @@ export function AjustesAdmin() {
       supabase.from("configuracoes").select("*").eq("id", 1).single(),
       supabase.from("faq").select("id,pergunta,resposta,ordem,ativo").order("ordem"),
     ]);
-    if (c) { setRedes(c.redes ?? {}); setSaida({ ...SAIDA_PADRAO, ...(c.saida ?? {}) }); setHorarios({ ...HORARIOS_PADRAO, ...(c.horarios ?? {}) }); }
+    if (c) { setRedes(c.redes ?? {}); setSaida({ ...SAIDA_PADRAO, ...(c.saida ?? {}) }); setHorarios({ ...HORARIOS_PADRAO, ...(c.horarios ?? {}) }); setMenu(lerMenu(c.menu)); }
     if (c) setF({ whatsapp: c.whatsapp, telefone: c.telefone, taxa: real(c.taxa_entrega), minimo: real(c.pedido_minimo), historia: c.historia ?? "", aiqfome: c.redes?.aiqfome ?? "", mostrar_precos: c.mostrar_precos, pedidos_pausados: c.pedidos_pausados });
     setFaq((q as Faq[]) ?? []);
   }, [supabase]);
@@ -55,6 +58,7 @@ export function AjustesAdmin() {
       redes: Object.fromEntries(Object.entries({ ...redes, aiqfome: f.aiqfome }).map(([k, v]) => [k, (v ?? "").trim()]).filter(([, v]) => v)),
       saida,
       horarios,
+      menu: menu.map((m) => ({ rotulo: m.rotulo.trim(), href: m.href.trim(), ativo: m.ativo })).filter((m) => m.rotulo && m.href && m.href !== "https://"),
       mostrar_precos: f.mostrar_precos,
       pedidos_pausados: f.pedidos_pausados,
       atualizado_em: new Date().toISOString(),
@@ -86,7 +90,7 @@ export function AjustesAdmin() {
     <>
       <Titulo sub="Informações que aparecem no site e no pedido.">Ajustes</Titulo>
       <Ajuda passos={[
-        <>Mude o que precisar nas seções abaixo: pedidos, horários, redes sociais, aviso “Já vai?”, história e perguntas.</>,
+        <>Mude o que precisar nas seções abaixo: pedidos, horários, menu do site, redes sociais, aviso “Já vai?”, história e perguntas.</>,
         <>No final, toque em <b>Salvar ajustes</b>. Só salva depois desse botão.</>,
       ]} dicas={[
         <><b>Horários</b>: mudam o “Aberto agora” e o que aparece no Google. Feriado? Ajuste aqui e volte depois.</>,
@@ -98,7 +102,7 @@ export function AjustesAdmin() {
           <h2 className="text-xl font-semibold">Pedidos e entrega</h2>
           <Chave ligado={!f.pedidos_pausados} onChange={(v) => set("pedidos_pausados", !v)} rotulo={f.pedidos_pausados ? "Pedidos pausados" : "Recebendo pedidos"} />
           <Chave ligado={f.mostrar_precos} onChange={(v) => set("mostrar_precos", v)} rotulo={f.mostrar_precos ? "Preços aparecendo no site" : "Todos os preços escondidos"} descricao="Liga ou desliga todos os preços de uma vez." />
-          <Campo rotulo="Taxa de entrega (R$)" dica="Aparece no pedido como “a partir de”. Deixe vazio se for combinar no WhatsApp." inputMode="decimal" value={f.taxa} onChange={(e) => set("taxa", e.target.value)} placeholder="4,00" />
+          <Campo rotulo="Taxa de entrega (R$)" dica="Vale para toda entrega, no almoço (marmitex) e na pizzaria. Entra no total do pedido. Deixe vazio se for combinar no WhatsApp." inputMode="decimal" value={f.taxa} onChange={(e) => set("taxa", e.target.value)} placeholder="4,00" />
           <Campo rotulo="Pedido mínimo para entrega (R$)" dica="Opcional." inputMode="decimal" value={f.minimo} onChange={(e) => set("minimo", e.target.value)} />
           <Campo rotulo="WhatsApp que recebe os pedidos" inputMode="tel" value={f.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} />
           <Campo rotulo="Telefone fixo" inputMode="tel" value={f.telefone} onChange={(e) => set("telefone", e.target.value)} />
@@ -110,6 +114,12 @@ export function AjustesAdmin() {
           <p className="text-sm text-muted">Muda o site todo: “Aberto agora”, rodapé, página de contato e o Google.</p>
           <EditorFaixa titulo="Almoço" f={horarios.almoco} onChange={(f) => setHorarios((h) => ({ ...h, almoco: f }))} />
           <EditorFaixa titulo="Pizzaria e choperia (noite)" f={horarios.jantar} onChange={(f) => setHorarios((h) => ({ ...h, jantar: f }))} />
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Menu do site</h2>
+          <p className="text-sm text-muted">Os links do topo do site (no celular, no botão ☰). Mude o nome, a ordem, esconda ou crie um link novo.</p>
+          <MenuAdmin menu={menu} onChange={setMenu} />
         </section>
 
         <section className="space-y-4">

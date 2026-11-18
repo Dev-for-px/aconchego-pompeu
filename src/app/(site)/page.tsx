@@ -6,7 +6,7 @@ import { BotaoWhatsApp } from "@/components/Botoes";
 import { CardProduto } from "@/components/CardProduto";
 import { InfoCasa } from "@/components/InfoCasa";
 import { JsonLd } from "@/components/JsonLd";
-import { CardapioComBebidas } from "@/components/CardapioComBebidas";
+import { CardapioComBebidas, ehBebida } from "@/components/CardapioComBebidas";
 import { ListaFaq } from "@/components/ListaFaq";
 import { StatusAberto } from "@/components/StatusAberto";
 import { getAlmocoHoje, getAvaliacoes, getCardapio, getConfig, getFaq, getGaleria, getMarmitas, getPosts, getProdutos, getPromocoesAtivas } from "@/lib/dados";
@@ -24,6 +24,8 @@ export default async function Home() {
   // Destaques são da noite (pizzaria/bar); no almoço aparecem o cardápio do dia e as bebidas.
   const idsNoite = new Set(noite.filter((c) => c.turno === "noite").map((c) => c.id));
   const busca = montarBusca([...dia, ...noite]);
+  // Bebidas ganham aba própria; almoço e pizzaria mostram só a comida.
+  const bebidas = noite.filter((c) => ehBebida(c.slug));
   // Fotos aparecem dentro de cada aba: almoço (antes das bebidas) e noite (depois dos destaques)
   const fotosDia = fotos.filter((f) => f.turno !== "noite");
   const fotosNoite = fotos.filter((f) => f.turno !== "almoco");
@@ -57,7 +59,7 @@ export default async function Home() {
               <div className="space-y-10">
                 <AlmocoDoDia almoco={almoco} mostrarPreco={config.mostrar_precos} nivel={3} horarios={config.horarios} marmitas={marmitas} />
                 {fotosDia.length > 0 && <div className="-mx-4"><GaleriaFaixa fotos={fotosDia} titulo="Fotos do almoço" /></div>}
-                <CardapioComBebidas secoes={dia.filter((c) => c.slug !== "marmitex")} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
+                <CardapioComBebidas secoes={dia.filter((c) => c.slug !== "marmitex" && !ehBebida(c.slug))} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="dia-" />
               </div>
             }
             noite={
@@ -83,9 +85,10 @@ export default async function Home() {
                   </div>
                 )}
                 {fotosNoite.length > 0 && <div className="-mx-4"><GaleriaFaixa fotos={fotosNoite} titulo="Fotos da pizzaria" /></div>}
-                <CardapioComBebidas secoes={noite} mostrarPreco={config.mostrar_precos} nivel={3} />
+                <CardapioComBebidas secoes={noite.filter((c) => !ehBebida(c.slug))} mostrarPreco={config.mostrar_precos} nivel={3} />
               </div>
             }
+            bebidas={bebidas.some((c) => c.produtos.length > 0) ? <CardapioComBebidas secoes={bebidas} mostrarPreco={config.mostrar_precos} nivel={3} prefixo="beb-" /> : undefined}
           />
         </Suspense>
       </section>

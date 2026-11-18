@@ -15,6 +15,7 @@ export function Rastreio() {
     const clique = (e: MouseEvent) => {
       const el = (e.target as HTMLElement).closest("a, button, [data-evento]") as HTMLElement | null;
       if (!el) return;
+      if (el.closest("[data-sem-rastreio]")) return; // já registrado pelo próprio componente (ex.: enviar pedido)
       const texto = (el.getAttribute("aria-label") || el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80);
       const marcado = el.closest("[data-evento]") as HTMLElement | null;
       if (marcado?.dataset.evento) {

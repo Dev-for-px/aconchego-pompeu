@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Flame, Plus, Trash2 } from "lucide-react";
+import { Plus, Star, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { lerCardapioAlmoco } from "@/lib/admin/parserAlmoco";
-import { pareceChurrasco } from "@/lib/marmitex";
+import { ehEspecial } from "@/lib/marmitex";
 import { useSessao } from "@/lib/admin/sessao";
 import type { SecaoAlmoco } from "@/lib/dados";
 import { HORARIOS_PADRAO, hojeEmPompeu, type Horarios } from "@/lib/horario";
@@ -14,8 +14,8 @@ import { AreaTexto, Aviso, Botao, Campo, campoCls, Explica, Titulo } from "./ui"
 type Registro = { id: string; data: string; texto_original: string; itens: SecaoAlmoco[]; publicado: boolean };
 
 const dataBr = (iso: string) => iso.split("-").reverse().join("/");
-// Cardápios antigos não têm a marca de churrasco: descobre pelo nome.
-const comMarca = (secoes: SecaoAlmoco[]) => secoes.map((s) => ({ ...s, itens: s.itens.map((i) => ({ ...i, churrasco: i.churrasco ?? pareceChurrasco(i.nome, s.secao) })) }));
+// Cardápios antigos não têm a estrela: churrasco ganha estrela pelo nome.
+const comMarca = (secoes: SecaoAlmoco[]) => secoes.map((s) => ({ ...s, itens: s.itens.map((i) => ({ ...i, churrasco: ehEspecial(i, s.secao) })) }));
 
 /** Bloco numerado da tela: um passo de cada vez. */
 function Passo({ n, titulo, children }: { n: number; titulo: string; children: React.ReactNode }) {
@@ -129,7 +129,7 @@ export function AlmocoAdmin() {
           {secoes.length > 0 && (
             <div>
               <p className="font-semibold text-ink">Confira como vai ficar</p>
-              <Explica>Toque num item para corrigir. O <Flame size={14} className="inline text-vinho-500" aria-hidden /> <b>foguinho aceso</b> marca o que é churrasco: quando o cliente escolhe esse item, o marmitex dele passa a ser <b>com churrasco</b>.</Explica>
+              <Explica>Toque num item para corrigir. A <Star size={14} className="inline fill-dourado text-vinho-500" aria-hidden /> <b>estrela acesa</b> marca item especial (churrasco, salmão, picanha…): se o cliente escolher esse item, o marmitex dele passa para o <b>preço especial</b>. Toque na estrela para ligar ou desligar.</Explica>
               <div className="mt-3 space-y-4">
                 {secoes.map((s, si) => (
                   <div key={si}>
@@ -140,9 +140,9 @@ export function AlmocoAdmin() {
                       {s.itens.map((it, ii) => (
                         <li key={ii} className="flex items-center gap-1">
                           <input value={it.nome} onChange={(e) => mudarItem(si, ii, { nome: e.target.value })} aria-label="Item" className={`${campoCls} mt-0 py-2`} />
-                          <button type="button" role="switch" aria-checked={!!it.churrasco} aria-label={`${it.nome || "Item"} é churrasco`} title="É churrasco?" onClick={() => mudarItem(si, ii, { churrasco: !it.churrasco })}
+                          <button type="button" role="switch" aria-checked={!!it.churrasco} aria-label={`${it.nome || "Item"} é especial (estrela)`} title="Item especial? (marmitex fica mais caro)" onClick={() => mudarItem(si, ii, { churrasco: !it.churrasco })}
                             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-pill border ${it.churrasco ? "border-vinho-700 bg-vinho-700 text-creme-50" : "border-linha bg-creme-50 text-linha"}`}>
-                            <Flame size={20} />
+                            <Star size={20} className={it.churrasco ? "fill-dourado" : ""} />
                           </button>
                           <button type="button" onClick={() => removerItem(si, ii)} aria-label={`Remover ${it.nome || "item"}`} className="flex h-11 w-9 shrink-0 items-center justify-center text-muted"><Trash2 size={20} /></button>
                         </li>

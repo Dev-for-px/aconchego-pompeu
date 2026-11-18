@@ -31,8 +31,15 @@ export function montarMensagem(itens: ItemCarrinho[], cliente: DadosCliente, mos
   }
 
   if (mostrarPrecos && soma > 0) {
-    linhas.push(`Subtotal: ${formatarPreco(soma)}${aConfirmar ? " + itens a confirmar" : ""}`);
-    if (cliente.tipo === "entrega" && taxaEntrega != null) linhas.push(`Taxa de entrega: a partir de ${formatarPreco(taxaEntrega)} (confirmar pelo endereço)`);
+    const resto = aConfirmar ? " + itens a confirmar" : "";
+    linhas.push(`Subtotal: ${formatarPreco(soma)}${resto}`);
+    // A taxa vale para qualquer entrega: almoço (marmitex) e pizzaria.
+    if (cliente.tipo === "entrega") {
+      if (taxaEntrega != null) {
+        linhas.push(`Taxa de entrega: ${formatarPreco(taxaEntrega)}`);
+        linhas.push(`*Total: ${formatarPreco(soma + taxaEntrega)}${resto}*`);
+      } else linhas.push("Taxa de entrega: a combinar");
+    } else linhas.push(`*Total: ${formatarPreco(soma)}${resto}*`);
   } else {
     linhas.push("Valor: a confirmar");
   }

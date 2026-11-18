@@ -1,4 +1,4 @@
-# Aconchego – Status do projeto (atualizado em 13/11/2026)
+# Aconchego – Status do projeto (atualizado em 18/11/2026)
 
 **Cliente:** Restaurante, Pizzaria, Choperia e Churrascaria Aconchego – Pompéu – MG (dona: Maria Helena)
 **Venda/comercial:** José Rufino (contrato no CNPJ dele: 50.071.862/0001-83). Pedro executa; não entra no contrato.
@@ -43,9 +43,18 @@
 
 - Galeria (17/11): 18 fotos do Instagram da casa (pasta PHAR - IA/02-CLIENTES/aconchego-restaurante-pizzaria/fotos) — 11 do almoço, 6 da noite, chopp nos dois. Ficam em `public/galeria/` (WebP quadrado com moldura creme) e são cadastradas na tabela `galeria`; editar/apagar pelo painel normalmente
 
+- Ajustes de 18/11:
+  - Pedido → WhatsApp abre em **nova aba** (link de verdade, sem risco de bloqueio); o site continua aberto
+  - **Taxa de entrega** vale para almoço (marmitex) e noite e agora entra no **Total** (checkout e mensagem); aviso da taxa no montador de marmitex
+  - **Bebidas**: 3ª aba na home (Almoço | Pizzaria | Bebidas) e página nova `/bebidas` (no sitemap e llms.txt); as abas Almoço/Pizzaria mostram só comida
+  - **Menu editável** no painel (Ajustes › Menu do site): renomear, reordenar, esconder, criar link. Padrão: Início, Almoço, Pizzaria, Bebidas, Sobre nós, Dúvidas, Novidades, Como chegar. Coluna `configuracoes.menu` (migration 0009, já aplicada)
+  - Almoço: **foguinho virou estrela**. Item com estrela (churrasco, salmão…) deixa o marmitex no **preço especial**; o cliente vê "Seu marmitex com Salmão é especial: passa de R$ 28 para R$ 32". Painel: Almoço › Preços do marmitex › "Preço especial"
+  - Aviso **"Já vai?"** revisado: aparece no 1º toque em **Voltar** (o 2º Voltar sai normalmente), quando o mouse sai pelo topo e na rolagem rápida pra cima; 1x por visita, não aparece no carrinho nem depois de enviar o pedido; registra "aviso_saida" nos Resultados
+
 ## Pendências
 - [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
-- [ ] Cadastrar no painel (Almoço › Preços do marmitex) o nome e os dois preços reais; hoje existe só um tipo de teste ("222333", R$ 30). A migration 0009 foi removida (não é mais necessária)
+- [ ] Conferir no painel (Almoço › Preços do marmitex) os preços reais: hoje Grande R$ 28 / especial R$ 32 e Pequena R$ 24 / especial R$ 28
+- [ ] Acompanhar no Search Console se o aviso no botão Voltar não gera alerta; se gerar, desligar só esse gatilho
 - [ ] Desativar "Allow new users to sign up" no Supabase (Authentication → Sign In / Providers)
 - [ ] Preencher preços que faltam (~61 itens) e fotos/legendas
 - [ ] Conferir com a cliente: preços PDF × Aiqfome, pizzas doces, borda no brotinho, chopp (tamanhos/preços), taxa R$ 4 × R$ 3

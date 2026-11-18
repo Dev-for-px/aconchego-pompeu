@@ -15,7 +15,7 @@ Slogan: "${NEGOCIO.slogan}".
 - WhatsApp (pedidos e reservas): ${formatarTelefone(NEGOCIO.whatsapp)}
 - Almoço: ${textoFaixa(h.almoco).toLowerCase()}
 - Pizzaria e choperia: ${textoFaixa(h.jantar).toLowerCase()}${diasSemJantar(h).length ? ` (${diasSemJantar(h).join(", ")} à noite fechado)` : ""}
-- Delivery próprio (taxa a partir de R$ 4,00) e pelo Aiqfome; retirada no local
+- Delivery próprio no almoço (marmitex) e à noite (taxa de entrega de R$ 4,00) e pelo Aiqfome; retirada no local
 - Pagamento: ${NEGOCIO.formasPagamento.join(", ")}
 - Estrutura: ${NEGOCIO.comodidades.join(", ")}
 - Instagram: ${NEGOCIO.instagram}
@@ -28,6 +28,7 @@ export async function llmsTxt() {
 ## Páginas
 - [Almoço de hoje](${SITE_URL}/almoco-hoje): cardápio do almoço, atualizado todo dia
 - [Cardápio](${SITE_URL}/cardapio): pizzas, porções na chapa, chopp e bebidas
+- [Bebidas](${SITE_URL}/bebidas): chopp, cervejas, drinks, sucos e refrigerantes
 - [Perguntas frequentes](${SITE_URL}/perguntas-frequentes): horário, delivery, pagamento, reservas
 - [Sobre](${SITE_URL}/sobre): história e fatos sobre o restaurante
 - [Pizzaria em Pompéu](${SITE_URL}/pizzaria-em-pompeu): sabores, tamanhos, meio a meio e entrega

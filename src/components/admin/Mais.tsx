@@ -21,7 +21,7 @@ export function Mais() {
         {pode("dono", "gerente") && (
           <Link href="/admin/ajustes" className={item}>
             <Settings size={26} className="text-vinho-500" aria-hidden />
-            <span className="flex-1"><b className="block">Ajustes do site</b><span className="text-sm text-muted">Horários, taxa de entrega, WhatsApp, redes sociais, perguntas frequentes e história</span></span>
+            <span className="flex-1"><b className="block">Ajustes do site</b><span className="text-sm text-muted">Horários, taxa de entrega, WhatsApp, menu do site, redes sociais, perguntas frequentes e história</span></span>
             <ChevronRight className="text-muted" />
           </Link>
         )}

@@ -6,6 +6,7 @@ import { precoItem, useCarrinho } from "@/lib/carrinho";
 import { montarMensagem, type DadosCliente } from "@/lib/mensagem";
 import { formatarPreco, linkWhatsApp, NEGOCIO } from "@/lib/site";
 import { registrar } from "@/lib/rastreio";
+import { dispensarAvisoSaida } from "@/lib/saida";
 import { Quantidade } from "./Quantidade";
 
 const CHAVE_CLIENTE = "aconchego:cliente";
@@ -30,20 +31,25 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
   const faltaEndereco = dados.tipo === "entrega" && !dados.endereco.trim();
   const abaixoMinimo = c.config.mostrarPrecos && c.config.pedidoMinimo != null && c.subtotal != null && c.subtotal < c.config.pedidoMinimo;
 
-  function enviar() {
+  // Taxa de entrega: vale para qualquer pedido com entrega (almoço/marmitex e pizzaria).
+  const taxa = dados.tipo === "entrega" && c.config.mostrarPrecos ? c.config.taxaEntrega : null;
+  const total = c.config.mostrarPrecos && c.subtotal != null ? c.subtotal + (taxa ?? 0) : null;
+  const url = linkWhatsApp(montarMensagem(c.itens, dados, c.config.mostrarPrecos, c.config.taxaEntrega), c.config.whatsapp);
+
+  // O botão é um link de verdade com target="_blank": o WhatsApp abre em outra aba e o site continua aberto
+  // aqui (nenhum navegador bloqueia, porque é o próprio toque do cliente que abre o link).
+  function enviar(e: React.MouseEvent<HTMLAnchorElement>) {
     setTentou(true);
-    if (faltaNome || faltaEndereco || c.config.pausado) return;
-    const texto = montarMensagem(c.itens, dados, c.config.mostrarPrecos, c.config.taxaEntrega);
+    if (faltaNome || faltaEndereco || c.config.pausado) {
+      e.preventDefault();
+      return;
+    }
     try {
       localStorage.setItem(CHAVE_CLIENTE, JSON.stringify({ ...dados, obs: "" }));
     } catch {}
     registrar("enviar_pedido", `${c.totalItens} itens · ${dados.tipo}`);
     c.salvarUltimo();
-    // Abre o WhatsApp em outra aba: o site continua aberto aqui.
-    const url = linkWhatsApp(texto, c.config.whatsapp);
-    const aba = window.open(url, "_blank");
-    if (aba) aba.opener = null;
-    else window.location.assign(url); // navegador bloqueou a nova aba
+    dispensarAvisoSaida();
   }
 
   if (c.itens.length === 0) {
@@ -92,6 +98,15 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
             );
           })}
         </ul>
+        {c.config.mostrarPrecos && c.subtotal != null && (
+          <dl className="mt-3 space-y-1 rounded-md border border-linha bg-creme-200 p-4 text-[15px]">
+            <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd className="font-semibold">{formatarPreco(c.subtotal)}</dd></div>
+            {dados.tipo === "entrega" && (
+              <div className="flex justify-between"><dt className="text-muted">Taxa de entrega</dt><dd className="font-semibold">{c.config.taxaEntrega != null ? formatarPreco(c.config.taxaEntrega) : "a combinar"}</dd></div>
+            )}
+            <div className="flex justify-between border-t border-linha pt-1 text-base"><dt className="font-semibold">Total</dt><dd className="font-bold text-vinho-500">{formatarPreco(total ?? c.subtotal)}{c.temSemPreco ? " + a confirmar" : ""}</dd></div>
+          </dl>
+        )}
         <div className="mt-3 flex items-center justify-between">
           <Link href="/cardapio" className="font-semibold text-vinho-500 underline">+ Adicionar mais itens</Link>
           <button type="button" onClick={c.limpar} className="text-sm text-muted underline">Limpar pedido</button>
@@ -156,18 +171,18 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
       {/* Envio fixo no rodapé (celular) */}
       <div className="fixed inset-x-0 bottom-0 z-[55] border-t border-linha bg-creme-50 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-md">
-          <div className="mb-2 flex justify-between text-sm">
-            <span className="text-muted">{c.totalItens} {c.totalItens === 1 ? "item" : "itens"}{dados.tipo === "entrega" && c.config.mostrarPrecos && c.config.taxaEntrega != null ? ` · entrega a partir de ${formatarPreco(c.config.taxaEntrega)}` : ""}</span>
+          <div className="mb-2 flex justify-between gap-3 text-sm">
+            <span className="text-muted">{c.totalItens} {c.totalItens === 1 ? "item" : "itens"}{taxa != null ? ` + entrega ${formatarPreco(taxa)}` : ""}</span>
             <span className="font-bold text-ink">
-              {c.config.mostrarPrecos && c.subtotal != null ? `${formatarPreco(c.subtotal)}${c.temSemPreco ? " + a confirmar" : ""}` : "Valor a confirmar"}
+              {total != null ? `Total ${formatarPreco(total)}${c.temSemPreco ? " + a confirmar" : ""}` : "Valor a confirmar"}
             </span>
           </div>
           {c.config.pausado ? (
             <p className="rounded-pill bg-fechado px-5 py-3.5 text-center font-semibold text-creme-50">Pedidos pausados no momento</p>
           ) : (
-            <button type="button" onClick={enviar} className="flex w-full items-center justify-center gap-2 rounded-pill bg-aberto px-5 py-3.5 text-base font-semibold text-creme-50">
+            <a href={url} target="_blank" rel="noopener noreferrer" onClick={enviar} data-sem-rastreio className="flex w-full items-center justify-center gap-2 rounded-pill bg-aberto px-5 py-3.5 text-base font-semibold text-creme-50">
               <MessageCircle size={22} aria-hidden />Enviar pedido no WhatsApp
-            </button>
+            </a>
           )}
           {abaixoMinimo && <p className="mt-2 text-center text-xs text-muted">Pedido mínimo para entrega: {formatarPreco(c.config.pedidoMinimo)}</p>}
         </div>

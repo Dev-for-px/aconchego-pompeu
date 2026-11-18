@@ -1,12 +1,12 @@
 "use client";
-// Tipos de marmitex (produtos da categoria "marmitex"): nome, preço normal e preço com churrasco.
-// O preço com churrasco fica em variacoes como { nome: "Com churrasco", preco }.
+// Tipos de marmitex (produtos da categoria "marmitex"): nome, preço normal e preço especial
+// (quando o cliente escolhe um item com estrela). O preço especial fica em variacoes como { nome: "Especial", preco }.
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Flame, Plus, Trash2 } from "lucide-react";
+import { Plus, Star, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { slugificar } from "@/lib/admin/fotos";
 import type { Variacao } from "@/lib/dados";
-import { VARIACAO_CHURRASCO } from "@/lib/marmitex";
+import { VARIACAO_ESPECIAL, precoEspecialDe } from "@/lib/marmitex";
 import { createClient } from "@/lib/supabase/client";
 import { Aviso, Botao, campoCls, Explica, traduzirErro } from "./ui";
 
@@ -33,7 +33,7 @@ export function MarmitasAdmin() {
     const { data } = await supabase.from("produtos").select("id,nome,preco,disponivel,variacoes").eq("categoria_id", cat.id).order("ordem");
     const lidas = (data ?? []).map((p) => ({
       id: p.id as string, nome: p.nome as string, preco: texto(p.preco),
-      precoChurrasco: texto((p.variacoes as Variacao[] | null)?.find((v) => v.nome === VARIACAO_CHURRASCO)?.preco),
+      precoChurrasco: texto(precoEspecialDe(p.variacoes as Variacao[] | null)),
       disponivel: p.disponivel as boolean,
     }));
     setLinhas(lidas.length ? lidas : [{ nome: "Marmitex", preco: "", precoChurrasco: "", disponivel: true }]);
@@ -58,10 +58,10 @@ export function MarmitasAdmin() {
       }
       for (const [i, l] of linhas.entries()) {
         if (!l.nome.trim()) continue;
-        const churrasco = numero(l.precoChurrasco);
+        const especial = numero(l.precoChurrasco);
         const dados = {
           nome: l.nome.trim(), preco: numero(l.preco), disponivel: l.disponivel, ordem: i, atualizado_em: new Date().toISOString(),
-          variacoes: churrasco != null ? [{ nome: VARIACAO_CHURRASCO, preco: churrasco }] : [],
+          variacoes: especial != null ? [{ nome: VARIACAO_ESPECIAL, preco: especial }] : [],
         };
         const { error } = l.id
           ? await supabase.from("produtos").update(dados).eq("id", l.id)
@@ -80,7 +80,7 @@ export function MarmitasAdmin() {
   return (
     <>
       <Explica>
-        Pelo site o cliente sempre pede <b>marmitex</b>. Se ele escolher um item de churrasco, o site troca sozinho para o <b>preço com churrasco</b>.
+        Pelo site o cliente sempre pede <b>marmitex</b>. Se ele escolher um item com <Star size={14} className="inline fill-dourado text-vinho-500" aria-hidden /> <b>estrela</b> (churrasco, salmão…), o site troca sozinho para o <b>preço especial</b> e avisa o cliente.
         Deixou um preço em branco? O site mostra “a confirmar”.
       </Explica>
       <div className="space-y-3">
@@ -104,7 +104,7 @@ export function MarmitasAdmin() {
                 <input inputMode="decimal" className={campoCls} value={l.preco} placeholder="R$ 0,00" onChange={(e) => mudar(i, { preco: e.target.value })} />
               </label>
               <label className="block">
-                <span className="flex items-center gap-1 text-sm font-semibold text-ink"><Flame size={14} className="text-vinho-500" aria-hidden />Com churrasco</span>
+                <span className="flex items-center gap-1 text-sm font-semibold text-ink"><Star size={14} className="fill-dourado text-vinho-500" aria-hidden />Preço especial</span>
                 <input inputMode="decimal" className={campoCls} value={l.precoChurrasco} placeholder="R$ 0,00" onChange={(e) => mudar(i, { precoChurrasco: e.target.value })} />
               </label>
             </div>

@@ -8,8 +8,9 @@ import { ChevronRight, Camera, Clock, Menu, MessageCircle, ShoppingBag, X } from
 import { useCarrinho } from "@/lib/carrinho";
 import { NEGOCIO, linkWhatsApp } from "@/lib/site";
 import { textoFaixa, type Horarios } from "@/lib/horario";
+import { linkExterno, menuAtivo, type ItemMenu } from "@/lib/menu";
 
-export function MenuMobile({ links, horarios }: { links: { href: string; label: string }[]; horarios: Horarios }) {
+export function MenuMobile({ links, horarios }: { links: ItemMenu[]; horarios: Horarios }) {
   const [aberto, setAberto] = useState(false);
   const caminho = usePathname();
   const { totalItens } = useCarrinho();
@@ -39,14 +40,17 @@ export function MenuMobile({ links, horarios }: { links: { href: string; label: 
           </div>
           <nav aria-label="Menu" className="flex-1 overflow-y-auto px-6">
             <ul className="divide-y divide-vinho-800">
-              <li><Link href="/" onClick={() => setAberto(false)} className={`flex items-center justify-between py-4 font-serif text-2xl ${caminho === "/" ? "font-bold" : ""}`}>Início<ChevronRight size={22} className="opacity-60" /></Link></li>
-              {links.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} onClick={() => setAberto(false)} className={`flex items-center justify-between py-4 font-serif text-2xl ${caminho.startsWith(l.href) ? "font-bold" : ""}`}>
-                    {l.label}<ChevronRight size={22} className="opacity-60" />
-                  </Link>
-                </li>
-              ))}
+              {links.map((l) => {
+                const cls = `flex items-center justify-between py-4 font-serif text-2xl ${menuAtivo(l.href, caminho) ? "font-bold" : ""}`;
+                const conteudo = <>{l.rotulo}<ChevronRight size={22} className="opacity-60" /></>;
+                return (
+                  <li key={`${l.href}-${l.rotulo}`}>
+                    {linkExterno(l.href)
+                      ? <a href={l.href} target="_blank" rel="noopener noreferrer" onClick={() => setAberto(false)} className={cls}>{conteudo}</a>
+                      : <Link href={l.href} onClick={() => setAberto(false)} className={cls}>{conteudo}</Link>}
+                  </li>
+                );
+              })}
             </ul>
             <p className="mt-6 flex items-start gap-2 text-sm opacity-90"><Clock size={18} className="mt-0.5 shrink-0" />Almoço: {textoFaixa(horarios.almoco).toLowerCase()}<br />Pizzaria: {textoFaixa(horarios.jantar).toLowerCase()}</p>
             <p className="mt-8 font-script text-2xl leading-tight">{NEGOCIO.slogan}</p>
