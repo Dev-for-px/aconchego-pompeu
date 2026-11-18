@@ -6,6 +6,7 @@ import { atualizarSite } from "@/app/admin/acoes";
 import { Sheet } from "@/components/Sheet";
 import { prepararFoto, slugificar } from "@/lib/admin/fotos";
 import { useSessao } from "@/lib/admin/sessao";
+import { normalizar } from "@/lib/admin/texto";
 import type { Categoria, Produto, Variacao } from "@/lib/dados";
 import { createClient } from "@/lib/supabase/client";
 import { Ajuda, AreaTexto, Aviso, Botao, Campo, campoCls, Chave, Explica, Titulo, traduzirErro } from "./ui";
@@ -29,6 +30,13 @@ export function CardapioAdmin() {
   const [mostrarPrecos, setMostrarPrecos] = useState<boolean | null>(null);
   const podeEditar = pode("dono", "gerente");
 
+  useEffect(() => {
+    // Busca vinda da barra de pesquisa do painel (?q=…)
+    const q = new URLSearchParams(window.location.search).get("q");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (q) setBusca(q);
+  }, []);
+
   const carregar = useCallback(async () => {
     const [c, p] = await Promise.all([
       supabase.from("categorias").select("id,nome,slug,descricao,turno,ordem").eq("ativo", true).order("ordem"),
@@ -50,7 +58,7 @@ export function CardapioAdmin() {
     await atualizarSite(["cardapio"]);
   }
 
-  const filtro = busca.trim().toLowerCase();
+  const filtro = normalizar(busca);
   return (
     <>
       <Titulo sub={podeEditar ? "Toque no interruptor para tirar um item do site na hora. Toque no lápis para editar." : "Acabou algum item? Desligue aqui que ele some do site na hora."}>Cardápio</Titulo>
@@ -77,7 +85,7 @@ export function CardapioAdmin() {
       <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar produto…" aria-label="Buscar produto" className={`${campoCls} mb-4`} />
       <div className="space-y-3">
         {cats.map((c) => {
-          const lista = prods.filter((p) => p.categoria_id === c.id && (!filtro || p.nome.toLowerCase().includes(filtro)));
+          const lista = prods.filter((p) => p.categoria_id === c.id && (!filtro || normalizar(p.nome).includes(filtro)));
           if (filtro && lista.length === 0) return null;
           const expandida = aberta === c.id || !!filtro;
           const desligados = lista.filter((p) => !p.disponivel).length;

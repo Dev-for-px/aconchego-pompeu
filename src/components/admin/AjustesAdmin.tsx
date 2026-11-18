@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Lock, Plus, Trash2 } from "lucide-react";
 import { atualizarSite } from "@/app/admin/acoes";
 import { useSessao } from "@/lib/admin/sessao";
 import { createClient } from "@/lib/supabase/client";
@@ -19,7 +19,7 @@ const numero = (s: string) => {
 };
 
 export function AjustesAdmin() {
-  const { pode } = useSessao();
+  const { pode, consultoria } = useSessao();
   const supabase = useMemo(() => createClient(), []);
   const [f, setF] = useState({ whatsapp: "", telefone: "", taxa: "", minimo: "", historia: "", aiqfome: "", mostrar_precos: true, pedidos_pausados: false });
   const [faq, setFaq] = useState<Faq[]>([]);
@@ -43,6 +43,11 @@ export function AjustesAdmin() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     carregar();
   }, [carregar]);
+  useEffect(() => {
+    // Veio da busca do painel com #secao: rola até ela.
+    const id = window.location.hash.slice(1);
+    if (id) setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 300);
+  }, []);
 
   if (!pode("dono", "gerente")) return <p className="text-muted">Sem acesso a esta página.</p>;
 
@@ -65,13 +70,14 @@ export function AjustesAdmin() {
     }).eq("id", 1);
     if (error) { setSalvando(false); return setMsg({ tipo: "erro", txt: traduzirErro(error.message) }); }
 
-    for (const [i, q] of faq.entries()) {
+    // Perguntas frequentes: só a consultoria (PHAR) salva — protege o SEO.
+    for (const [i, q] of (consultoria ? faq : []).entries()) {
       if (!q.pergunta.trim()) continue;
       const linha = { pergunta: q.pergunta.trim(), resposta: q.resposta.trim(), ordem: (i + 1) * 10, ativo: q.ativo };
       const r = q.id ? await supabase.from("faq").update(linha).eq("id", q.id) : await supabase.from("faq").insert(linha);
       if (r.error) { setSalvando(false); return setMsg({ tipo: "erro", txt: traduzirErro(r.error.message) }); }
     }
-    await atualizarSite(["config", "faq"]);
+    await atualizarSite(consultoria ? ["config", "faq"] : ["config"]);
     setSalvando(false);
     setMsg({ tipo: "ok", txt: "Tudo salvo e já atualizado no site." });
     carregar();
@@ -98,7 +104,7 @@ export function AjustesAdmin() {
         <><b>Redes sociais</b>: cole o link inteiro (abra o perfil, toque em compartilhar e copie). Só aparece no site a rede que tiver link.</>,
       ]} />
       <div className="space-y-8">
-        <section className="space-y-4">
+        <section id="pedidos" className="scroll-mt-6 space-y-4">
           <h2 className="text-xl font-semibold">Pedidos e entrega</h2>
           <Chave ligado={!f.pedidos_pausados} onChange={(v) => set("pedidos_pausados", !v)} rotulo={f.pedidos_pausados ? "Pedidos pausados" : "Recebendo pedidos"} />
           <Chave ligado={f.mostrar_precos} onChange={(v) => set("mostrar_precos", v)} rotulo={f.mostrar_precos ? "Preços aparecendo no site" : "Todos os preços escondidos"} descricao="Liga ou desliga todos os preços de uma vez." />
@@ -109,20 +115,20 @@ export function AjustesAdmin() {
           <Campo rotulo="Link do Aiqfome" value={f.aiqfome} onChange={(e) => set("aiqfome", e.target.value)} placeholder="https://aiqfome.com/…" />
         </section>
 
-        <section className="space-y-4">
+        <section id="horarios" className="scroll-mt-6 space-y-4">
           <h2 className="text-xl font-semibold">Horário de funcionamento</h2>
           <p className="text-sm text-muted">Muda o site todo: “Aberto agora”, rodapé, página de contato e o Google.</p>
           <EditorFaixa titulo="Almoço" f={horarios.almoco} onChange={(f) => setHorarios((h) => ({ ...h, almoco: f }))} />
           <EditorFaixa titulo="Pizzaria e choperia (noite)" f={horarios.jantar} onChange={(f) => setHorarios((h) => ({ ...h, jantar: f }))} />
         </section>
 
-        <section className="space-y-4">
+        <section id="menu" className="scroll-mt-6 space-y-4">
           <h2 className="text-xl font-semibold">Menu do site</h2>
           <p className="text-sm text-muted">Os links do topo do site (no celular, no botão ☰). Mude o nome, a ordem, esconda ou crie um link novo.</p>
           <MenuAdmin menu={menu} onChange={setMenu} />
         </section>
 
-        <section className="space-y-4">
+        <section id="redes" className="scroll-mt-6 space-y-4">
           <h2 className="text-xl font-semibold">Redes sociais</h2>
           <p className="text-sm text-muted">Cole o link completo (começando com https://). Só aparecem no rodapé as que tiverem link.</p>
           {REDES.filter((r) => r.chave !== "aiqfome").map((r) => (
@@ -130,7 +136,7 @@ export function AjustesAdmin() {
           ))}
         </section>
 
-        <section className="space-y-4">
+        <section id="saida" className="scroll-mt-6 space-y-4">
           <h2 className="text-xl font-semibold">Aviso “Já vai?”</h2>
           <p className="text-sm text-muted">Aparece uma vez por visita quando a pessoa está saindo do site, chamando para pedir.</p>
           <Chave ligado={saida.ativo} onChange={(v) => setSaida((x) => ({ ...x, ativo: v }))} rotulo={saida.ativo ? "Aviso ligado" : "Aviso desligado"} />
@@ -147,14 +153,26 @@ export function AjustesAdmin() {
           <Campo rotulo="Texto do botão" value={saida.textoBotao} onChange={(e) => setSaida((x) => ({ ...x, textoBotao: e.target.value }))} />
         </section>
 
-        <section>
+        <section id="historia" className="scroll-mt-6">
           <h2 className="text-xl font-semibold">Nossa história</h2>
           <AreaTexto rotulo="Texto da página Sobre" rows={5} value={f.historia} onChange={(e) => set("historia", e.target.value)} />
         </section>
 
-        <section>
-          <h2 className="text-xl font-semibold">Perguntas frequentes</h2>
+        <section id="faq" className="scroll-mt-6">
+          <h2 className="flex items-center gap-2 text-xl font-semibold">Perguntas frequentes{!consultoria && <Lock size={18} className="text-muted" aria-label="Travado" />}</h2>
           <p className="text-sm text-muted">Ajudam o Google e o ChatGPT a responder sobre o Aconchego. Escreva como o cliente pergunta.</p>
+          {!consultoria ? (
+            <>
+              <p className="mt-3 rounded-md border border-dourado bg-dourado/15 p-3 text-sm text-ink">
+                <b>Travado para proteger o Google (SEO).</b> Só a consultoria PHAR (Pedro e José Rufino) muda as perguntas. Quer mudar alguma? Peça para eles no WhatsApp.
+              </p>
+              <ul className="mt-3 space-y-2">
+                {faq.filter((q) => q.ativo).map((q) => (
+                  <li key={q.id} className="rounded-md border border-linha bg-creme-50 p-3"><b className="block text-ink">{q.pergunta}</b><span className="text-sm text-muted">{q.resposta}</span></li>
+                ))}
+              </ul>
+            </>
+          ) : (<>
           <ul className="mt-3 space-y-3">
             {faq.map((q, i) => (
               <li key={q.id ?? `novo-${i}`} className="space-y-2 rounded-md border border-linha bg-creme-50 p-3">
@@ -165,6 +183,7 @@ export function AjustesAdmin() {
             ))}
           </ul>
           <button type="button" onClick={() => setFaq((x) => [...x, { pergunta: "", resposta: "", ordem: 999, ativo: true }])} className="mt-3 inline-flex items-center gap-1 font-semibold text-vinho-500"><Plus size={18} />Nova pergunta</button>
+          </>)}
         </section>
       </div>
 

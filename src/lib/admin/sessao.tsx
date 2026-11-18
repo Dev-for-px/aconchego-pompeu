@@ -3,9 +3,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { createClient } from "@/lib/supabase/client";
 
 export type Perfil = "dono" | "gerente" | "social" | "atendente";
-export type Membro = { id: string; nome: string; telefone: string | null; usuario: string | null; email: string | null; perfil: Perfil; ativo: boolean };
+export type Membro = { id: string; nome: string; telefone: string | null; usuario: string | null; email: string | null; perfil: Perfil; ativo: boolean; consultoria: boolean };
 
-type Ctx = { membro: Membro | null; carregando: boolean; sair: () => Promise<void>; pode: (...perfis: Perfil[]) => boolean; recarregar: () => void };
+type Ctx = { membro: Membro | null; carregando: boolean; sair: () => Promise<void>; pode: (...perfis: Perfil[]) => boolean; consultoria: boolean; recarregar: () => void };
 const C = createContext<Ctx | null>(null);
 
 export const NOME_PERFIL: Record<Perfil, string> = { dono: "Dono(a)", gerente: "Gerente", social: "Social media", atendente: "Atendente" };
@@ -24,7 +24,7 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
         if (vivo) { setMembro(null); setCarregando(false); }
         return;
       }
-      const { data } = await supabase.from("equipe").select("id,nome,telefone,usuario,email,perfil,ativo").eq("id", u.user.id).maybeSingle();
+      const { data } = await supabase.from("equipe").select("id,nome,telefone,usuario,email,perfil,ativo,consultoria").eq("id", u.user.id).maybeSingle();
       if (vivo) { setMembro(data && data.ativo ? (data as Membro) : null); setCarregando(false); }
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((evento) => {
@@ -41,6 +41,7 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
   const valor = useMemo<Ctx>(() => ({
     membro, carregando, sair,
     pode: (...perfis) => !!membro && perfis.includes(membro.perfil),
+    consultoria: !!membro?.consultoria,
     recarregar: () => setVersao((v) => v + 1),
   }), [membro, carregando, sair]);
   return <C.Provider value={valor}>{children}</C.Provider>;

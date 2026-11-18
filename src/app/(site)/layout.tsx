@@ -17,6 +17,7 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
     whatsapp: config.whatsapp,
     taxaEntrega: config.taxa_entrega,
     pedidoMinimo: config.pedido_minimo,
+    clientesCadastro: config.clientes_cadastro,
   };
   return (
     <CarrinhoProvider config={pedido}>

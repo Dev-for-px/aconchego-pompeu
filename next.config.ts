@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import pacote from "./package.json";
 
 const nextConfig: NextConfig = {
+  // Versão do site (docs/CHANGELOG.md) — aparece no painel em Mais
+  env: { NEXT_PUBLIC_VERSAO: pacote.version },
   // Código do navegador sai minificado e sem "source maps" (não dá para ver o código original)
   productionBrowserSourceMaps: false,
   poweredByHeader: false,

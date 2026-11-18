@@ -4,16 +4,17 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Logo } from "./Logo";
-import { ChevronRight, Camera, Clock, Menu, MessageCircle, ShoppingBag, X } from "lucide-react";
+import { ChevronRight, Camera, Clock, Menu, MessageCircle, ShoppingBag, UserRound, X } from "lucide-react";
 import { useCarrinho } from "@/lib/carrinho";
 import { NEGOCIO, linkWhatsApp } from "@/lib/site";
 import { textoFaixa, type Horarios } from "@/lib/horario";
 import { linkExterno, menuAtivo, type ItemMenu } from "@/lib/menu";
+import { InstalarApp } from "./InstalarApp";
 
 export function MenuMobile({ links, horarios }: { links: ItemMenu[]; horarios: Horarios }) {
   const [aberto, setAberto] = useState(false);
   const caminho = usePathname();
-  const { totalItens } = useCarrinho();
+  const { totalItens, config } = useCarrinho();
 
   useEffect(() => {
     if (!aberto) return;
@@ -56,6 +57,10 @@ export function MenuMobile({ links, horarios }: { links: ItemMenu[]; horarios: H
             <p className="mt-8 font-script text-2xl leading-tight">{NEGOCIO.slogan}</p>
           </nav>
           <div className="space-y-3 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
+            <InstalarApp clara className="w-full" />
+            {config.clientesCadastro && (
+              <Link href="/conta" onClick={() => setAberto(false)} className="flex items-center justify-center gap-2 rounded-pill border border-creme-50/40 py-3 font-semibold"><UserRound size={20} />Minha conta</Link>
+            )}
             <a href={linkWhatsApp("Olá! Vim pelo site do Aconchego.")} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-pill bg-aberto py-3.5 text-base font-semibold"><MessageCircle size={22} />Pedir no WhatsApp</a>
             <a href={NEGOCIO.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-pill border border-creme-50/40 py-3 font-semibold"><Camera size={20} />@rest.pizzariaaconchego</a>
           </div>

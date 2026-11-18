@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserRound } from "lucide-react";
+import { useCarrinho } from "@/lib/carrinho";
 import { linkExterno, menuAtivo, type ItemMenu } from "@/lib/menu";
 
 /** Menu do topo no computador (no celular fica o MenuMobile). */
 export function MenuTopo({ links }: { links: ItemMenu[] }) {
   const caminho = usePathname();
+  const { config } = useCarrinho();
   return (
     <nav aria-label="Principal" className="hidden md:block">
       <ul className="flex gap-5 text-sm font-semibold lg:gap-6">
@@ -19,6 +22,9 @@ export function MenuTopo({ links }: { links: ItemMenu[] }) {
             </li>
           );
         })}
+        {config.clientesCadastro && (
+          <li><Link href="/conta" aria-label="Minha conta" title="Minha conta" className="opacity-90 hover:opacity-100"><UserRound size={18} /></Link></li>
+        )}
       </ul>
     </nav>
   );

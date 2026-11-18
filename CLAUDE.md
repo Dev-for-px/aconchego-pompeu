@@ -4,6 +4,9 @@
 
 Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-chave, NAP, FAQ, schema) antes de qualquer tarefa.
 
+## Versões
+- Toda entrega entra em `docs/CHANGELOG.md` (no topo, linguagem simples) e sobe a versão em `package.json` (+ `package-lock.json`) e `VERSAO` em `public/sw.js`: MAIOR.MENOR.CORREÇÃO. A versão aparece no painel em Mais
+
 ## Stack
 - Next.js (App Router) + TypeScript + Tailwind CSS + Supabase (`@supabase/ssr`)
 - Hospedagem atual: Vercel (deploy automático a cada push na `main`)
@@ -40,7 +43,8 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - SQL versionado em `supabase/migrations/` (já aplicado no projeto via SQL Editor)
 - Perfis da equipe: `dono`, `gerente`, `social`, `atendente` — permissões via RLS com `tem_perfil()`
 - Login por telefone/usuário/e-mail: `email_para_login(identificador)` devolve o e-mail do Auth; quem não tem e-mail recebe um e-mail interno (`email_login`)
-- Membros da equipe: funções `criar_membro`, `redefinir_senha`, `definir_ativo` (security definer, só Dono) — sem chave service_role
+- Membros da equipe: funções `criar_membro` (usuário obrigatório; telefone/e-mail opcionais), `redefinir_senha`, `definir_ativo`, `remover_membro` (security definer, só Dono) — sem chave service_role
+- Consultoria PHAR: `equipe.consultoria = true` (Pedro e José). Gatilho `proteger_consultoria` impede qualquer outro de alterar/remover/bloquear; `sou_consultoria()`. FAQ: só consultoria edita (RLS `faq_editar`); no painel os outros veem travado
 - Primeiro Dono: rodar `select public.criar_membro(...)` no SQL Editor
 - Atendente: a RLS libera update em `produtos`; o app deve enviar só o campo `disponivel`
 
@@ -68,6 +72,15 @@ Leia `docs/escopo-site.md` (escopo completo) e `docs/pesquisa-seo.md` (palavras-
 - Bebidas alcoólicas sempre recolhidas em "Chopp, cervejas e drinks" (`CardapioComBebidas`)
 - Bebidas (`ehBebida`: slug `bebidas` + alcoólicas) têm aba própria na home (Almoço | Pizzaria | Bebidas) e página `/bebidas`; não se repetem nas abas Almoço/Pizzaria
 - Menu do topo/celular: `configuracoes.menu` (`src/lib/menu.ts`, padrão Início, Almoço, Pizzaria, Bebidas…), editado em Ajustes › Menu do site (`MenuAdmin`); vazio = padrão
+
+## Clientes e conta de cliente
+- Tabelas `clientes` (telefone único, endereço, `conta_id`, total de pedidos) e `pedidos` (itens jsonb, total). O Checkout chama `registrar_pedido` (security definer, anon) ao enviar; telefone obrigatório exceto "Na mesa"
+- Painel `/admin/clientes` (dono/gerente): busca, histórico, WhatsApp, planilha CSV, apagar (`apagar_cliente`, LGPD), nova senha (`redefinir_senha_cliente`) e chave `configuracoes.clientes_cadastro`
+- Conta opcional (`/conta`, `src/lib/conta.ts`): `criar_conta_cliente` (só com a chave ligada) cria login interno `c-<55telefone>@clientes.aconchego.app`; entra com telefone + senha. Nunca exigir conta para pedir
+
+## Painel: busca e PWA
+- Busca inteligente `BuscaAdmin` (lupa no topo, Ctrl+K ou "/"): atalhos de telas/ajustes + produtos, clientes, FAQ, novidades e equipe, filtrados por perfil; sem acento (`src/lib/admin/texto.ts`). Destinos aceitam `?q=` (Cardápio, Clientes) e `#secao` (Ajustes)
+- PWA: `src/app/manifest.ts`, `public/sw.js` (páginas sempre da rede, estáticos em cache, `/offline` sem internet; nunca guarda /admin), `RegistrarApp` no layout raiz, botão `InstalarApp` no menu do celular e no rodapé (Android: convite do Chrome; iPhone: passo a passo do Safari)
 
 ## Resultados (métricas)
 - Tabela `eventos` (tipo, rotulo, pagina, sessao anônima) — RLS: qualquer um insere, só dono/gerente lê

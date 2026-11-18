@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { BarChart3, ChevronRight, ExternalLink, LogOut, Settings, Users } from "lucide-react";
+import { BarChart3, ChevronRight, Contact, ExternalLink, LogOut, Settings, Users } from "lucide-react";
 import { useSessao } from "@/lib/admin/sessao";
 import { Titulo } from "./ui";
 
@@ -11,6 +11,13 @@ export function Mais() {
     <>
       <Titulo>Mais opções</Titulo>
       <div className="space-y-3">
+        {pode("dono", "gerente") && (
+          <Link href="/admin/clientes" className={item}>
+            <Contact size={26} className="text-vinho-500" aria-hidden />
+            <span className="flex-1"><b className="block">Clientes</b><span className="text-sm text-muted">Quem pediu pelo site: nome, telefone, endereço e pedidos. Liga/desliga a conta de cliente</span></span>
+            <ChevronRight className="text-muted" />
+          </Link>
+        )}
         {pode("dono", "gerente") && (
           <Link href="/admin/resultados" className={item}>
             <BarChart3 size={26} className="text-vinho-500" aria-hidden />
@@ -40,6 +47,7 @@ export function Mais() {
           <LogOut size={26} className="text-fechado" aria-hidden />
           <span className="flex-1"><b className="block">Sair do painel</b><span className="text-sm text-muted">Use em celular que não é seu</span></span>
         </button>
+        <p className="pt-2 text-center text-xs text-muted">Versão do site {process.env.NEXT_PUBLIC_VERSAO} · cuidado pela PHAR Consultoria</p>
       </div>
     </>
   );

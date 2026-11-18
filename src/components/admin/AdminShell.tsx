@@ -2,9 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-import { BarChart3, ExternalLink, Home, Images, LogOut, Menu, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
+import { BarChart3, Contact, ExternalLink, Home, Images, LogOut, Menu, Settings, Sun, UtensilsCrossed, Users } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { NOME_PERFIL, SessaoProvider, useSessao, type Perfil } from "@/lib/admin/sessao";
+import { BuscaAdmin } from "./BuscaAdmin";
 
 type Aba = { href: string; label: string; Icone: typeof Home; perfis: Perfil[]; ativoEm?: string[] };
 // Celular: 5 botões no rodapé ("Mais" guarda Equipe e Ajustes). Computador: todas as abas no topo.
@@ -13,13 +14,14 @@ const ABAS_CELULAR: Aba[] = [
   { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
   { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
-  { href: "/admin/mais", label: "Mais", Icone: Menu, perfis: ["dono", "gerente", "social", "atendente"], ativoEm: ["/admin/equipe", "/admin/ajustes", "/admin/resultados"] },
+  { href: "/admin/mais", label: "Mais", Icone: Menu, perfis: ["dono", "gerente", "social", "atendente"], ativoEm: ["/admin/equipe", "/admin/ajustes", "/admin/resultados", "/admin/clientes"] },
 ];
 const ABAS: Aba[] = [
   { href: "/admin", label: "Início", Icone: Home, perfis: ["dono", "gerente", "social", "atendente"] },
   { href: "/admin/almoco", label: "Almoço", Icone: Sun, perfis: ["dono", "gerente", "social"] },
   { href: "/admin/cardapio", label: "Cardápio", Icone: UtensilsCrossed, perfis: ["dono", "gerente", "atendente"] },
   { href: "/admin/conteudo", label: "Fotos e novidades", Icone: Images, perfis: ["dono", "gerente", "social"] },
+  { href: "/admin/clientes", label: "Clientes", Icone: Contact, perfis: ["dono", "gerente"] },
   { href: "/admin/resultados", label: "Resultados", Icone: BarChart3, perfis: ["dono", "gerente"] },
   { href: "/admin/equipe", label: "Equipe", Icone: Users, perfis: ["dono"] },
   { href: "/admin/ajustes", label: "Ajustes", Icone: Settings, perfis: ["dono", "gerente"] },
@@ -47,11 +49,12 @@ function Conteudo({ children }: { children: ReactNode }) {
           <Link href="/admin" aria-label="Painel – início"><Logo variante="branca" altura={36} /></Link>
           <div className="flex items-center gap-1 text-right text-sm">
             <span className="mr-2 leading-tight"><b className="block">{membro.nome.split(" ")[0]}</b><span className="opacity-80">{NOME_PERFIL[membro.perfil]}</span></span>
+            <BuscaAdmin />
             <a href="/" target="_blank" aria-label="Ver o site" className="rounded-pill p-2 hover:bg-vinho-800"><ExternalLink size={20} /></a>
             <button type="button" onClick={sair} aria-label="Sair" className="rounded-pill p-2 hover:bg-vinho-800"><LogOut size={20} /></button>
           </div>
         </div>
-        <nav aria-label="Painel" className="mx-auto hidden max-w-3xl gap-1 px-4 pb-2 md:flex">
+        <nav aria-label="Painel" className="mx-auto hidden max-w-3xl flex-wrap gap-1 px-4 pb-2 md:flex">
           {abas.map((a) => (
             <Link key={a.href} href={a.href} className={`rounded-pill px-4 py-2 text-sm font-semibold ${ativa(a.href) ? "bg-creme-50 text-vinho-700" : "hover:bg-vinho-800"}`}>{a.label}</Link>
           ))}

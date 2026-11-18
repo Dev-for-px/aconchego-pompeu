@@ -19,6 +19,7 @@ export type ConfigPedido = {
   whatsapp: string;
   taxaEntrega: number | null;
   pedidoMinimo: number | null;
+  clientesCadastro: boolean;   // clientes podem criar conta (ligado no painel)
 };
 
 type Ctx = {

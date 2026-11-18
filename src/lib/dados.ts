@@ -33,6 +33,7 @@ export type Config = {
   redes: Redes;
   saida: Saida;
   menu: ItemMenu[];
+  clientes_cadastro: boolean;
   formas_pagamento: string[]; historia: string | null;
 };
 
@@ -42,6 +43,7 @@ const CONFIG_PADRAO: Config = {
   formas_pagamento: ["Dinheiro", "Pix", "Cartão de débito", "Cartão de crédito", "Vale-refeição"], historia: null,
   saida: SAIDA_PADRAO,
   menu: MENU_PADRAO,
+  clientes_cadastro: false,
 };
 
 function db() {

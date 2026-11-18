@@ -1,21 +1,24 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { History, MessageCircle, Trash2 } from "lucide-react";
+import { History, MessageCircle, Trash2, UserRound } from "lucide-react";
 import { precoItem, useCarrinho } from "@/lib/carrinho";
 import { montarMensagem, type DadosCliente } from "@/lib/mensagem";
 import { formatarPreco, linkWhatsApp, NEGOCIO } from "@/lib/site";
 import { registrar } from "@/lib/rastreio";
 import { dispensarAvisoSaida } from "@/lib/saida";
+import { useConta } from "@/lib/conta";
+import { supabaseConfigured } from "@/lib/supabase/env";
 import { Quantidade } from "./Quantidade";
 
 const CHAVE_CLIENTE = "aconchego:cliente";
-const VAZIO: DadosCliente = { nome: "", tipo: "entrega", endereco: "", referencia: "", pagamento: "Pix", troco: "", obs: "" };
+const VAZIO: DadosCliente = { nome: "", telefone: "", tipo: "entrega", endereco: "", referencia: "", pagamento: "Pix", troco: "", obs: "" };
 
 export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
   const c = useCarrinho();
   const [dados, setDados] = useState<DadosCliente>(VAZIO);
   const [tentou, setTentou] = useState(false);
+  const { conta, supabase } = useConta();
 
   useEffect(() => {
     // Lembra nome e endereço do cliente neste aparelho.
@@ -25,9 +28,23 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
       if (salvo) setDados({ ...VAZIO, ...JSON.parse(salvo), obs: "" });
     } catch {}
   }, []);
+  useEffect(() => {
+    // Cliente com conta: preenche com os dados salvos na conta (sem apagar o que já foi digitado).
+    if (!conta) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDados((d) => ({
+      ...d,
+      nome: d.nome || conta.nome,
+      telefone: d.telefone || (conta.telefone ? conta.telefone.replace(/^55/, "") : ""),
+      endereco: d.endereco || conta.endereco || "",
+      referencia: d.referencia || conta.referencia || "",
+    }));
+  }, [conta]);
 
   const set = <K extends keyof DadosCliente>(k: K, v: DadosCliente[K]) => setDados((d) => ({ ...d, [k]: v }));
   const faltaNome = !dados.nome.trim();
+  const digitosTel = dados.telefone.replace(/\D/g, "");
+  const faltaTelefone = dados.tipo !== "mesa" && (digitosTel.length < 10 || digitosTel.length > 13);
   const faltaEndereco = dados.tipo === "entrega" && !dados.endereco.trim();
   const abaixoMinimo = c.config.mostrarPrecos && c.config.pedidoMinimo != null && c.subtotal != null && c.subtotal < c.config.pedidoMinimo;
 
@@ -40,7 +57,7 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
   // aqui (nenhum navegador bloqueia, porque é o próprio toque do cliente que abre o link).
   function enviar(e: React.MouseEvent<HTMLAnchorElement>) {
     setTentou(true);
-    if (faltaNome || faltaEndereco || c.config.pausado) {
+    if (faltaNome || faltaTelefone || faltaEndereco || c.config.pausado) {
       e.preventDefault();
       return;
     }
@@ -48,6 +65,14 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
       localStorage.setItem(CHAVE_CLIENTE, JSON.stringify({ ...dados, obs: "" }));
     } catch {}
     registrar("enviar_pedido", `${c.totalItens} itens · ${dados.tipo}`);
+    // Guarda cliente (nome, telefone, endereço) e o pedido no banco. Não atrapalha o envio se falhar.
+    if (supabaseConfigured) {
+      supabase.rpc("registrar_pedido", {
+        p_nome: dados.nome, p_telefone: dados.telefone, p_tipo: dados.tipo, p_endereco: dados.endereco, p_referencia: dados.referencia,
+        p_pagamento: dados.pagamento, p_total: total,
+        p_itens: c.itens.map((i) => ({ nome: i.nome, grupo: i.grupo, qtd: i.qtd, preco: c.config.mostrarPrecos ? precoItem(i) : null, adicionais: i.adicionais.map((a) => a.nome), obs: i.obs || undefined })),
+      }).then(() => {}, () => {});
+    }
     c.salvarUltimo();
     dispensarAvisoSaida();
   }
@@ -115,11 +140,23 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
 
       {/* Dados */}
       <section aria-labelledby="t-dados" className="space-y-4">
-        <h2 id="t-dados" className="text-2xl font-semibold">Seus dados</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="t-dados" className="text-2xl font-semibold">Seus dados</h2>
+          {conta ? (
+            <Link href="/conta" className="inline-flex items-center gap-1 text-sm font-semibold text-vinho-500"><UserRound size={16} aria-hidden />Olá, {conta.nome.split(" ")[0]}</Link>
+          ) : c.config.clientesCadastro && (
+            <Link href="/conta?voltar=/pedido" className="inline-flex items-center gap-1 text-sm font-semibold text-vinho-500 underline"><UserRound size={16} aria-hidden />Tem conta? Entrar</Link>
+          )}
+        </div>
         <label className="block">
           <span className="font-semibold">Seu nome</span>
           <input value={dados.nome} onChange={(e) => set("nome", e.target.value)} autoComplete="name" className={campo} />
           {tentou && faltaNome && <span className="mt-1 block text-sm font-semibold text-fechado">Digite seu nome</span>}
+        </label>
+        <label className="block">
+          <span className="font-semibold">Seu telefone (WhatsApp){dados.tipo === "mesa" && <span className="font-normal text-muted"> (opcional)</span>}</span>
+          <input value={dados.telefone} onChange={(e) => set("telefone", e.target.value)} autoComplete="tel" inputMode="tel" placeholder="37 99999-9999" className={campo} />
+          {tentou && faltaTelefone && <span className="mt-1 block text-sm font-semibold text-fechado">Digite seu telefone com DDD</span>}
         </label>
 
         <fieldset>
@@ -166,6 +203,7 @@ export function Checkout({ formasPagamento }: { formasPagamento: string[] }) {
           <span className="font-semibold">Observação do pedido <span className="font-normal text-muted">(opcional)</span></span>
           <textarea value={dados.obs} onChange={(e) => set("obs", e.target.value)} rows={2} className={campo} />
         </label>
+        <p className="text-xs text-muted">Guardamos seu nome, telefone e endereço só para agilizar seus próximos pedidos. Não compartilhamos com ninguém. Quer apagar? É só pedir no WhatsApp.</p>
       </section>
 
       {/* Envio fixo no rodapé (celular) */}

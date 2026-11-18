@@ -4,6 +4,7 @@ import { formatarPreco } from "./site";
 
 export type DadosCliente = {
   nome: string;
+  telefone: string;
   tipo: "entrega" | "retirada" | "mesa";
   endereco: string;
   referencia: string;
@@ -46,6 +47,7 @@ export function montarMensagem(itens: ItemCarrinho[], cliente: DadosCliente, mos
   linhas.push("");
 
   linhas.push(`*Nome:* ${cliente.nome.trim()}`);
+  if (cliente.telefone?.trim()) linhas.push(`*Telefone:* ${cliente.telefone.trim()}`);
   if (cliente.tipo === "entrega") {
     linhas.push("*Entrega*");
     linhas.push(`Endereço: ${cliente.endereco.trim()}`);

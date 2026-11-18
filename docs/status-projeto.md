@@ -51,9 +51,20 @@
   - Almoço: **foguinho virou estrela**. Item com estrela (churrasco, salmão…) deixa o marmitex no **preço especial**; o cliente vê "Seu marmitex com Salmão é especial: passa de R$ 28 para R$ 32". Painel: Almoço › Preços do marmitex › "Preço especial"
   - Aviso **"Já vai?"** revisado: aparece no 1º toque em **Voltar** (o 2º Voltar sai normalmente), quando o mouse sai pelo topo e na rolagem rápida pra cima; 1x por visita, não aparece no carrinho nem depois de enviar o pedido; registra "aviso_saida" nos Resultados
 
+- Versão 1.2.0 (18/11) — histórico completo em `docs/CHANGELOG.md`:
+  - Consultoria (Pedro e José) protegida na Equipe; dona pode remover os demais; cadastro com usuário obrigatório, telefone/e-mail opcionais e edição de dados
+  - Perguntas frequentes travadas: só a consultoria edita
+  - Banco de clientes: todo pedido guarda nome, telefone e endereço + o pedido; tela Clientes no painel (busca, histórico, WhatsApp, planilha, apagar)
+  - Conta de cliente opcional (telefone + senha), **desligada** por padrão: ligar em Painel › Clientes
+  - Busca inteligente no painel (lupa / Ctrl+K)
+  - PWA: instalar no celular (Android e iPhone), tela sem internet
+  - Migration 0010 aplicada no Supabase
+
 ## Pendências
 - [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
 - [ ] Conferir no painel (Almoço › Preços do marmitex) os preços reais: hoje Grande R$ 28 / especial R$ 32 e Pequena R$ 24 / especial R$ 28
+- [ ] Testar logado no painel: Equipe (remover/editar), Clientes, busca (Ctrl+K) e FAQ travado com o login da Helena
+- [ ] Decidir com a Helena se liga a conta de cliente (Painel › Clientes)
 - [ ] Acompanhar no Search Console se o aviso no botão Voltar não gera alerta; se gerar, desligar só esse gatilho
 - [ ] Desativar "Allow new users to sign up" no Supabase (Authentication → Sign In / Providers)
 - [ ] Preencher preços que faltam (~61 itens) e fotos/legendas
