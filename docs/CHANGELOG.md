@@ -10,6 +10,10 @@ Toda mudança enviada para o ar entra aqui no topo, em linguagem simples.
 
 ---
 
+## 1.3.1 — 18/11/2026
+- Página **Almoço de hoje** mais enxuta no celular: título curto ("Almoço de hoje" + local e horário em uma linha) e o botão **Quero um marmitex** já na primeira tela. O texto completo (bom para o Google) foi para o fim da página
+- Botão "Quero um marmitex" com o preço embaixo, em uma linha só (também na página inicial)
+
 ## 1.3.0 — 18/11/2026
 - Almoço: novo aviso dos itens com estrela no "Monte seu marmitex" ("Itens com estrela são especiais! Escolhendo um deles, seu marmitex fica com um valor diferente do convencional (R$ 32,00)"), mais visível
 - O aviso é **editável no painel** em Almoço › Preços do marmitex (com prévia de como o cliente vê; {preco} vira o preço especial)

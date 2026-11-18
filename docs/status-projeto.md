@@ -62,6 +62,8 @@
 
 - Versão 1.3.0 (18/11): aviso dos itens com estrela editável em Almoço › Preços do marmitex; novidade "Em breve: soda italiana" publicada (/novidades/soda-italiana-em-pompeu, foto em `public/novidades/`). Migration 0011 aplicada
 
+- Versão 1.3.1 (18/11): Almoço de hoje com topo enxuto e botão do marmitex na primeira tela do celular
+
 ## Pendências
 - [ ] Ano da casa: o site usa **1989** e o slogan "O sabor que acolhe a família de Pompéu desde 1989" (16/11); o briefing dizia fundação em 21/10/2010 — confirmar a história com a Helena/José Carlos e igualar no Google Meu Negócio
 - [ ] Conferir no painel (Almoço › Preços do marmitex) os preços reais: hoje Grande R$ 28 / especial R$ 32 e Pequena R$ 24 / especial R$ 28
