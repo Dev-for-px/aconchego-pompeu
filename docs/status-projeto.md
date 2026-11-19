@@ -21,7 +21,8 @@
   - Senha do banco e chave service_role NUNCA ficam em documentos
 - Stack: Next.js 16 (App Router, cacheComponents) + TypeScript + Tailwind v4 + Supabase
 - Design System "Aconchego" (único, unificado em 13/11): https://claude.ai/artifact/F7ec2inkwG1kmS4u1gUZTD — tokens iguais aos do código (`src/app/globals.css`); 5 versões da logo oficial (intocável) + grupo Favicon (prato fumegante da logo sobre vinho, igual a `src/app/icon.png`)
-- Apresentação para a cliente (conta nova, 13/11): https://claude.ai/artifact/4hs21ED2JqN1RKCpse8RTW (Slides, 13 slides — atualizar a cada mudança)
+- Apresentação para a cliente: https://claude.ai/artifact/4hs21ED2JqN1RKCpse8RTW (Slides, 13 slides; refeita em 19/11 com a versão 1.3.1 — atualizar a cada mudança)
+- Manual do site para imprimir (A4, exporta PDF/Word): https://claude.ai/artifact/Ab1PNHemiRicMjuJdbkLzT (19/11, versão 1.3.1)
 - Links antigos (conta anterior) foram substituídos pelos de cima.
 
 ## Acessos ao painel (/admin)
